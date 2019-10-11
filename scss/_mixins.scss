@@ -1,0 +1,139 @@
+/* ===========================
+   Mixins
+   =========================== */
+
+// a clearfix extension
+%clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+// wrapperize
+@mixin wrapperize {
+    max-width: $wrapper-width;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media screen and (max-width: 480px) {
+        padding-left: $page_horizontal_padding;
+        padding-right: $page_horizontal_padding;
+    }
+}
+
+// Makes an element visually hidden, but accessible.
+// @see http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+@mixin element-invisible {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+// Turns off the element-invisible effect.
+@mixin element-invisible-off {
+    position: static !important;
+    clip: auto;
+    height: auto;
+    width: auto;
+    overflow: auto;
+}
+
+// Makes an element visually hidden by default, but visible when focused.
+@mixin element-focusable {
+    @include element-invisible;
+
+    &:active,
+    &:focus {
+        @include element-invisible-off;
+    }
+}
+
+/* The Simple Grid System */
+@mixin simple-column-container {
+    @extend %clearfix;
+}
+
+@mixin simple-column($column-count, $gutter-width) {
+    float: left;
+    width: ((100% - (($column-count - 1) * $gutter-width)) / $column-count);
+    &:nth-child(n) {
+        margin-right: $gutter-width;
+    }
+    &:nth-child(#{$column-count}n) {
+        margin-right: 0;
+    }
+}
+
+// hide the text
+@mixin hide-text() {
+    text-indent: -500em;
+}
+
+// one column-ize
+@mixin one-columnize() {
+    float: none;
+    position: static;
+    width: 100%;
+    height: auto;
+    padding-left: 0;
+    padding-right: 0;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    clear: both;
+    margin: 0 auto 20px;
+}
+
+// create inline list and separate by commas
+@mixin separate-by-commas() {
+    display: inline;
+    &:after {
+        content: ",";
+        padding: 0 .2em 0 0;
+    }
+    &:last-child:after {
+        content: "";
+        padding: 0;
+    }
+}
+
+// buttons
+@mixin buttonize {
+    display: inline-block;
+    font-size: 200%;
+    cursor: pointer;
+    color: black;
+    text-align: left;
+    font-weight: bold;
+    padding: 18px 20px 20px;
+    background: white;
+    border: 1px solid black;
+    transition: all .3s ease;
+
+    @media screen and (max-width: $bigish_screen_width) {
+        font-size: 180%;
+        padding: 12px;
+    }
+
+    &:hover {
+        border-color: $theme_red;
+        color: $theme_red;
+    }
+    &:active {
+        opacity: .5;
+    }
+}
+
+// icons
+@mixin iconize($left: 0, $top: 0, $block_width: 1, $block_height: 1) {
+    display: block;
+    width: (25px * $block_width);
+    height: (25px * $block_height);
+    background: url("../images/sprite.png") no-repeat $left $top;
+    background-size: 400px;
+}

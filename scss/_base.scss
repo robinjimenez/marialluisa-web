@@ -1,0 +1,121 @@
+/* ===========================
+   Base
+   =========================== */
+
+
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+html {
+    font-family: $base_font_stack;
+    height: 100%;
+    // font smoothing
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: $theme_grey_dark;
+    background: white;
+    font-size: 62.5%;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+audio,
+canvas,
+video {
+    display: inline-block;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link {
+    color: black;
+    text-decoration: none;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover,
+a:focus {
+    color: $theme_turquoise;
+}
+
+a:active {
+    color: $theme_turquoise;
+}
+
+p,a,h1,h2,h3 {
+    color: $theme_grey;
+    font-family: $base_font_stack;
+}
+
+p,
+pre {
+    font-size: 160%;
+    line-height: 1.5;
+    font-weight: 300;
+    margin: 0 0 1.5em;
+
+    a.btn {
+        font-size: 100%;
+    }
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+    padding: 0;
+}
+
+b,
+strong {
+    font-weight: bold;
+}
+
+dl,
+ol,
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}

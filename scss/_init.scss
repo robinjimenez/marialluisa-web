@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+// ----------------------
+// Site settings
+// ----------------------
+
+$wrapper-width: 400px;
+$header_height: 110px;
+$mobile_menu_min_width: 1000px;
+$page_horizontal_padding: 40px;
+
+// Fonts
+$base_font_stack: "Open Sans", "Helvetica", Arial, sans-serif;
+
+// Responsive breakpoints, change these as you see fit
+$big_screen_width: 1110px;
+$bigish_screen_width: 900px;
+$medium_screen_width: 800px;
+$small_screen_width: 680px;
+$tiny_screen_width: 600px;
+$micro_screen_width: 430px;
+$nano_screen_width: 320px;
+
+// Colors
+// -----------------------------
+$theme_turquoise: #79D6CF;
+$theme_turquoise_dark: #5BBDB6;
+$theme_turquoise_darker: #63AEA9;
+$theme_turquoise_shadow: rgba(135, 168, 167, 0.51);
+$theme_yellow: #79D6CF;
+$theme_yellow_dark: #63AEA9;
+$theme_yellow_shadow: rgba(135, 168, 167, 0.51);
+$theme_pink: #79D6CF;
+$theme_pink_dark: #63AEA9;
+$theme_pink_shadow: rgba(135, 168, 167, 0.51);
+$theme_grey: #7B7B7B;
+$theme_grey_dark: #222222;
+$theme_grey_light: #C4C4C4;
+$theme_grey_lighter: #CCC;
+$theme_grey_lightest: #EEE;
