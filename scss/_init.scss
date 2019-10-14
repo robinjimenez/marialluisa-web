@@ -9,10 +9,15 @@ $header_height: 110px;
 $mobile_menu_min_width: 1000px;
 $page_horizontal_padding: 40px;
 
+$mobile_slider_width: 300px;
+$mid_slider_width: 400px;
+$desktop_slider_width: 600px;
+
 // Fonts
 $base_font_stack: "Open Sans", "Helvetica", Arial, sans-serif;
 
 // Responsive breakpoints, change these as you see fit
+$huge_screen_width: 1440px;
 $big_screen_width: 1110px;
 $bigish_screen_width: 900px;
 $medium_screen_width: 800px;
@@ -23,18 +28,18 @@ $nano_screen_width: 320px;
 
 // Colors
 // -----------------------------
-$theme_turquoise: #79D6CF;
-$theme_turquoise_dark: #5BBDB6;
-$theme_turquoise_darker: #63AEA9;
-$theme_turquoise_shadow: rgba(135, 168, 167, 0.51);
-$theme_yellow: #79D6CF;
-$theme_yellow_dark: #63AEA9;
-$theme_yellow_shadow: rgba(135, 168, 167, 0.51);
-$theme_pink: #79D6CF;
-$theme_pink_dark: #63AEA9;
-$theme_pink_shadow: rgba(135, 168, 167, 0.51);
-$theme_grey: #7B7B7B;
-$theme_grey_dark: #222222;
-$theme_grey_light: #C4C4C4;
-$theme_grey_lighter: #CCC;
-$theme_grey_lightest: #EEE;
+$theme_turquoise: #6BDCC2;
+$theme_turquoise_dark: #62bca4;
+$theme_turquoise_darkest: #309288;
+$theme_turquoise_shadow: rgba(31, 103, 103, 0.2);
+$theme_yellow: #FFF9BD;
+$theme_yellow_dark: #f5e48f;
+$theme_yellow_darkest: #eed24b;
+$theme_yellow_shadow: rgba(175, 83, 0, 0.1);
+$theme_pink: #FFB0B3;
+$theme_pink_dark: #ffa5a9;
+$theme_pink_darkest: #F18D8F;
+$theme_pink_shadow: rgba(161, 75, 128, 0.2);
+$theme_almost_white: #F4EDEE;
+$theme_almost_black: #12423C;
+$theme_grey: #C4C4C4;
