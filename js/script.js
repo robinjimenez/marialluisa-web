@@ -7,6 +7,7 @@ $(document).ready(function () {
     }
 
     $('#slider').on('touchstart', function (e) {
+        e.preventDefault();
         const firstTouch = getTouches(e)[0];
         xDown = firstTouch.clientX;
     });
@@ -20,14 +21,14 @@ $(document).ready(function () {
 
         var xDiff = xDown - xUp;
 
-        if (xDiff > 0) {
+        if (xDiff > 5) {
             $('.slide-container').each(function () {
                 $(this).attr("data-index", parseInt($(this).attr("data-index")) - 1);
                 if ($(this).attr("data-index") < -4) {
                     $(this).attr("data-index", 4);
                 }
             });
-        } else if (xDiff < 0) {
+        } else if (xDiff < -5) {
             $('.slide-container').each(function () {
                 $(this).attr("data-index", parseInt($(this).attr("data-index")) + 1);
                 if ($(this).attr("data-index") > 4) {
