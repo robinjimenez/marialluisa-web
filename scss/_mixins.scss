@@ -12,8 +12,8 @@
 }
 
 // wrapperize
-@mixin wrapperize {
-    max-width: $wrapper-width;
+@mixin wrapperize($width) {
+    max-width: $width;
     margin-left: auto;
     margin-right: auto;
 
