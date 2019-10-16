@@ -7,24 +7,18 @@
     <title>marialluïsa</title>
     <meta name="description" content="marialluïsa">
     <meta name="author" content="Robin Jiménez">
-    <style>
-        body {
-            margin: 0;
-            background: #000;
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
 <main>
     <div class="content">
         <canvas class="landscape"></canvas>
-        <pre class="output"></pre>
+        <div class="overlay"><p>torna a posar el mòbil en vertical</p></div>
+        <div class="filter"></div>
+        <div class="output"></div>
+        <audio src="media/miracle.aac" autoplay>
         <script id="custom-vertex" type="x-shader/x-vertex">
 
 					//
@@ -253,11 +247,13 @@
 
 					}
 
+
         </script>
         <script id="custom-fragment" type="x-shader/x-fragment">
 					uniform float time;
+					uniform float greyness;
 					uniform vec3 color;
-					uniform sampler2D pallete;
+					uniform sampler2D palette;
 					varying float vDisplace;
 
 					uniform vec3 fogColor;
@@ -267,11 +263,14 @@
 
 					void main(){
 
-						vec2 stripPos = vec2( 0.0, vDisplace*0.5 );
-						vec4 stripColor = texture2D( pallete, stripPos );
-						//stripColor *= pow(1.0-vDisplace, 1.0);
+						vec2 stripPos = vec2( 0.0, vDisplace*0.7 );
+						vec4 stripColor = texture2D( palette, stripPos );
+						stripColor *= pow(1.0-vDisplace, 0.7);
 
-						gl_FragColor = stripColor; //vec4(0.6,0.8,1.0, 1.0);
+                        float gray = dot(stripColor.rgb, vec3(0.299, 0.587, 0.114));
+                        vec4 greyColor = vec4(vec3(gray), 1.0);
+
+						gl_FragColor = greyColor*greyness + stripColor*(1.0-greyness);
 
 						#ifdef USE_FOG
 							float fogFactor = smoothstep( fogNear, fogFar, fogDepth );
@@ -279,11 +278,10 @@
 						#endif
 					}
 
+
         </script>
     </div>
 </main>
-<script src="js/three.js"></script>
-<script src="js/Sky.js"></script>
-<script src="js/miracle.js"></script>
+<script type="module" src="js/miracle.js"></script>
 </body>
 </html>
