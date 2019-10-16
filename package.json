@@ -23,5 +23,9 @@
     "gulp-postcss": "^8.0.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5"
+  },
+  "dependencies": {
+    "animejs": "^3.1.0",
+    "three": "^0.109.0"
   }
 }
