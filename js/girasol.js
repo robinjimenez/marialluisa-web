@@ -1,5 +1,3 @@
-var output = document.querySelector('.output');
-var music = document.querySelector('audio');
 
 function setBackground(position) {
     var now = new Date();
