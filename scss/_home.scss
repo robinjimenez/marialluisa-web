@@ -7,11 +7,11 @@ body {
         nav {
             .logo-container {
                 svg {
-                    fill: $theme_pink_darkest;
+                    fill: $theme_pink;
                 }
 
                 p {
-                    color: $theme_pink;
+                    color: $theme_pink_darkest;
                 }
             }
         }
@@ -20,11 +20,11 @@ body {
         nav {
             .logo-container {
                 svg {
-                    fill: $theme_yellow_darkest;
+                    fill: $theme_yellow;
                 }
 
                 p {
-                    color: $theme_yellow;
+                    color: $theme_yellow_darkest;
                 }
             }
         }
@@ -33,11 +33,11 @@ body {
         nav {
             .logo-container {
                 svg {
-                    fill: $theme_turquoise_darkest;
+                    fill: $theme_turquoise;
                 }
 
                 p {
-                    color: $theme_turquoise;
+                    color: $theme_turquoise_darkest;
                 }
             }
         }
@@ -56,7 +56,7 @@ nav {
     a {
         text-transform: uppercase;
         font-style: italic;
-        font-weight: 600;
+        //font-weight: 600;
         font-size: 180%;
         color: $theme_grey;
 
@@ -93,6 +93,7 @@ section {
     margin-right: auto;
 
     h1 {
+        font-family: "Syne Regular";
         font-weight: 300;
         font-size: 240%;
         font-style: italic;
