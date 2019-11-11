@@ -1,3 +1,9 @@
+/*
+    ---------------------
+    HOMEPAGE - Main script
+    ---------------------
+*/
+
 var colors = [
     "green",
     "yellow",
@@ -102,6 +108,6 @@ $(document).ready(function () {
                 shiftRight();
                 break;
         }
-    })
+    });
     updatePageStatus();
 });
