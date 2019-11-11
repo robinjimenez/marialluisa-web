@@ -3,7 +3,7 @@ import {EffectComposer} from './three/examples/jsm/postprocessing/EffectComposer
 import {RenderPass} from './three/examples/jsm/postprocessing/RenderPass.js';
 import {FilmPass} from './three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from './three/examples/jsm/postprocessing/SMAAPass.js';
-import anime from './animejs/lib/anime.es.js';
+import anime from '../lib/animejs/lib/anime.es.js';
 
 var output = document.querySelector('.output');
 var music = document.querySelector('audio');
@@ -21,7 +21,7 @@ function createLandscape(params) {
     var height = window.innerHeight;
 
     var scene, renderer, camera, composer, filmPass;
-    var terrain, sky, sphere;
+    var terrain, sky, largeSphere, mediumSphere, smallSphere;
     var then = 0;
 
     var input = {x: 0, y: 0, xDamped: 0, yDamped: 0};
@@ -74,10 +74,22 @@ function createLandscape(params) {
         }, 13000);
 
         tl.add({
-            targets: sphere.position,
-            y: 10,
+            targets: largeSphere.position,
+            y: 0,
             duration: 4500
         }, 9000);
+
+        tl.add({
+            targets: mediumSphere.position,
+            y: 2.5,
+            duration: 4500
+        }, 9100);
+
+        tl.add({
+            targets: smallSphere.position,
+            y: 5,
+            duration: 4500
+        }, 9200);
 
         music.play();
     }
@@ -91,8 +103,8 @@ function createLandscape(params) {
         createSky();
 
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
-        camera.position.y = 8;
-        camera.position.z = 0;
+        camera.position.y = 50;
+        camera.rotation.x = -Math.PI / 8;
 
         var ambientLight = new THREE.AmbientLight(0xffffff, 1);
         scene.add(ambientLight);
@@ -153,18 +165,36 @@ function createLandscape(params) {
 
         terrain = new THREE.Mesh(geometry, material);
         terrain.position.z = -200;
-        terrain.rotation.x = -Math.PI / 4;
+        terrain.rotation.x = -Math.PI / 2;
         scene.add(terrain);
 
         geometry = new THREE.SphereGeometry(10, 32, 32);
         material = new THREE.MeshBasicMaterial({color: 0xb2b2b2});
-        sphere = new THREE.Mesh(geometry, material);
+        largeSphere = new THREE.Mesh(geometry, material);
 
-        scene.add(sphere);
+        geometry = new THREE.SphereGeometry(4, 32, 32);
+        mediumSphere = new THREE.Mesh(geometry, material);
 
-        sphere.position.x = 0;
-        sphere.position.y = -500;
-        sphere.position.z = -200;
+        geometry = new THREE.SphereGeometry(2, 32, 32);
+        smallSphere = new THREE.Mesh(geometry, material);
+
+        scene.add(largeSphere);
+
+        largeSphere.position.x = 0;
+        largeSphere.position.y = -500;
+        largeSphere.position.z = -200;
+
+        scene.add(mediumSphere);
+
+        mediumSphere.position.x = 0;
+        mediumSphere.position.y = -500;
+        mediumSphere.position.z = -135;
+
+        scene.add(smallSphere);
+
+        smallSphere.position.x = 0;
+        smallSphere.position.y = -500;
+        smallSphere.position.z = -100;
 
     }
 
@@ -246,10 +276,15 @@ function createLandscape(params) {
             // damping mouse for smoother interaction
             input.xDamped = lerp(input.xDamped, input.x, 0.05);
             input.yDamped = lerp(input.yDamped, input.y, 0.1);
-            terrain.material.uniforms.distortCenter.value = map(input.xDamped, -45, 45, -0.25, 0.25);
+            terrain.material.uniforms.distortCenter.value = map(input.xDamped, -45, 45, -0.15, 0.15);
             //terrain.material.uniforms.roadWidth.value = map(input.yDamped, 45, 135, -0.5, 1);
             terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, 135, 0.01, 0.8);
             terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, 135, 15.0, 20.0);
+
+            largeSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
+            mediumSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
+            smallSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
+
         } else {
             // damping mouse for smoother interaction
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
@@ -265,7 +300,10 @@ function createLandscape(params) {
         then = time;
 
         terrain.material.uniforms.time.value = time;
-        sphere.position.y += Math.sin(time * 1.35) * 0.1;
+        largeSphere.position.y += Math.sin(time * 1.35) * 0.1;
+        mediumSphere.position.y += Math.sin(time * 1.35 + 0.5) * 0.07;
+        smallSphere.position.y += Math.sin(time * 1.35 + 1) * 0.05;
+
         camera.position.y += Math.sin(time * 1.05) * 0.5;
 
 
