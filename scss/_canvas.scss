@@ -5,6 +5,8 @@
 body {
     margin: 0;
 
+    // GIRASOL SPECIFIC
+
     &.girasol {
         &.sunset {
             background: rgb(36,46,203);
@@ -59,7 +61,6 @@ canvas {
 }
 
 .overlay {
-    display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -68,14 +69,29 @@ canvas {
     height: 100vh;
     background: $theme_almost_white;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &.hidden {
+        display: none;
+    }
 
     p {
         color: $theme_almost_black;
+    }
+
+    #orientation-info {
+        display: none;
     }
 
     @media screen and (orientation: landscape) and (max-width: $big_screen_width){
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        #orientation-info {
+            display: block;
+        }
     }
 }
