@@ -10,3 +10,21 @@
   font-family: 'PT Banana Split';
   src: url('../css/fonts/BANANASP.TTF');
 }
+
+// Syne Extra
+@font-face {
+  font-family: 'Syne Extra';
+  src: url('../css/fonts/Syne-Extra.woff2') format('woff2'),
+  url('../css/fonts/Syne-Extra.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+// Syne Regular
+@font-face {
+  font-family: 'Syne Regular';
+  src: url('../css/fonts/Syne-Regular.woff2') format('woff2'),
+  url('../css/fonts/Syne-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
