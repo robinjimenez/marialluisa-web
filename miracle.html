@@ -12,12 +12,20 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
+<body class="miracle">
 <main>
     <div class="content">
         <canvas class="landscape"></canvas>
-        <div class="overlay"><p>torna a posar el mòbil en vertical</p></div>
-        <div class="filter"></div>
+        <div id="overlay" class="overlay">
+            <div class="overlay-message">
+                <p id="experience-info">
+                    per gaudir de l'experiència només ens has de permetre <wbr> conèixer l'orientació del teu mòbil. <br>
+                    no s'emmagatzemarà cap dada.
+                </p>
+                <button id="start-button" title="Acceptar" type="button">d'acord</button>
+                <p id="orientation-info">torna a posar el mòbil en vertical</p>
+            </div>
+        </div>
         <div class="output"></div>
         <audio src="media/miracle.aac" autoplay>
         <script id="custom-vertex" type="x-shader/x-vertex">
@@ -282,6 +290,7 @@
         </script>
     </div>
 </main>
+<script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
 <script type="module" src="js/miracle.js"></script>
 </body>
 </html>
