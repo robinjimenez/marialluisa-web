@@ -1,6 +1,5 @@
 node_modules
 *.TTF
-lib/animejs
-js/three
 media
 css/fonts
+lib
