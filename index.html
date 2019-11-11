@@ -8,10 +8,22 @@
     <meta name="description" content="marialluïsa">
     <meta name="author" content="Robin Jiménez">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
+<template>
+    <svg class="play-icon" width="100" height="100">
+        <defs>
+            <filter id="shadow">
+                <feDropShadow dx="0.7" dy="2" stdDeviation="4" flood-opacity="0.1"/>
+            </filter>
+        </defs>
+        <polygon points="15,0 90,50 15,100" filter="url(#shadow)"/>
+    </svg>
+</template>
 <header>
     <nav>
         <a href="/agenda">Agenda</a>
@@ -29,15 +41,47 @@
         <h1>No hi pensis tant</h1>
         <div class="slider-container" id="slider">
             <div class="holder">
-                <div class="slide-container slide-pink" data-index="-4"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Miracle</h2></div></div>
-                <div class="slide-container slide-turquoise" data-index="-3"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Mala Sang</h2></div></div>
-                <div class="slide-container slide-yellow" data-index="-2"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nord</h2></div></div>
-                <div class="slide-container slide-pink" data-index="-1"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Bèstia</h2></div></div>
-                <div class="slide-container slide-turquoise" data-index="0"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Girasol</h2></div></div>
-                <div class="slide-container slide-yellow" data-index="1"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nica</h2></div></div>
-                <div class="slide-container slide-pink" data-index="2"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Estrés</h2></div></div>
-                <div class="slide-container slide-turquoise" data-index="3"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>8</h2></div></div>
-                <div class="slide-container slide-yellow" data-index="4"><div class="slide slide-content"></div><div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Diga'm</h2></div></div>
+                <div class="slide-container slide-pink" data-index="-4">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Miracle</h2></div>
+                </div>
+                <div class="slide-container slide-turquoise" data-index="-3">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Mala Sang</h2></div></div>
+                <div class="slide-container slide-yellow" data-index="-2">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nord</h2></div></div>
+                <div class="slide-container slide-pink" data-index="-1">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Bèstia</h2></div></div>
+                <div class="slide-container slide-turquoise" data-index="0">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Girasol</h2></div></div>
+                <div class="slide-container slide-yellow" data-index="1">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nica</h2></div></div>
+                <div class="slide-container slide-pink" data-index="2">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Estrés</h2></div></div>
+                <div class="slide-container slide-turquoise" data-index="3">
+                    <div class="slide slide-content">
+                        <div class="play-container"></div>
+                    </div>
+                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2 id="suposicions">Suposicions</h2></div></div>
             </div>
         </div>
     </section>
