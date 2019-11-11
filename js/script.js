@@ -16,8 +16,11 @@ var backgrounds = new Map([
     ["diga-m",""]
 ]);
 
-
 $(document).ready(function () {
+
+    var playSVG = document.getElementsByTagName("template")[0];
+    var clone = playSVG.content.cloneNode(true);
+    $(".play-container").append(clone);
 
     var xDown = null;
 
@@ -30,7 +33,7 @@ $(document).ready(function () {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) - 1);
             if ($(this).attr("data-index") < -4) {
-                $(this).attr("data-index", 4);
+                $(this).attr("data-index", 3);
             }
         });
         updatePageStatus();
@@ -39,7 +42,7 @@ $(document).ready(function () {
     function shiftRight() {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) + 1);
-            if ($(this).attr("data-index") > 4) {
+            if ($(this).attr("data-index") > 3) {
                 $(this).attr("data-index", -4);
             }
         });
