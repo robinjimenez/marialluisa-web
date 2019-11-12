@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>marialluïsa - perdo el nord</title>
+    <meta name="description" content="marialluïsa">
+    <meta name="author" content="Robin Jiménez">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  </head>
+  <body class="nord">
+  <main>
+    <div class="content">
+      <div id="output" class="output"></div>
+      <div id="overlay" class="overlay">
+        <div class="overlay-message">
+          <p id="experience-info">
+            per gaudir de l'experiència només ens has de permetre <wbr> conèixer l'orientació del teu mòbil. <br>
+            no s'emmagatzemarà cap dada.
+          </p>
+          <button id="start-button" title="Acceptar" type="button">d'acord</button>
+          <p id="orientation-info">torna a posar el mòbil en vertical</p>
+        </div>
+      </div>
+      <canvas id="display" width="800" height="600"></canvas>
+      <audio src="media/Perdo el nord.mp3">
+    </div>
+  </main>
+  <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
+  <script src="js/init.js"></script>
+  <script type="module" src="js/nord.js"></script>
+  </body>
+</html>
