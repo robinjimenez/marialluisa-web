@@ -28,7 +28,11 @@ if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
 }
 
+
 window.onload = function () {
-    document.querySelector("#experience-info").setAttribute("class", "show");
-    document.querySelector("#overlay button").setAttribute("class", "show");
-}
+    var messages = document.querySelectorAll('.experience-info');
+    for (i = 0; i < messages.length; i++) {
+        messages[i].setAttribute("class","experience-info show");
+    }
+    document.querySelector("#overlay button").setAttribute("class", "experience-info show");
+};
