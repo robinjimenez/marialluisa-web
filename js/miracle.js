@@ -12,6 +12,8 @@ import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
+var onDeviceMove;
+
 document.getElementById('start-button').onclick = requestPermissions;
 
 // For devices that need permission requesting
@@ -29,34 +31,6 @@ function requestPermissions() {
     }
 
     createScene();
-}
-
-function onDeviceMove(e) {
-    e.preventDefault();
-
-    var x, y;
-    x = e.gamma;
-    y = e.beta;
-
-    if (x > 45) {
-        x = 45
-    }
-
-    if (x < -45) {
-        x = -45
-    }
-
-    if (y > 135) {
-        y = 135
-    }
-
-    if (y < 0) {
-        y = 0
-    }
-
-    input.x = x;
-    input.y = y;
-
 }
 
 // SCENE CREATION
@@ -280,6 +254,27 @@ function createScene() {
         input.y = y;
 
     }
+
+    onDeviceMove = function(e) {
+        e.preventDefault();
+
+        var x, y;
+        x = e.gamma;
+        y = e.beta;
+
+        if (x > 45) x = 45;
+
+        if (x < -45) x = -45;
+
+        if (y > 135) y = 135;
+
+        if (y < 0) y = 0;
+
+        input.x = x;
+        input.y = y;
+
+    };
+
 
     function render() {
 
