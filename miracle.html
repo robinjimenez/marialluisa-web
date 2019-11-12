@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 </head>
 
 <body class="miracle">
@@ -18,10 +19,11 @@
         <canvas class="landscape"></canvas>
         <div id="overlay" class="overlay">
             <div class="overlay-message">
-                <p id="experience-info">
-                    per gaudir de l'experiència només ens has de permetre <wbr> conèixer l'orientació del teu mòbil. <br>
-                    no s'emmagatzemarà cap dada.
+                <p class="experience-info">
+                    per gaudir de l'experiència només ens has de permetre <wbr>
+                    conèixer l'orientació del teu mòbil.
                 </p>
+                <p class="experience-info">no s'emmagatzemarà cap dada.</p>
                 <button id="start-button" title="Acceptar" type="button">d'acord</button>
                 <p id="orientation-info">torna a posar el mòbil en vertical</p>
             </div>
@@ -291,6 +293,7 @@
     </div>
 </main>
 <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
+<script src="js/init.js"></script>
 <script type="module" src="js/miracle.js"></script>
 </body>
 </html>
