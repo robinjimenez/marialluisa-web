@@ -6,7 +6,12 @@
 
 var output = document.querySelector('.output');
 var music = document.querySelector('audio');
-var input = {x: 0, y: 0, z:0, xDamped: 0, yDamped: 0, zDamped: 0};
+var input = {
+    x: 0, y: 0, z: 0,
+    xDamped: 0, yDamped: 0, zDamped: 0,
+    a: 0, b: 0, g: 0,
+    aPrev: 0, bPrev: 0, gPrev: 0
+};
 
 var tl;
 
