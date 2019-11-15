@@ -12,6 +12,7 @@ import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
+// Variables
 var onDeviceMove;
 
 document.getElementById('start-button').onclick = requestPermissions;

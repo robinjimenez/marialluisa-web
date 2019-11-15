@@ -8,6 +8,7 @@ var output = document.querySelector('.output');
 var music = document.querySelector('audio');
 var input = {
     x: 0, y: 0, z: 0,
+    xPrev: 0, yPrev: 0, zPrev: 0,
     xDamped: 0, yDamped: 0, zDamped: 0,
     a: 0, b: 0, g: 0,
     aPrev: 0, bPrev: 0, gPrev: 0
@@ -39,5 +40,6 @@ window.onload = function () {
     for (i = 0; i < messages.length; i++) {
         messages[i].setAttribute("class","experience-info show");
     }
-    document.querySelector("#overlay button").setAttribute("class", "experience-info show");
+    var startButton = document.querySelector("#overlay button");
+    if (startButton !== null) startButton.setAttribute("class", "experience-info show");
 };
