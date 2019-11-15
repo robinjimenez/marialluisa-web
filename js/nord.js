@@ -14,7 +14,9 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var onDeviceMove;
-var points = [];
+var target = {lat: 0, long: 0, prevLat: 0, prevLong: 0};
+var colorCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
+
 
 document.getElementById('start-button').onclick = requestPermissions;
 
@@ -41,145 +43,37 @@ function createScene() {
     document.querySelector('.overlay').remove();
 
     var container = document.querySelector("#display");
-    var draw_canvas = document.querySelector("#draw");
-    var draw_ctx = draw_canvas.getContext('2d');
-    var tmp_canvas = document.querySelector("#current_draw");
-    var tmp_ctx = tmp_canvas.getContext('2d');
-
-    var fader = anime({
-        targets: '#draw',
-        autoplay: false,
-        loop: false,
-        opacity: 0,
-        delay: 1000,
-        easing: 'easeInSine',
-        duration: 2000,
-        complete: function(anim) {
-            if (anim.direction === "normal") {
-                console.log("clear");
-                draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
-            }
-        },
-        update: function (anim) {
-            console.log(anim.progress);
-        }
-    });
 
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    tmp_canvas.width = width;
-    tmp_canvas.height = height;
-
     var scene, bgColor, renderer, camera, composer, filmPass;
     var then = 0;
+    var updateTarget = false;
 
-    var onPaint = function(e) {
-        /*var rect = e.target.getBoundingClientRect();
-        input.x = e.changedTouches[0].pageX - rect.left;
-        input.y = e.changedTouches[0].pageY - rect.top;*/
-
-        input.x = e.changedTouches[0].pageX;
-        input.y = e.changedTouches[0].pageY;
-
-        // Saving all the points in an array
-        points.push({x: input.x, y: input.y});
-
-        if (points.length < 3) {
-            var b = points[0];
-            tmp_ctx.beginPath();
-            tmp_ctx.arc(b.x, b.y, tmp_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
-            tmp_ctx.fill();
-            tmp_ctx.closePath();
-
-            return;
-        }
-
-        // Tmp canvas is always cleared up before drawing.
-        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-
-        tmp_ctx.beginPath();
-        tmp_ctx.moveTo(points[0].x, points[0].y);
-
-        for (var i = 1; i < points.length - 2; i++) {
-            var c = (points[i].x + points[i + 1].x) / 2;
-            var d = (points[i].y + points[i + 1].y) / 2;
-
-            tmp_ctx.quadraticCurveTo(points[i].x, points[i].y, c, d);
-
-        }
-
-        // For the last 2 points
-        tmp_ctx.quadraticCurveTo(
-            points[i].x,
-            points[i].y,
-            points[i + 1].x,
-            points[i + 1].y
-        );
-        tmp_ctx.stroke();
-
-    };
+    var lSphere, rSphere, fSphere, baSphere, tSphere, boSphere;
 
     init();
 
     function init() {
 
         sceneSetup();
+        sceneElements();
         render();
 
-        if (isMobile()) {
-            window.addEventListener("touchstart", handleStart, {passive: false});
-            window.addEventListener("touchend", handleEnd, {passive: false});
-            window.addEventListener("touchmove", onPaint, {passive: false});
+        if (!isMobile()) {
+            window.addEventListener("mousedown", handleStart);
+            window.addEventListener("mousemove", handleMove);
+            window.addEventListener("mouseup", handleEnd);
         } else {
-            window.addEventListener("mousemove", onInputMove);
+            target.prevLat = target.lat;
+            target.prevLong = target.long;
         }
 
         window.addEventListener("resize", resize);
         resize();
 
         //playMusic();
-    }
-
-    function handleStart(e) {
-        var rect = e.target.getBoundingClientRect();
-        input.x = e.changedTouches[0].pageX - rect.left;
-        input.y = e.changedTouches[0].pageY - rect.top;
-
-        points.push({x: input.x, y: input.y});
-
-        if (fader.progress > 0) {
-            fader.reverse();
-        } else {
-            fader.direction = "normal";
-            fader.seek(0);
-            fader.pause();
-            fader.began = false;
-        }
-
-    }
-
-    function handleEnd(e) {
-
-        // Writing down to real canvas now
-        draw_ctx.drawImage(tmp_canvas, 0, 0);
-        // Clearing tmp canvas
-        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-
-        // Emptying up Pencil Points
-        points = [];
-
-        if ((fader.direction === "reverse" && fader.completed) || (fader.direction === "normal" && fader.progress === 0)) {
-            fader.direction = "normal";
-            fader.play();
-        } else if (fader.direction === "reverse") {
-            fader.reverse();
-        } else {
-            fader.seek(0);
-            fader.pause();
-            fader.began = false;
-        }
-
     }
 
     function playMusic() {
@@ -192,20 +86,15 @@ function createScene() {
     }
 
     function sceneSetup() {
-        tmp_ctx.lineWidth = 50;
-        tmp_ctx.lineJoin = 'round';
-        tmp_ctx.lineCap = 'round';
-        tmp_ctx.strokeStyle = '#f4f4f4';
-        tmp_ctx.fillStyle = '#f4f4f4';
 
         scene = new THREE.Scene();
-        bgColor = new THREE.Color(0.5, 0.5, 0.5);
+        bgColor = new THREE.Color(0.8, 0, 0.3);
         scene.background = bgColor;
 
-        camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
-
-        var ambientLight = new THREE.AmbientLight(0xffffff, 1);
-        scene.add(ambientLight);
+        camera = new THREE.PerspectiveCamera(70, width / height, .1, 1000);
+        camera.position.set(0,0,0);
+        camera.rotation.set(0,0,0);
+        camera.target = new THREE.Vector3(0, 0, 200);
 
         renderer = new THREE.WebGLRenderer({
             canvas: container,
@@ -229,7 +118,7 @@ function createScene() {
             false,  // grayscale
         );
         filmPass.renderToScreen = true;
-        //composer.addPass(filmPass);
+        composer.addPass(filmPass);
 
         // Further antialiasing
         var SMAApass = new SMAAPass(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio());
@@ -237,42 +126,98 @@ function createScene() {
 
     }
 
+    function sceneElements() {
+
+        const geometry = new THREE.SphereGeometry(10, 32, 32);
+        const material = new THREE.MeshBasicMaterial();
+        lSphere = new THREE.Mesh(geometry, material);
+        lSphere.position.set(-200,0,0);
+
+        rSphere = new THREE.Mesh(geometry, material);
+        rSphere.position.set(200,0,0);
+
+        fSphere = new THREE.Mesh(geometry, material);
+        fSphere.position.set(0,0,200);
+
+        baSphere = new THREE.Mesh(geometry, material);
+        baSphere.position.set(0,0,-200);
+
+        tSphere = new THREE.Mesh(geometry, material);
+        tSphere.position.set(0,200,0);
+
+        boSphere = new THREE.Mesh(geometry, material);
+        boSphere.position.set(0,-200,0);
+
+        scene.add(lSphere);
+        scene.add(rSphere);
+        scene.add(fSphere);
+        scene.add(baSphere);
+        scene.add(tSphere);
+        scene.add(boSphere);
+    }
+
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
-        //camera.aspect = width / height;
-        //camera.updateProjectionMatrix();
-
-        document.querySelector("#draw").setAttribute("width", width);
-        document.querySelector("#draw").setAttribute("height", height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
 
         renderer.setSize(width, height);
     }
 
-    function onInputMove(e) {
+    function handleStart(e) {
         e.preventDefault();
 
-        var x, y;
-        x = e.clientX;
-        y = e.clientY;
+        updateTarget = true;
 
-        input.x = x;
-        input.y = y;
+        input.x = e.clientX;
+        input.y = e.clientY;
 
+        target.prevLat = target.lat;
+        target.prevLong = target.long;
+
+    }
+
+    function handleMove(e) {
+        if (updateTarget) {
+            target.lat = (input.y - e.clientY) * 0.1 + target.prevLat;
+            target.long = (e.clientX - input.x) * 0.1 + target.prevLong;
+        }
+
+        colorCoord.x  = e.clientX;
+        colorCoord.y  = e.clientY;
+
+    }
+
+    function handleEnd(e) {
+        updateTarget = false;
     }
 
     onDeviceMove = function (e) {
         e.preventDefault();
 
+        // Input for color changes
         input.a = e.alpha;
         if (input.a > 180) input.a = 360 - input.a;
         input.b = e.beta;
         if (input.b < 0) input.b = -input.b;
         input.g = e.gamma;
         if (input.g < 0) input.g = -input.g;
+
+        // Input for camera movement
+        target.lat = (input.b - e.beta) * 0.1 + target.prevLat;
+        target.long = (e.gamma - input.g) * 0.1 + target.prevLong;
+
     };
 
     function render() {
+
+        target.lat = Math.max(-85, Math.min(85, target.lat));
+
+        camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
+        camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
+        camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
+        camera.lookAt(camera.target);
 
         if (isMobile()) {
 
@@ -302,18 +247,17 @@ function createScene() {
 
         } else {
 
-            // damping mouse for smoother interaction
-            input.xDamped = lerp(input.xDamped, input.x, 0.1);
-            input.yDamped = lerp(input.yDamped, input.y, 0.1);
+            colorCoord.prevX = lerp(colorCoord.prevX, colorCoord.x, 0.1);
+            colorCoord.prevY = lerp(colorCoord.prevY, colorCoord.y, 0.1);
 
-            scene.background.r = map(input.xDamped, 0, width, 0.5, 0.7);
-            scene.background.r += map(input.yDamped, 0, height, -0.2, 0.4);
+            scene.background.r = map(colorCoord.prevX, 0, width, 0.4, 0.2);
+            scene.background.r += map(colorCoord.prevY, 0, height, 0.2, 0.4);
 
-            scene.background.b = map(input.yDamped, 0, height, 0.5, -0.2);
-            scene.background.b += map(input.xDamped, 0, width, 0.45, 0.1);
+            scene.background.b = map(colorCoord.prevY, 0, height, 0.4, 0.2);
+            scene.background.b += map(colorCoord.prevX, 0, width, 0.3, 0.2);
 
-            scene.background.g = map(input.xDamped, 0, width, 0.2, 0.06);
-            scene.background.g += map(input.yDamped, 0, height, 0.15, -0.3);
+            scene.background.g = map(colorCoord.prevX, 0, width, 0.1, 0.06);
+            scene.background.g += map(colorCoord.prevY, 0, height, 0.15, -0.3);
 
         }
 
