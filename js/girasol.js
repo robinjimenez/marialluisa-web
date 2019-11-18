@@ -1,4 +1,3 @@
-
 function setBackground(position) {
     var now = new Date();
 
