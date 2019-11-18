@@ -7,10 +7,10 @@
 var output = document.querySelector('.output');
 var music = document.querySelector('audio');
 var input = {
-    x: 0, y: 0, z: 0,
+    x: 0, y: 0, z: 0,                       // x, y, z coordinates for mouse and touch
     xPrev: 0, yPrev: 0, zPrev: 0,
     xDamped: 0, yDamped: 0, zDamped: 0,
-    a: 0, b: 0, g: 0,
+    a: 0, b: 0, g: 0,                       // alpha, beta, gamma for device rotation
     aPrev: 0, bPrev: 0, gPrev: 0
 };
 
