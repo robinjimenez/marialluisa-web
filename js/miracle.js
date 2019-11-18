@@ -64,11 +64,11 @@ function createScene() {
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
 
-        timelineSetup();
+        animationSetup();
         music.play();
     }
 
-    function timelineSetup() {
+    function animationSetup() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             duration: music.duration
@@ -283,7 +283,7 @@ function createScene() {
             // damping mouse for smoother interaction
             input.xDamped = lerp(input.xDamped, input.x, 0.05);
             input.yDamped = lerp(input.yDamped, input.y, 0.1);
-            terrain.material.uniforms.distortCenter.value = map(input.xDamped, -45, 45, -0.15, 0.15);
+            terrain.material.uniforms.distortCenter.value = map(input.xDamped, -45, 45, -0.1, 0.1);
             //terrain.material.uniforms.roadWidth.value = map(input.yDamped, 45, 135, -0.5, 1);
             terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, 135, 0.01, 0.8);
             terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, 135, 15.0, 20.0);
