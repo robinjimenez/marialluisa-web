@@ -29,7 +29,6 @@
             </div>
         </div>
         <div class="output"></div>
-        <audio src="media/miracle.aac">
         <script id="custom-vertex" type="x-shader/x-vertex">
 
 					// GLSL textureless classic 3D noise "cnoise",
@@ -217,7 +216,6 @@
 					uniform float waveSize;
 					uniform float speed;
 					uniform float distortCenter;
-					uniform float roadWidth;
 					varying float vDisplace;
 
 					varying float fogDepth;
@@ -242,7 +240,7 @@
 						float h = noise * waveHeight;
 						float angle = (uv.x - centerOff) * PI;
 						float f = abs(cos(angle));
-					    h *= pow(f, 0.7 + roadWidth);
+					    h *= f;
 
 						vDisplace = h;
 
@@ -282,16 +280,13 @@
 
 						gl_FragColor = greyColor*greyness + stripColor*(1.0-greyness);
 
-						#ifdef USE_FOG
-							float fogFactor = smoothstep( fogNear, fogFar, fogDepth );
-							gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
-						#endif
 					}
 
 
         </script>
     </div>
 </main>
+<script src="lib/howler.js-master/dist/howler.js"></script>
 <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
 <script src="js/init.js"></script>
 <script type="module" src="js/miracle.js"></script>
