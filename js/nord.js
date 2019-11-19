@@ -63,11 +63,6 @@ function createScene() {
 
     var pulseLoop;
 
-    var listener = new THREE.AudioListener();
-    var sound = new THREE.Audio( listener );
-    var analyser;
-    var soundDataArray;
-
     init();
 
     function init() {
@@ -93,7 +88,7 @@ function createScene() {
         resize();
 
         animationSetup();
-        soundSetup();
+        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('.overlay').remove();
@@ -101,7 +96,8 @@ function createScene() {
 
     function animationSetup() {
         tl = anime.timeline({
-            easing: 'easeInOutSine'
+            easing: 'easeInOutSine',
+            duration: sound.duration
         });
 
         pulseLoop = anime({
@@ -131,29 +127,6 @@ function createScene() {
             }
         });
 
-    }
-
-    function soundSetup() {
-        camera.add( listener );
-
-        var audioLoader = new THREE.AudioLoader();
-        audioLoader.load( './media/Perdo el nord.mp3', function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setLoop(false);
-            sound.setVolume(0.5);
-            sound.play();
-            tl.add({
-                target: pulseLoop,
-                loop: true,
-                begin: function (anim) {
-                    pulseLoop.play();
-                }
-            }, 3500);
-
-        });
-
-        analyser = new THREE.AudioAnalyser( sound, 256 );
-        soundDataArray = analyser.getFrequencyData();
     }
 
     function sceneSetup() {
@@ -322,8 +295,6 @@ function createScene() {
         input.g = e.gamma;
         if (input.g < 0) input.g = -input.g;
 
-
-
     };
 
     function render() {
@@ -397,8 +368,6 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
-
-
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
