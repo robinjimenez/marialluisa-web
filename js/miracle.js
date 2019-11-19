@@ -14,6 +14,13 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var onDeviceMove;
+window.THREE = THREE; // for debugger
+
+// Interaction triggers
+// Either boolean or influence percentage
+var triggers = {
+    rotateSea: 0
+};
 
 document.getElementById('start-button').onclick = requestPermissions;
 
@@ -44,6 +51,7 @@ function createScene() {
 
     var scene, renderer, camera, composer, filmPass;
     var terrain, sky, largeSphere, mediumSphere, smallSphere;
+    var bubbles = [];
     var then = 0;
 
     init();
@@ -62,16 +70,31 @@ function createScene() {
         window.addEventListener("resize", resize);
         resize();
 
-        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-
         animationSetup();
-        music.play();
+        sound.play();
+
+        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#start-button').remove();
+
     }
 
     function animationSetup() {
+        let start;
+
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            duration: music.duration
+            begin: function(anim) {
+                start = new Date().getTime();
+            },
+            update: function (anim) {
+                output.innerHTML = new Date().getTime() - start;
+            }
+        });
+
+        tl.add({
+            targets: terrain.material.uniforms.speed,
+            duration: sound.duration() * 1000,
+            value: 2
         });
 
         tl.add({
@@ -88,28 +111,82 @@ function createScene() {
 
         tl.add({
             targets: largeSphere.position,
-            y: 0,
+            y: 5,
             duration: 4500
-        }, 9000);
+        }, 10000);
 
         tl.add({
             targets: mediumSphere.position,
-            y: 2.5,
+            y: 2,
             duration: 4500
-        }, 9100);
+        }, 10100);
 
         tl.add({
             targets: smallSphere.position,
+            y: 0,
+            duration: 4500
+        }, 10200);
+
+        tl.add({
+            targets: triggers,
+            duration: 2000,
+            rotateSea: 1
+        }, 13000);
+
+        tl.add({
+            targets: largeSphere.position,
+            easing: 'easeInQuint',
+            y: -200,
+            duration: 5000
+        }, 55000);
+
+        tl.add({
+            targets: mediumSphere.position,
+            easing: 'easeInQuint',
+            y: -200,
+            duration: 5000
+        }, 56000);
+
+        tl.add({
+            targets: smallSphere.position,
+            easing: 'easeInQuint',
+            y: -200,
+            duration: 5000
+        }, 57000);
+
+        for (let i = 0; i < bubbles.length; i++) {
+            tl.add({
+                targets: bubbles[i].position,
+                easing: 'easeOutSine',
+                y: "-= 200",
+                delay: i * 100,
+                duration: 8000
+            }, 55000);
+        }
+
+        tl.add({
+            targets: largeSphere.position,
             y: 5,
             duration: 4500
-        }, 9200);
+        }, 68000);
+
+        tl.add({
+            targets: mediumSphere.position,
+            y: 2,
+            duration: 4500
+        }, 68100);
+
+        tl.add({
+            targets: smallSphere.position,
+            y: 0,
+            duration: 4500
+        }, 68200);
+
     }
 
     function sceneSetup() {
         scene = new THREE.Scene();
-        var fogColor = new THREE.Color(0x000000);
-        //scene.background = fogColor;
-        scene.fog = new THREE.Fog(fogColor, 10, 4000);
+        window.scene = scene; // for debugger
 
         createSky();
 
@@ -150,14 +227,14 @@ function createScene() {
 
     function sceneElements() {
 
+        // Main sea mesh
         var geometry = new THREE.PlaneBufferGeometry(800, 600, 400, 400);
 
         var uniforms = {
             time: {type: "f", value: 0.0},
             distortCenter: {type: "f", value: 0.1},
-            roadWidth: {type: "f", value: 0},
             palette: {type: "t", value: null},
-            speed: {type: "f", value: 0.5},
+            speed: {type: "f", value: 1},
             maxHeight: {type: "f", value: 50},
             waveHeight: {type: "f", value: 0.5},
             waveSize: {type: "f", value: 20.0},
@@ -170,14 +247,16 @@ function createScene() {
             vertexShader: document.getElementById('custom-vertex').textContent,
             fragmentShader: document.getElementById('custom-fragment').textContent,
             wireframe: false,
-            blendingMode: THREE.AdditiveBlending,
-            transparent: true
+            transparent: true,
+            opacity: 0.8
         });
 
         terrain = new THREE.Mesh(geometry, material);
         terrain.position.z = -200;
         terrain.rotation.x = -Math.PI / 2;
         scene.add(terrain);
+
+        // Main sphere meshes
 
         geometry = new THREE.SphereGeometry(10, 32, 32);
         material = new THREE.MeshBasicMaterial({color: 0xb2b2b2});
@@ -206,6 +285,25 @@ function createScene() {
         smallSphere.position.x = 0;
         smallSphere.position.y = -500;
         smallSphere.position.z = -100;
+
+        // Secondary meshes
+        for (let i = 0; i < 29; i++) {
+            let colorSeed = Math.random();
+            geometry = new THREE.SphereGeometry(Math.random() * 5, 32, 32);
+            material = new THREE.MeshBasicMaterial({
+                color: 0x69B3CB,
+                transparent: true,
+                opacity: Math.random() + 0.5,
+                blendingMode: THREE.AdditiveBlending,
+                depthFunc: THREE.AlwaysDepth
+            });
+
+            bubbles.push(new THREE.Mesh(geometry,material));
+            scene.add(bubbles[i]);
+            bubbles[i].position.x = Math.floor(Math.random() * 401) - 200;
+            bubbles[i].position.y = Math.floor(Math.random() * 101) + 200;
+            bubbles[i].position.z = -Math.floor(Math.random() * 401) + 100;
+        }
 
     }
 
@@ -259,59 +357,70 @@ function createScene() {
     onDeviceMove = function(e) {
         e.preventDefault();
 
-        var x, y;
-        x = e.gamma;
-        y = e.beta;
+        let alpha = e.alpha;
+        //let gamma = e.gamma;
+        let beta = e.beta;
 
-        if (x > 45) x = 45;
+        // Normalizing the alpha range from -90 to 90.
+        if (alpha >= 0 && alpha <= 90) {
+            alpha *= -1;
+        } else if (alpha => 270 && alpha <= 360) {
+            alpha = 360 - alpha;
+        }
 
-        if (x < -45) x = -45;
+        // Avoiding jumps with axis changes
+        if (beta > 90) alpha *= -1;
 
-        if (y > 135) y = 135;
+        // Limiting beta range
+        if (beta > 135) beta = 135;
+        if (beta < 0) beta = 0;
 
-        if (y < 0) y = 0;
-
-        input.x = x;
-        input.y = y;
+        input.a = alpha;
+        //input.g = gamma;
+        input.b = beta;
 
     };
 
 
     function render() {
 
-        if (isMobile()) {
-            // damping mouse for smoother interaction
-            input.xDamped = lerp(input.xDamped, input.x, 0.05);
-            input.yDamped = lerp(input.yDamped, input.y, 0.1);
-            terrain.material.uniforms.distortCenter.value = map(input.xDamped, -45, 45, -0.1, 0.1);
-            //terrain.material.uniforms.roadWidth.value = map(input.yDamped, 45, 135, -0.5, 1);
-            terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, 135, 0.01, 0.8);
-            terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, 135, 15.0, 20.0);
-
-            largeSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
-            mediumSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
-            smallSphere.position.x = (Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)) + Math.sin(map(input.xDamped, -45, 45, -6.29, 6.29)*0.5)) * -10.0;
-
-        } else {
-            // damping mouse for smoother interaction
-            input.xDamped = lerp(input.xDamped, input.x, 0.1);
-            input.yDamped = lerp(input.yDamped, input.y, 0.01);
-            terrain.material.uniforms.distortCenter.value = map(input.xDamped, 0, width, -0.25, 0.25);
-            //terrain.material.uniforms.roadWidth.value = map(input.yDamped, 0, height, -0.5, 1);
-            terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, height, 0.01, 0.8);
-            terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, height, 15.0, 20.0);
-        }
-
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
 
-        terrain.material.uniforms.time.value = time;
-        largeSphere.position.y += Math.sin(time * 1.35) * 0.1;
-        mediumSphere.position.y += Math.sin(time * 1.35 + 0.5) * 0.07;
-        smallSphere.position.y += Math.sin(time * 1.35 + 1) * 0.05;
+        if (isMobile()) {
+            input.aPrev = lerp(input.aPrev, input.a, 0.1 * map(input.bPrev, 0, 90, 1, 0.5));
+            input.bPrev = lerp(input.bPrev, input.b, 0.1);
+            terrain.material.uniforms.distortCenter.value = map(input.aPrev, -90, 90, -0.02, 0.02);
+            terrain.material.uniforms.waveHeight.value = map(input.bPrev, 0, 135, 0.01, 0.5);
+            terrain.material.uniforms.waveSize.value = map(input.bPrev, 0, 135, 15.0, 20.0);
 
-        camera.position.y += Math.sin(time * 1.05) * 0.25;
+            camera.rotation.z = Math.sin(map(input.aPrev, -90, 90, 90 * Math.PI / 180, -90 * Math.PI / 180)) * triggers.rotateSea;
+
+            largeSphere.position.y += Math.cos(time * 1.35 + 100) * 0.1;
+            mediumSphere.position.y += Math.cos(time * 1.35 + 50) * 0.05;
+            smallSphere.position.y += Math.cos(time * 1.35) * 0.03;
+
+            camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
+
+        } else {
+            input.xDamped = lerp(input.xDamped, input.x, 0.1);
+            input.yDamped = lerp(input.yDamped, input.y, 0.01);
+            terrain.material.uniforms.distortCenter.value = map(input.xDamped, 0, width, -0.02, 0.02);
+            terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, height, 0.01, 0.5);
+            terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, height, 15.0, 20.0);
+
+            camera.rotation.z = 0.25 * Math.sin(map(input.xDamped, 0, width, 90 * Math.PI / 180, -90 * Math.PI / 180)) * triggers.rotateSea;
+
+            largeSphere.position.y += Math.cos(time * 1.35 + 100) * 0.1;
+            mediumSphere.position.y += Math.cos(time * 1.35 + 50) * 0.05;
+            smallSphere.position.y += Math.cos(time * 1.35) * 0.02;
+
+            camera.position.y += Math.sin(time * 1.05) * 0.25;
+
+        }
+
+        terrain.material.uniforms.time.value = time;
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
