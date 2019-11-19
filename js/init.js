@@ -5,7 +5,7 @@
  */
 
 var output = document.querySelector('.output');
-var music = document.querySelector('audio');
+
 var input = {
     x: 0, y: 0, z: 0,                       // x, y, z coordinates for mouse and touch
     xPrev: 0, yPrev: 0, zPrev: 0,
@@ -15,6 +15,10 @@ var input = {
 };
 
 var tl;
+
+var sound = new Howl({
+    src: "./media/" + document.querySelector('body').className + ".mp3"
+});
 
 // Check if device is mobile
 var isMobile = function () {
