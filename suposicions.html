@@ -24,9 +24,16 @@
       <canvas id="current_draw"></canvas>
       <canvas id="draw"></canvas>
       <canvas id="display"></canvas>
-<!--      <audio src="media/Suposicions.mp3">-->
+      <div id="tool-container">
+        <button id="tool-change" title="Canvia l'eina" type="button">
+          <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </main>
+  <script src="lib/howler.js-master/dist/howler.js"></script>
   <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
   <script src="js/init.js"></script>
   <script type="module" src="js/suposicions.js"></script>
