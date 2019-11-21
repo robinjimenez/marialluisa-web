@@ -1,3 +1,7 @@
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(setBackground);
+}
+
 function setBackground(position) {
     var now = new Date();
 
@@ -19,11 +23,3 @@ function setBackground(position) {
     }
 
 }
-
-$(document).ready(function () {
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(setBackground);
-    }
-
-});
