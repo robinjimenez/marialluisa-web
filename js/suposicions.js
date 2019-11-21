@@ -67,7 +67,7 @@ function createScene() {
 
         // Saving all the points in an array
         points.push({x: input.x, y: input.y});
-
+/*
         if (points.length < 3) {
             var b = points[0];
             tmp_ctx.beginPath();
@@ -76,7 +76,7 @@ function createScene() {
             tmp_ctx.closePath();
 
             return;
-        }
+        }*/
 
         // Tmp canvas is always cleared up before drawing.
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
@@ -122,7 +122,7 @@ function createScene() {
         window.addEventListener("resize", resize);
         resize();
 
-        //playMusic();
+        sound.play();
     }
 
     function handleStart(e) {
@@ -188,7 +188,7 @@ function createScene() {
     }
 
     function sceneSetup() {
-        tmp_ctx.lineWidth = 50;
+        tmp_ctx.lineWidth = 10;
         tmp_ctx.lineJoin = 'round';
         tmp_ctx.lineCap = 'round';
         tmp_ctx.strokeStyle = '#211e1e';
