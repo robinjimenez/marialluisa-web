@@ -13,7 +13,6 @@ import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
-var onDeviceMove;
 var target = {lat: 0, long: 0, prevLat: 0, prevLong: 0};
 var colorCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
 
@@ -45,6 +44,25 @@ function requestPermissions() {
 
     createScene();
 }
+
+function onDeviceMove (e) {
+    e.preventDefault();
+
+    // Input for camera movement
+    /*target.lat = (input.b - e.beta) * 0.1 + target.prevLat;
+    target.long = (e.gamma - input.g) * 0.1 + target.prevLong;
+    target.lat = target.prevLat - (input.b - e.beta);
+    target.long = target.prevLong - (e.gamma - input.g);*/
+
+    // Input for color changes
+    input.a = e.alpha;
+    if (input.a > 180) input.a = 360 - input.a;
+    input.b = e.beta;
+    if (input.b < 0) input.b = -input.b;
+    input.g = e.gamma;
+    if (input.g < 0) input.g = -input.g;
+
+};
 
 function createScene() {
 
@@ -96,14 +114,13 @@ function createScene() {
 
     function animationSetup() {
         tl = anime.timeline({
-            easing: 'easeInOutSine',
-            duration: sound.duration
+            easing: 'easeInOutSine'
         });
 
-        pulseLoop = anime({
+        anime({
             targets: [outerSphere.scale, innerSphere.scale, mainSphere.scale],
             delay: anime.stagger(980),
-            autoplay: false,
+            autoplay: true,
             loop: true,
             direction: 'alternate',
             x: [
@@ -278,24 +295,7 @@ function createScene() {
         updateTarget = false;
     }
 
-    onDeviceMove = function (e) {
-        e.preventDefault();
 
-        // Input for camera movement
-        /*target.lat = (input.b - e.beta) * 0.1 + target.prevLat;
-        target.long = (e.gamma - input.g) * 0.1 + target.prevLong;*/
-        target.lat = target.prevLat - (input.b - e.beta);
-        target.long = target.prevLong - (e.gamma - input.g);
-
-        // Input for color changes
-        input.a = e.alpha;
-        if (input.a > 180) input.a = 360 - input.a;
-        input.b = e.beta;
-        if (input.b < 0) input.b = -input.b;
-        input.g = e.gamma;
-        if (input.g < 0) input.g = -input.g;
-
-    };
 
     function render() {
 
@@ -313,10 +313,14 @@ function createScene() {
             camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
             camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
             camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
+            /*camera.rotation.x += target.lat * 0.05;
+            camera.rotation.y += target.long * 0.05;
+            target.prevLat = target.lat;
+            target.prevLong = target.long;*/
             camera.lookAt(camera.target);
 
-            output.innerHTML = camera.target.x + "\n";
-            output.innerHTML += camera.target.y + "\n";
+            output.innerHTML = target.lat + "\n";
+            output.innerHTML += target.long + "\n";
             output.innerHTML += camera.target.z + "\n";
 
 

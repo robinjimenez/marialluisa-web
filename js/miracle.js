@@ -13,7 +13,6 @@ import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
-var onDeviceMove;
 window.THREE = THREE; // for debugger
 
 // Interaction triggers
@@ -29,7 +28,7 @@ function requestPermissions() {
     if (isMobile && typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
         DeviceMotionEvent.requestPermission()
             .then(response => {
-                if (response == 'granted') {
+                if (response === 'granted') {
                     window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
                 }
             })
@@ -40,6 +39,35 @@ function requestPermissions() {
 
     createScene();
 }
+
+function onDeviceMove(e) {
+    e.preventDefault();
+
+    let alpha = e.alpha;
+    //let gamma = e.gamma;
+    let beta = e.beta;
+
+    // Normalizing the alpha range from -90 to 90.
+    if (alpha >= 0 && alpha <= 90) {
+        alpha *= -1;
+    } else if (alpha => 270 && alpha <= 360) {
+        alpha = 360 - alpha;
+    }
+
+    // Avoiding jumps with axis changes
+    if (beta > 90) alpha *= -1;
+
+    // Limiting beta range
+    if (beta > 135) beta = 135;
+    if (beta < 0) beta = 0;
+
+    output.innerHTML = alpha;
+
+    input.a = alpha;
+    //input.g = gamma;
+    input.b = beta;
+
+};
 
 // SCENE CREATION
 
@@ -87,7 +115,7 @@ function createScene() {
                 start = new Date().getTime();
             },
             update: function (anim) {
-                output.innerHTML = new Date().getTime() - start;
+                //output.innerHTML = new Date().getTime() - start;
             }
         });
 
@@ -353,33 +381,6 @@ function createScene() {
         input.y = y;
 
     }
-
-    onDeviceMove = function(e) {
-        e.preventDefault();
-
-        let alpha = e.alpha;
-        //let gamma = e.gamma;
-        let beta = e.beta;
-
-        // Normalizing the alpha range from -90 to 90.
-        if (alpha >= 0 && alpha <= 90) {
-            alpha *= -1;
-        } else if (alpha => 270 && alpha <= 360) {
-            alpha = 360 - alpha;
-        }
-
-        // Avoiding jumps with axis changes
-        if (beta > 90) alpha *= -1;
-
-        // Limiting beta range
-        if (beta > 135) beta = 135;
-        if (beta < 0) beta = 0;
-
-        input.a = alpha;
-        //input.g = gamma;
-        input.b = beta;
-
-    };
 
 
     function render() {
