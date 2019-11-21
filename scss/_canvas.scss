@@ -130,3 +130,18 @@ canvas {
         }
     }
 }
+
+#tool-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    #tool-change {
+        z-index: 20;
+        svg {
+            fill: $theme_almost_white;
+        }
+    }
+}
