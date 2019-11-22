@@ -14,12 +14,19 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var points = [];
+var mode = "draw";
+
+$("#tool-change").click(function () {
+    mode = (mode === "draw") ? "erase" : "draw";
+    $(this).find("svg").toggleClass("draw");
+});
 
 createScene();
 
 function createScene() {
 
     document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+    document.querySelector('.overlay').remove();
 
     var container = document.querySelector("#display");
     var draw_canvas = document.querySelector("#draw");
@@ -57,6 +64,20 @@ function createScene() {
 
     var onPaint = function(e) {
 
+        let context;
+
+        if (mode === "draw") {
+            context = tmp_ctx;
+            context.strokeStyle = '#211e1e';
+            context.fillStyle = '#211e1e';
+        } else {
+            context = draw_ctx;
+        }
+
+        context.lineWidth = 10;
+        context.lineJoin = 'round';
+        context.lineCap = 'round';
+
         if (e.type === "touchmove") {
             input.x = e.changedTouches[0].pageX;
             input.y = e.changedTouches[0].pageY;
@@ -67,39 +88,40 @@ function createScene() {
 
         // Saving all the points in an array
         points.push({x: input.x, y: input.y});
-/*
+
         if (points.length < 3) {
             var b = points[0];
-            tmp_ctx.beginPath();
-            tmp_ctx.arc(b.x, b.y, tmp_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
-            tmp_ctx.fill();
-            tmp_ctx.closePath();
+            context.beginPath();
+            context.arc(b.x, b.y, context.lineWidth / 2, 0, Math.PI * 2, !0);
+            context.fill();
+            context.closePath();
 
             return;
-        }*/
+        }
 
         // Tmp canvas is always cleared up before drawing.
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
-        tmp_ctx.beginPath();
-        tmp_ctx.moveTo(points[0].x, points[0].y);
+        context.beginPath();
+        draw_ctx.globalCompositeOperation = (mode === "draw") ? 'source-over' : 'destination-out';
+        context.moveTo(points[0].x, points[0].y);
 
         for (var i = 1; i < points.length - 2; i++) {
             var c = (points[i].x + points[i + 1].x) / 2;
             var d = (points[i].y + points[i + 1].y) / 2;
 
-            tmp_ctx.quadraticCurveTo(points[i].x, points[i].y, c, d);
+            context.quadraticCurveTo(points[i].x, points[i].y, c, d);
 
         }
 
         // For the last 2 points
-        tmp_ctx.quadraticCurveTo(
+        context.quadraticCurveTo(
             points[i].x,
             points[i].y,
             points[i + 1].x,
             points[i + 1].y
         );
-        tmp_ctx.stroke();
+        context.stroke();
 
     };
 
@@ -111,12 +133,12 @@ function createScene() {
         render();
 
         if (isMobile()) {
-            window.addEventListener("touchstart", handleStart, {passive: false});
-            window.addEventListener("touchend", handleEnd, {passive: false});
-            window.addEventListener("touchmove", onPaint, {passive: false});
+            tmp_canvas.addEventListener("touchstart", handleStart, {passive: false});
+            tmp_canvas.addEventListener("touchend", handleEnd, {passive: false});
+            tmp_canvas.addEventListener("touchmove", onPaint, {passive: false});
         } else {
-            window.addEventListener('mousedown', handleStart, {passive: false});
-            window.addEventListener('mouseup', handleEnd, {passive: false});
+            tmp_canvas.addEventListener('mousedown', handleStart, {passive: false});
+            tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
         }
 
         window.addEventListener("resize", resize);
@@ -132,7 +154,7 @@ function createScene() {
             input.x = e.changedTouches[0].pageX - rect.left;
             input.y = e.changedTouches[0].pageY - rect.top;
         } else {
-            window.addEventListener("mousemove", onPaint, {passive: false});
+            tmp_canvas.addEventListener("mousemove", onPaint, {passive: false});
 
             input.x = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
             input.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
@@ -140,32 +162,36 @@ function createScene() {
 
         points.push({x: input.x, y: input.y});
 
-        if (e.type === "mousedown")  onPaint();
+        //if (e.type === "mousedown")  onPaint();
 
-        if (fader.progress > 0) {
+        /*if (fader.progress > 0) {
             fader.reverse();
         } else {
             fader.direction = "normal";
             fader.seek(0);
             fader.pause();
             fader.began = false;
-        }
+        }*/
 
     }
 
     function handleEnd(e) {
 
-        if (e.type === "mouseup")  window.removeEventListener("mousemove", onPaint, {passive: false});
+        tmp_canvas.removeEventListener("mousemove", onPaint, {passive: false});
 
-        // Writing down to real canvas now
-        draw_ctx.drawImage(tmp_canvas, 0, 0);
-        // Clearing tmp canvas
-        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+        if (mode === "draw") {
+
+            // Writing down to real canvas now
+            draw_ctx.drawImage(tmp_canvas, 0, 0);
+            // Clearing tmp canvas
+            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+
+        }
 
         // Emptying up Pencil Points
         points = [];
 
-        if ((fader.direction === "reverse" && fader.completed) || (fader.direction === "normal" && fader.progress === 0)) {
+        /*if ((fader.direction === "reverse" && fader.completed) || (fader.direction === "normal" && fader.progress === 0)) {
             fader.direction = "normal";
             fader.play();
         } else if (fader.direction === "reverse") {
@@ -174,25 +200,18 @@ function createScene() {
             fader.seek(0);
             fader.pause();
             fader.began = false;
-        }
+        }*/
 
     }
 
     function playMusic() {
         tl = anime.timeline({
-            easing: 'easeInOutSine',
-            duration: music.duration
+            easing: 'easeInOutSine'
         });
-
-        music.play();
     }
 
     function sceneSetup() {
-        tmp_ctx.lineWidth = 10;
-        tmp_ctx.lineJoin = 'round';
-        tmp_ctx.lineCap = 'round';
-        tmp_ctx.strokeStyle = '#211e1e';
-        tmp_ctx.fillStyle = '#211e1e';
+
 
         scene = new THREE.Scene();
         bgColor = new THREE.Color(0.5, 0.5, 0.5);

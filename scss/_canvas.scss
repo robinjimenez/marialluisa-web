@@ -140,8 +140,19 @@ canvas {
 
     #tool-change {
         z-index: 20;
+
+        &:focus {
+            outline: none;
+        }
         svg {
-            fill: $theme_almost_white;
+            stroke: $theme_almost_white;
+            stroke-width: 10px;
+            fill: none;
+
+            &.draw {
+                stroke: none;
+                fill: $theme_almost_black;
+            }
         }
     }
 }
