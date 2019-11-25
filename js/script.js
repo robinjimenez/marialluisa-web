@@ -4,6 +4,8 @@
     ---------------------
 */
 
+import anime from '../lib/animejs/lib/anime.es.js';
+
 var colors = [
     "green",
     "yellow",
@@ -21,6 +23,8 @@ var backgrounds = new Map([
     ["8",""],
     ["diga-m",""]
 ]);
+
+var touchStart = 0;
 
 $(document).ready(function () {
 
@@ -68,10 +72,60 @@ $(document).ready(function () {
     }
 
     $('.slide-container').on('click', function (e) {
+        e.preventDefault();
         if ($(this).attr("data-index") > 0) {
+
             shiftLeft();
+        } else if ($(this).attr("data-index") == 0) {
+
+            let container = $('.slide-container[data-index="0"]');
+            let url = $(this).attr('href');
+
+            animateStart(url,container);
+
         } else {
             shiftRight();
+        }
+    });
+
+    $('.slide-container').on('mousedown', function (e) {
+        if ($(this).attr("data-index") == 0) {
+            e.preventDefault();
+            let container = $('.slide-container[data-index="0"]');
+            let tl = anime.timeline();
+
+            tl.add({
+                targets: container.find('.play-container')[0],
+                scale: [0.5, 0.4],
+                duration: 100,
+                easing: 'easeInOutSine'
+            });
+
+            tl.add({
+                targets: container.find('svg')[0],
+                opacity: 0.5,
+                duration: 100,
+                easing: 'easeInOutSine'
+            }, 0);
+        }
+    });
+
+    $('.slide-container').on('touchstart', function (e) {
+        e.preventDefault();
+        if ($(this).attr("data-index") == 0) {
+            touchStart = new Date().getTime();
+        }
+    });
+
+    $('.slide-container').on('touchend', function (e) {
+        e.preventDefault();
+        if (($(this).attr("data-index") == 0) && ((new Date().getTime() - touchStart) < 200)) {
+
+            let container = $('.slide-container[data-index="0"]');
+            let url = $(this).attr('href');
+
+            animateStart(url,container);
+
         }
     });
 
@@ -110,4 +164,82 @@ $(document).ready(function () {
         }
     });
     updatePageStatus();
+
+    function animateStart(url, container) {
+        let tl = anime.timeline();
+
+        tl.add({
+            targets: container.find('.slide-dropdown h2')[0],
+            translateY: "-20px",
+            duration: 400,
+            easing: 'easeInOutSine'
+        });
+
+        tl.add({
+            targets: container.find('.slide-dropdown h2')[0],
+            opacity: 0,
+            duration: 200,
+            easing: 'easeInOutSine'
+        }, 0);
+
+        tl.add({
+            targets: container.find('.slide-shadow')[0],
+            height: ['75%', '60%'],
+            duration: 50,
+            easing: 'easeInOutSine'
+        }, 100);
+
+        tl.add({
+            targets: container.find('.slide-shadow')[0],
+            opacity: 0,
+            duration: 100,
+            easing: 'easeInOutSine'
+        }, 200);
+
+        tl.add({
+            targets: container.find('.slide-dropdown')[0],
+            height: ['100%', '70%'],
+            duration: 100,
+            easing: 'easeInOutSine'
+        }, 100);
+
+        tl.add({
+            targets: container.find('.slide-dropdown')[0],
+            opacity: 0,
+            duration: 100,
+            easing: 'easeInOutSine'
+        }, 200);
+
+        tl.add({
+            targets: container.find('.slide-content')[0],
+            borderRadius: "20px",
+            duration: 100,
+            easing: 'easeInOutSine'
+        }, 500);
+
+        tl.add({
+            targets: container.find('.slide-content')[0],
+            backgroundColor: "#F4F4F4",
+            duration: 300,
+            easing: 'easeInOutSine'
+        });
+
+        tl.add({
+            targets: container.find('svg')[0],
+            opacity: 0,
+            duration: 100,
+            easing: 'easeInOutSine'
+        }, "-=300");
+
+        tl.add({
+            targets: container[0],
+            scale: 5,
+            duration: 500,
+            easing: 'easeInOutSine',
+            complete: function () {
+                window.location.href = url;
+            }
+        });
+    }
+
 });
