@@ -25,9 +25,6 @@ createScene();
 
 function createScene() {
 
-    document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-    document.querySelector('.overlay').remove();
-
     var container = document.querySelector("#display");
     var draw_canvas = document.querySelector("#draw");
     var draw_ctx = draw_canvas.getContext('2d');
@@ -145,6 +142,9 @@ function createScene() {
         resize();
 
         sound.play();
+
+        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#start-button').remove();
     }
 
     function handleStart(e) {
@@ -208,6 +208,21 @@ function createScene() {
         tl = anime.timeline({
             easing: 'easeInOutSine'
         });
+
+        tl.add({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay').cloneNode('template');
+                document.querySelector('.overlay').setAttribute("class", "overlay end");
+            },
+            complete: function () {
+                container.remove();
+            }
+        }, sound.duration() * 1000);
+
     }
 
     function sceneSetup() {

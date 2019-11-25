@@ -71,6 +71,8 @@ function createScene() {
         sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('.experience-info').remove();
+        document.querySelector('.experience-info').remove();
         document.querySelector('#start-button').remove();
 
     }
@@ -87,6 +89,20 @@ function createScene() {
                 output.innerHTML = new Date().getTime() - start;
             }
         });
+
+        tl.add({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay').cloneNode('template');
+                document.querySelector('.overlay').setAttribute("class", "overlay end");
+            },
+            complete: function () {
+                container.remove();
+            }
+        }, sound.duration() * 1000);
 
     }
 

@@ -25,27 +25,30 @@ var colors = [
     new THREE.Color("rgb(224, 228, 255)")
 ];
 
-
 document.getElementById('start-button').onclick = requestPermissions;
 
 // For devices that need permission requesting
 function requestPermissions() {
-    if (isMobile && typeof (DeviceMotionEvent) !== 'undefined' && typeof (DeviceMotionEvent.requestPermission) === 'function') {
-        DeviceMotionEvent.requestPermission()
-            .then(response => {
-                if (response == 'granted') {
-                    window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
-                }
-            })
-            .catch(console.error)
-    } else {
-        window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
+    if (isMobile()) {
+
+        if (typeof (DeviceMotionEvent) !== 'undefined' && typeof (DeviceMotionEvent.requestPermission) === 'function') {
+            DeviceMotionEvent.requestPermission()
+                .then(response => {
+                    if (response == 'granted') {
+                        window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
+                    }
+                })
+                .catch(console.error)
+        } else {
+            window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
+        }
     }
 
     createScene();
+
 }
 
-function onDeviceMove (e) {
+function onDeviceMove(e) {
     e.preventDefault();
 
     // Input for camera movement
@@ -62,7 +65,7 @@ function onDeviceMove (e) {
     input.g = e.gamma;
     if (input.g < 0) input.g = -input.g;
 
-};
+}
 
 function createScene() {
 
@@ -75,8 +78,7 @@ function createScene() {
     var then = 0;
     var updateTarget = false;
 
-    var mainSphere, innerSphere, outerSphere;
-    var ringV, ringH;
+    var mainSphere, innerSphere, outerSphere, backgroundSphere;
     var lSphere, rSphere, fSphere, baSphere, tSphere, boSphere;
 
     var pulseLoop;
@@ -102,14 +104,16 @@ function createScene() {
             target.prevLong = target.long;
         }
 
-        window.addEventListener("resize", resize);
+        //window.addEventListener("resize", resize);
         resize();
 
         animationSetup();
         sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.overlay').remove();
+        document.querySelector('.experience-info').remove();
+        document.querySelector('.experience-info').remove();
+        document.querySelector('#start-button').remove();
     }
 
     function animationSetup() {
@@ -144,6 +148,20 @@ function createScene() {
             }
         });
 
+        tl.add({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay').cloneNode('template');
+                document.querySelector('.overlay').setAttribute("class", "overlay end");
+            },
+            complete: function () {
+                container.remove();
+            }
+        }, sound.duration() * 1000);
+
     }
 
     function sceneSetup() {
@@ -151,6 +169,8 @@ function createScene() {
         scene = new THREE.Scene();
         bgColor = new THREE.Color(0.8, 0, 0.3);
         scene.background = bgColor;
+
+        createBackground();
 
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 1000);
         camera.position.set(0, 0, 0);
@@ -187,20 +207,49 @@ function createScene() {
 
     }
 
+    function createBackground() {
+        var sphere = new THREE.SphereGeometry(500, 50, 50);
+
+        var loader = new THREE.TextureLoader();
+        var texture = loader.load("img/nord_gradient.png");
+
+        var material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending,
+        });
+
+        backgroundSphere = new THREE.Mesh(sphere, material);
+        backgroundSphere.material.side = THREE.BackSide;
+
+        scene.add(backgroundSphere);
+    }
+
     function sceneElements() {
 
         let geometry = new THREE.SphereGeometry(10, 32, 32);
-        let material = new THREE.MeshBasicMaterial({needsUpdate: true, depthFunc: THREE.AlwaysDepth, transparent: true, opacity: 0.3});
+        let material = new THREE.MeshBasicMaterial({
+            needsUpdate: true,
+            depthFunc: THREE.AlwaysDepth,
+            transparent: true,
+            opacity: 0.3,
+        });
         outerSphere = new THREE.Mesh(geometry, material);
         outerSphere.position.set(100, 0, 0);
         outerSphere.scale.set(2, 2, 2);
 
-        material = new THREE.MeshBasicMaterial({needsUpdate: true, depthFunc: THREE.AlwaysDepth, transparent: true, opacity: 0.7});
+        material = new THREE.MeshBasicMaterial({
+            needsUpdate: true,
+            depthFunc: THREE.AlwaysDepth,
+            transparent: true,
+            opacity: 0.7
+        });
         innerSphere = new THREE.Mesh(geometry, material);
         innerSphere.position.set(100, 0, 0);
         innerSphere.scale.set(1.6, 1.6, 1.6);
 
-        material = new THREE.MeshBasicMaterial({needsUpdate: true, depthFunc: THREE.AlwaysDepth, transparent: true, opacity: 1});
+        material = new THREE.MeshBasicMaterial({needsUpdate: true, depthFunc: THREE.AlwaysDepth});
         mainSphere = new THREE.Mesh(geometry, material);
         mainSphere.position.set(100, 0, 0);
 
@@ -228,23 +277,12 @@ function createScene() {
         scene.add(innerSphere);
         scene.add(outerSphere);
 
-        scene.add(lSphere);
+        /*scene.add(lSphere);
         scene.add(rSphere);
         scene.add(fSphere);
         scene.add(baSphere);
         scene.add(tSphere);
-        scene.add(boSphere);
-
-        geometry = new THREE.TorusGeometry(200, 0.5, 32);
-        material = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0.1});
-        ringV = new THREE.Mesh(geometry,material);
-        scene.add(ringV);
-        ringV.position.set(0,0,0);
-
-        ringH = new THREE.Mesh(geometry,material);
-        scene.add(ringH);
-        ringH.position.set(0,0,0);
-        ringH.rotation.set(Math.PI / 2, 0,0);
+        scene.add(boSphere);*/
 
     }
 
@@ -258,8 +296,6 @@ function createScene() {
     }
 
     function handleStart(e) {
-        e.preventDefault();
-
         updateTarget = true;
 
         if (e.type === "touchstart") {
@@ -296,7 +332,6 @@ function createScene() {
     }
 
 
-
     function render() {
 
         target.lat = Math.max(-85, Math.min(85, target.lat));
@@ -318,11 +353,6 @@ function createScene() {
             target.prevLat = target.lat;
             target.prevLong = target.long;*/
             camera.lookAt(camera.target);
-
-            output.innerHTML = target.lat + "\n";
-            output.innerHTML += target.long + "\n";
-            output.innerHTML += camera.target.z + "\n";
-
 
             if (input.bPrev + 0.25 >= input.b && scene.background.r <= 0.95) {
                 scene.background.r += 0.01;

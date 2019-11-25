@@ -48,26 +48,28 @@ function onDeviceMove(e) {
     let beta = e.beta;
 
     // Normalizing the alpha range from -90 to 90.
-    if (alpha >= 0 && alpha <= 90) {
+    if (alpha >= 0 && alpha <= 180) {
         alpha *= -1;
-    } else if (alpha => 270 && alpha <= 360) {
+    } else if (alpha > 180 && alpha <= 360) {
         alpha = 360 - alpha;
+    } else if (alpha > 90) {
+        alpha = 90;
+    } else {
+        alpha = -90;
     }
 
     // Avoiding jumps with axis changes
-    if (beta > 90) alpha *= -1;
+    if (beta > 90) alpha = -alpha;
 
     // Limiting beta range
-    if (beta > 135) beta = 135;
+    if (beta > 180) beta = 180;
     if (beta < 0) beta = 0;
-
-    output.innerHTML = alpha;
 
     input.a = alpha;
     //input.g = gamma;
     input.b = beta;
 
-};
+}
 
 // SCENE CREATION
 
@@ -102,8 +104,9 @@ function createScene() {
         sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('.experience-info').remove();
+        document.querySelector('.experience-info').remove();
         document.querySelector('#start-button').remove();
-
     }
 
     function animationSetup() {
@@ -209,6 +212,20 @@ function createScene() {
             y: 0,
             duration: 4500
         }, 68200);
+
+        tl.add({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay').cloneNode('template');
+                document.querySelector('.overlay').setAttribute("class", "overlay end");
+            },
+            complete: function () {
+                container.remove();
+            }
+        }, sound.duration() * 1000);
 
     }
 
@@ -390,7 +407,9 @@ function createScene() {
         then = time;
 
         if (isMobile()) {
-            input.aPrev = lerp(input.aPrev, input.a, 0.1 * map(input.bPrev, 0, 90, 1, 0.5));
+
+            let softener = Math.max(map(input.b, 0, 90, 0.1, 0.01),0.01);
+            input.aPrev = lerp(input.aPrev, input.a, softener);
             input.bPrev = lerp(input.bPrev, input.b, 0.1);
             terrain.material.uniforms.distortCenter.value = map(input.aPrev, -90, 90, -0.02, 0.02);
             terrain.material.uniforms.waveHeight.value = map(input.bPrev, 0, 135, 0.01, 0.5);
@@ -403,6 +422,10 @@ function createScene() {
             smallSphere.position.y += Math.cos(time * 1.35) * 0.03;
 
             camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
+
+
+            output.innerHTML = "softener: " + softener + "<br>";
+            output.innerHTML += "prev: " + input.aPrev;
 
         } else {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);

@@ -38,8 +38,17 @@ if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
 }
 
+function landscapeBlock() {
+    document.querySelector(".overlay-message").setAttribute("class","visible");
+}
 
 window.onload = function () {
+    if (isMobile()) {
+        document.querySelector('#orientation-info').setAttribute("class","experience-info show");
+    } else {
+        document.querySelector('#orientation-info').remove();
+    }
+
     var messages = document.querySelectorAll('.experience-info');
     for (i = 0; i < messages.length; i++) {
         messages[i].setAttribute("class","experience-info show");

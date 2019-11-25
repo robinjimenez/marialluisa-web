@@ -1,3 +1,5 @@
+import anime from '../lib/animejs/lib/anime.es.js';
+
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(setBackground);
 }
@@ -23,3 +25,34 @@ function setBackground(position) {
     }
 
 }
+
+document.getElementById('start-button').onclick = function () {
+    document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+    document.querySelector('.experience-info').remove();
+    document.querySelector('.experience-info').remove();
+    document.querySelector('#start-button').remove();
+
+    sound.play();
+
+    tl = anime.timeline({
+        easing: 'easeInOutSine',
+        duration: sound.duration() * 1000
+    });
+
+    tl.add({
+        target: document,
+        easing: 'easeInOutSine',
+        duration: 1000,
+        begin: function () {
+            document.querySelector('#orientation-info').remove();
+            document.querySelector('.overlay').cloneNode('template');
+            document.querySelector('.overlay').setAttribute("class", "overlay end");
+        },
+        complete: function () {
+            //container.remove();
+        }
+    }, sound.duration() * 1000);
+
+
+};
+
