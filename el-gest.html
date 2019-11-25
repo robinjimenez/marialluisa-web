@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>marialluïsa - suposicions</title>
+    <title>marialluïsa - el gest</title>
     <meta name="description" content="marialluïsa">
     <meta name="author" content="Robin Jiménez">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -12,13 +12,17 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
   </head>
-  <body class="suposicions">
+  <body class="el-gest">
+  <template>
+    <a class="btn" id="back-button" href="index.html" disabled>torna enrere</a>
+  </template>
   <main>
     <div class="content">
       <div id="output" class="output"></div>
-      <div id="overlay" class="overlay">
+      <div id="overlay" class="overlay hidden">
         <div class="overlay-message">
-          <p id="orientation-info">torna a posar el mòbil en vertical</p>
+          <p id="orientation-info">posa el dispositiu en vertical</p>
+          <button id="start-button" title="Acceptar" type="button">d'acord</button>
         </div>
       </div>
       <canvas id="current_draw"></canvas>
@@ -36,6 +40,6 @@
   <script src="lib/howler.js-master/dist/howler.js"></script>
   <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
   <script src="js/init.js"></script>
-  <script type="module" src="js/suposicions.js"></script>
+  <script type="module" src="js/el-gest.js"></script>
   </body>
 </html>
