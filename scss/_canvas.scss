@@ -3,156 +3,221 @@
    =========================== */
 
 body {
-    margin: 0;
+  margin: 0;
 
-    // GIRASOL SPECIFIC
-
-    &.girasol {
-        &.sunset {
-            background: rgb(36,46,203);
-            background: -moz-linear-gradient(180deg, rgba(36,46,203,1) 0%, rgba(255,0,178,1) 100%);
-            background: -webkit-linear-gradient(180deg, rgba(36,46,203,1) 0%, rgba(255,0,178,1) 100%);
-            background: linear-gradient(180deg, rgba(36,46,203,1) 0%, rgba(255,0,178,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#242ecb",endColorstr="#ff00b2",GradientType=1);
-        }
-        &.sunrise {
-            background: rgb(223,22,115);
-            background: -moz-linear-gradient(180deg, rgba(223,22,115,1) 0%, rgba(255,113,0,1) 100%);
-            background: -webkit-linear-gradient(180deg, rgba(223,22,115,1) 0%, rgba(255,113,0,1) 100%);
-            background: linear-gradient(180deg, rgba(223,22,115,1) 0%, rgba(255,113,0,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#df1673",endColorstr="#ff7100",GradientType=1);
-        }
-        &.morning {
-            background: rgb(14,168,233);
-            background: -moz-linear-gradient(180deg, rgba(14,168,233,1) 0%, rgba(53,123,204,1) 100%);
-            background: -webkit-linear-gradient(180deg, rgba(14,168,233,1) 0%, rgba(53,123,204,1) 100%);
-            background: linear-gradient(180deg, rgba(14,168,233,1) 0%, rgba(53,123,204,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0ea8e9",endColorstr="#357bcc",GradientType=1);
-        }
-        &.afternoon {
-            background: rgb(14,108,233);
-            background: -moz-linear-gradient(180deg, rgba(14,108,233,1) 0%, rgba(22,176,223,1) 100%);
-            background: -webkit-linear-gradient(180deg, rgba(14,108,233,1) 0%, rgba(22,176,223,1) 100%);
-            background: linear-gradient(180deg, rgba(14,108,233,1) 0%, rgba(22,176,223,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0e6ce9",endColorstr="#16b0df",GradientType=1);
-        }
-        &.night {
-            background: rgb(21,30,170);
-            background: -moz-linear-gradient(0deg, rgba(21,30,170,1) 0%, rgba(26,6,60,1) 100%);
-            background: -webkit-linear-gradient(0deg, rgba(21,30,170,1) 0%, rgba(26,6,60,1) 100%);
-            background: linear-gradient(0deg, rgba(21,30,170,1) 0%, rgba(26,6,60,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151eaa",endColorstr="#1a063c",GradientType=1);
-        }
+  // GIRASOL SPECIFIC
+  &.girasol {
+    &.sunset {
+      background: rgb(36, 46, 203);
+      background: -moz-linear-gradient(180deg, rgba(36, 46, 203, 1) 0%, rgba(255, 0, 178, 1) 100%);
+      background: -webkit-linear-gradient(180deg, rgba(36, 46, 203, 1) 0%, rgba(255, 0, 178, 1) 100%);
+      background: linear-gradient(180deg, rgba(36, 46, 203, 1) 0%, rgba(255, 0, 178, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#242ecb", endColorstr="#ff00b2", GradientType=1);
     }
+
+    &.sunrise {
+      background: rgb(223, 22, 115);
+      background: -moz-linear-gradient(180deg, rgba(223, 22, 115, 1) 0%, rgba(255, 113, 0, 1) 100%);
+      background: -webkit-linear-gradient(180deg, rgba(223, 22, 115, 1) 0%, rgba(255, 113, 0, 1) 100%);
+      background: linear-gradient(180deg, rgba(223, 22, 115, 1) 0%, rgba(255, 113, 0, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#df1673", endColorstr="#ff7100", GradientType=1);
+    }
+
+    &.morning {
+      background: rgb(14, 168, 233);
+      background: -moz-linear-gradient(180deg, rgba(14, 168, 233, 1) 0%, rgba(53, 123, 204, 1) 100%);
+      background: -webkit-linear-gradient(180deg, rgba(14, 168, 233, 1) 0%, rgba(53, 123, 204, 1) 100%);
+      background: linear-gradient(180deg, rgba(14, 168, 233, 1) 0%, rgba(53, 123, 204, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0ea8e9", endColorstr="#357bcc", GradientType=1);
+    }
+
+    &.afternoon {
+      background: rgb(14, 108, 233);
+      background: -moz-linear-gradient(180deg, rgba(14, 108, 233, 1) 0%, rgba(22, 176, 223, 1) 100%);
+      background: -webkit-linear-gradient(180deg, rgba(14, 108, 233, 1) 0%, rgba(22, 176, 223, 1) 100%);
+      background: linear-gradient(180deg, rgba(14, 108, 233, 1) 0%, rgba(22, 176, 223, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0e6ce9", endColorstr="#16b0df", GradientType=1);
+    }
+
+    &.night {
+      background: rgb(21, 30, 170);
+      background: -moz-linear-gradient(0deg, rgba(21, 30, 170, 1) 0%, rgba(26, 6, 60, 1) 100%);
+      background: -webkit-linear-gradient(0deg, rgba(21, 30, 170, 1) 0%, rgba(26, 6, 60, 1) 100%);
+      background: linear-gradient(0deg, rgba(21, 30, 170, 1) 0%, rgba(26, 6, 60, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151eaa", endColorstr="#1a063c", GradientType=1);
+    }
+  }
 
 }
 
 canvas {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  touch-action: none;
+  margin: auto;
+
+  &#draw {
+    z-index: 10;
+  }
+
+  &#current_draw {
+    z-index: 15;
     position: absolute;
-    top: 0;
     left: 0;
-    touch-action: none;
-
-    &#draw {
-        z-index: 10;
-    }
-
-    &#current_draw {
-        z-index: 15;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
-    }
+    right: 0;
+    bottom: 0;
+    top: 0;
+  }
 }
 
 .output {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    color: white;
-    margin: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  color: white;
+  margin: 50px;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 30;
-    width: 100vw;
-    height: 100vh;
-    background: $theme_almost_white;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  width: 100vw;
+  height: 100vh;
+  background: $theme_almost_white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  padding: 10%;
+
+  &.end {
     opacity: 1;
-    transition: opacity 0.5s ease-in-out;
 
-    &.hidden {
-        opacity: 0;
+    #back-button {
+      opacity: 1;
+      transform: translateX(5px);
+      transition: all 1s ease-in-out;
     }
+  }
 
-    p {
-        color: $theme_almost_black;
-    }
+  &.hidden {
+    opacity: 0;
+    pointer-events:none;
 
-    #orientation-info {
+    @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      button, button.show {
         display: none;
-    }
+      }
 
-    .experience-info, button {
-        opacity: 0;
-        transform: translateY(5px);
-        transition: all 1s ease-in-out;
-
+      #orientation-info {
         &.show {
-            opacity: 1;
-            transform: translateY(0);
+          display: block;
+          opacity: 1;
+          transform: translateY(0);
+
         }
+      }
     }
+  }
 
-    button.show {
-        transition-delay: 0.5s;
+  p {
+    color: $theme_almost_black;
+  }
+
+  a {
+    font-size: 160%;
+  }
+
+  #orientation-info {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 1s ease-in-out;
+  }
+
+  .experience-info, button, #back-button {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 1s ease-in-out;
+
+    &.show {
+      opacity: 1;
+      transform: translateY(0);
     }
+  }
 
-    @media screen and (orientation: landscape) and (max-width: $big_screen_width){
+  #back-button {
+    transform: translateX(-5px);
+
+    &:before {
+      content: '<';
+      margin-right: 20px;
+    }
+  }
+
+  button.show {
+    display: block;
+    margin: auto;
+    transition-delay: 0.5s;
+  }
+
+    @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
+        opacity: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
 
+        button, button.show {
+            display: none;
+        }
+
         #orientation-info {
-            display: block;
-        }
-    }
-}
+            &.show {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
 
-#tool-container {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-
-    #tool-change {
-        z-index: 20;
-
-        &:focus {
-            outline: none;
-        }
-        svg {
-            stroke: $theme_almost_white;
-            stroke-width: 10px;
-            fill: none;
-
-            &.draw {
-                stroke: none;
-                fill: $theme_almost_black;
             }
         }
     }
+
+}
+
+#tool-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  #tool-change {
+    z-index: 20;
+
+    &:focus {
+      outline: none;
+    }
+
+    svg {
+      stroke: $theme_almost_white;
+      stroke-width: 10px;
+      fill: none;
+
+      &.draw {
+        stroke: none;
+        fill: $theme_almost_black;
+      }
+    }
+  }
 }

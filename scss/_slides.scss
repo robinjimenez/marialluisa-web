@@ -261,17 +261,8 @@
             font-family: "Syne Extra", sans-serif;
             line-height: 1em;
 
-            &#suposicions {
-              font-size: 200%;
-              margin-bottom: 0.8em;
-              margin-left: 0.9em;
-            }
-
             @media screen and (orientation: landscape) and (max-width: $small_screen_width) {
               font-size: 200%;
-              &#suposicions {
-                font-size: 150%;
-              }
             }
           }
         }
