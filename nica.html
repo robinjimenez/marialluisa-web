@@ -11,14 +11,24 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
-    <script src="lib/igloo-0.1.2.js"></script>
   </head>
   <body class="nica">
+  <template>
+    <a class="btn" id="back-button" href="index.html" disabled>torna enrere</a>
+  </template>
   <main>
     <div class="content">
+      <div id="overlay" class="overlay">
+        <div class="overlay-message">
+          <p id="orientation-info">posa el dispositiu en vertical</p>
+          <button id="start-button" title="Acceptar" type="button">d'acord</button>
+        </div>
+      </div>
       <canvas id="display" width="800" height="600"></canvas>
     </div>
   </main>
+  <script src="lib/howler.js-master/dist/howler.js"></script>
+  <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
   <script src="js/init.js"></script>
   </body>
 </html>
