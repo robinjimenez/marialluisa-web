@@ -5,11 +5,6 @@
  */
 
 // Import dependencies
-import * as THREE from '../lib/three/build/three.module.js';
-import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
-import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
-import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
-import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
@@ -21,7 +16,29 @@ $("#tool-change").click(function () {
     $(this).find("svg").toggleClass("draw");
 });
 
-createScene();
+videoSetup();
+
+function videoSetup() {
+    if (!!document.createElement('video').canPlayType) {
+        let video = document.createElement('video');
+        var mp4 = document.createElement("source");
+        mp4.type = "video/mp4";
+        mp4.src = "media/video/el-gest-pau.mp4";
+        video.appendChild(mp4);
+        video.setAttribute("playsinline", "");
+        video.setAttribute("preload", "");
+
+        document.querySelector('.video-container').appendChild(video);
+
+        document.getElementById('start-button').onclick = createScene;
+
+    } else {
+
+        let info = document.createElement('p');
+        info.setAttribute("class", "experience-info");
+        info.innerText = "el teu navegador no pot reproduïr l'experiència. intenta-ho amb un més modern."
+    }
+}
 
 function createScene() {
 
@@ -31,7 +48,7 @@ function createScene() {
     var tmp_canvas = document.querySelector("#current_draw");
     var tmp_ctx = tmp_canvas.getContext('2d');
 
-    var fader = anime({
+    /*var fader = anime({
         targets: '#draw',
         autoplay: false,
         loop: false,
@@ -48,16 +65,13 @@ function createScene() {
         update: function (anim) {
             console.log(anim.progress);
         }
-    });
+    });*/
 
     var width = window.innerWidth;
     var height = window.innerHeight;
 
     tmp_canvas.width = width;
     tmp_canvas.height = height;
-
-    var scene, bgColor, renderer, camera, composer, filmPass;
-    var then = 0;
 
     var onPaint = function(e) {
 
@@ -126,8 +140,7 @@ function createScene() {
 
     function init() {
 
-        sceneSetup();
-        render();
+        //render();
 
         if (isMobile()) {
             tmp_canvas.addEventListener("touchstart", handleStart, {passive: false});
@@ -138,10 +151,10 @@ function createScene() {
             tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
         }
 
-        window.addEventListener("resize", resize);
+        //window.addEventListener("resize", resize);
         resize();
 
-        sound.play();
+        document.querySelector('video').play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('#start-button').remove();
@@ -161,8 +174,6 @@ function createScene() {
         }
 
         points.push({x: input.x, y: input.y});
-
-        //if (e.type === "mousedown")  onPaint();
 
         /*if (fader.progress > 0) {
             fader.reverse();
@@ -205,7 +216,7 @@ function createScene() {
     }
 
     function playMusic() {
-        tl = anime.timeline({
+        /*tl = anime.timeline({
             easing: 'easeInOutSine'
         });
 
@@ -221,70 +232,15 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        }, sound.duration() * 1000);
-
-    }
-
-    function sceneSetup() {
-
-
-        scene = new THREE.Scene();
-        bgColor = new THREE.Color(0.5, 0.5, 0.5);
-        scene.background = bgColor;
-
-        camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
-
-        var ambientLight = new THREE.AmbientLight(0xffffff, 1);
-        scene.add(ambientLight);
-
-        renderer = new THREE.WebGLRenderer({
-            canvas: container,
-            antialias: true,
-        });
-
-        renderer.setPixelRatio = devicePixelRatio;
-        renderer.setSize(width, height);
-
-        composer = new EffectComposer(renderer);
-        composer.setSize(width, height);
-
-        var renderPass = new RenderPass(scene, camera);
-        composer.addPass(renderPass);
-
-        // Film noise
-        filmPass = new FilmPass(
-            0.2,   // noise intensity
-            0.025,  // scanline intensity
-            648,    // scanline count
-            false,  // grayscale
-        );
-        filmPass.renderToScreen = true;
-        //composer.addPass(filmPass);
-
-        // Further antialiasing
-        var SMAApass = new SMAAPass(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio());
-        composer.addPass(SMAApass);
+        }, sound.duration() * 1000);*/
 
     }
 
     function resize() {
-        //camera.aspect = width / height;
-        //camera.updateProjectionMatrix();
 
         document.querySelector("#draw").setAttribute("width", width);
         document.querySelector("#draw").setAttribute("height", height);
-
-        renderer.setSize(width, height);
     }
 
-    function render() {
-
-        var time = performance.now() * 0.001;
-        const deltaTime = time - then;
-        then = time;
-
-        composer.render(deltaTime);
-        requestAnimationFrame(render);
-    }
 
 }
