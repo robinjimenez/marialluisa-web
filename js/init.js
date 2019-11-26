@@ -17,7 +17,7 @@ var input = {
 var tl;
 
 var sound = new Howl({
-    src: "./media/" + document.querySelector('body').className + ".mp3"
+    src: "./media/songs/" + document.querySelector('body').className + ".mp3"
 });
 
 // Check if device is mobile
@@ -36,10 +36,6 @@ bodyScrollLock.disableBodyScroll(targetElement);
 // Force HTTPS to receive data
 if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-}
-
-function landscapeBlock() {
-    document.querySelector(".overlay-message").setAttribute("class","visible");
 }
 
 window.onload = function () {
