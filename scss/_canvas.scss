@@ -110,7 +110,7 @@ canvas {
 
   &.hidden {
     opacity: 0;
-    pointer-events:none;
+    pointer-events: none;
 
     @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
       opacity: 1;
@@ -173,26 +173,64 @@ canvas {
     transition-delay: 0.5s;
   }
 
-    @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
-        opacity: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+  @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
-        button, button.show {
-            display: none;
-        }
-
-        #orientation-info {
-            &.show {
-                display: block;
-                opacity: 1;
-                transform: translateY(0);
-
-            }
-        }
+    button, button.show {
+      display: none;
     }
 
+    #orientation-info {
+      &.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+
+      }
+    }
+  }
+
+}
+
+.video-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+
+  .gradient {
+    display: none
+  }
+
+
+  @media screen and (orientation: landscape) and (min-width: $big_screen_width) {
+    .gradient {
+      z-index: 5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      opacity: 1;
+      background: rgb(255,255,255);
+      background: -moz-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
+      background: -webkit-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
+      background: linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+    }
+  }
+
+  video {
+    z-index: 0;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    transform: translateX(calc((100% - 100vw) / 2));
+  }
 }
 
 #tool-container {
@@ -210,7 +248,7 @@ canvas {
     }
 
     svg {
-      stroke: $theme_almost_white;
+      stroke: $theme_almost_black;
       stroke-width: 10px;
       fill: none;
 
