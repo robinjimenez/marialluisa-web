@@ -104,7 +104,6 @@ function createScene() {
             target.prevLong = target.long;
         }
 
-        //window.addEventListener("resize", resize);
         resize();
 
         animationSetup();

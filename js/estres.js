@@ -64,7 +64,6 @@ function createScene() {
             window.addEventListener("mousemove", onInputMove);
         }
 
-        window.addEventListener("resize", resize);
         resize();
 
         animationSetup();

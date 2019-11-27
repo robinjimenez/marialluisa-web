@@ -97,7 +97,6 @@ function createScene() {
             window.addEventListener("mousemove", onInputMove);
         }
 
-        window.addEventListener("resize", resize);
         resize();
 
         animationSetup();
@@ -423,9 +422,6 @@ function createScene() {
 
             camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
 
-
-            output.innerHTML = "softener: " + softener + "<br>";
-            output.innerHTML += "prev: " + input.aPrev;
 
         } else {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
