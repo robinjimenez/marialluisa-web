@@ -17,7 +17,22 @@ var input = {
 var tl;
 
 var sound = new Howl({
-    src: "./media/songs/" + document.querySelector('body').className + ".mp3"
+    src: "./media/songs/" + document.querySelector('body').className + ".mp3",
+    onload: function () {
+        document.querySelector('.loading-info.show').classList.remove("show");
+
+        if (isMobile()) {
+            document.querySelector('#orientation-info').setAttribute("class","experience-info show");
+        }
+
+        var messages = document.querySelectorAll('.experience-info');
+        for (let i = 0; i < messages.length; i++) {
+            messages[i].setAttribute("class","experience-info show");
+        }
+
+        var startButton = document.querySelector("#overlay button");
+        if (startButton !== null) startButton.setAttribute("class", "experience-info show");
+    }
 });
 
 // Check if device is mobile
@@ -37,18 +52,3 @@ bodyScrollLock.disableBodyScroll(targetElement);
 if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
 }
-
-window.onload = function () {
-    if (isMobile()) {
-        document.querySelector('#orientation-info').setAttribute("class","experience-info show");
-    } else {
-        document.querySelector('#orientation-info').remove();
-    }
-
-    var messages = document.querySelectorAll('.experience-info');
-    for (i = 0; i < messages.length; i++) {
-        messages[i].setAttribute("class","experience-info show");
-    }
-    var startButton = document.querySelector("#overlay button");
-    if (startButton !== null) startButton.setAttribute("class", "experience-info show");
-};
