@@ -11,6 +11,8 @@ import anime from '../lib/animejs/lib/anime.es.js';
 var points = [];
 var mode = "draw";
 
+var graphics = [];
+
 $("#tool-change").click(function () {
     mode = (mode === "draw") ? "erase" : "draw";
     $(this).find("svg").toggleClass("draw");
@@ -30,27 +32,33 @@ function videoSetup() {
 
         document.querySelector('.video-container').appendChild(video);
 
-        if (isMobile()) {
-            document.getElementById('start-button').onclick = createScene;
-        } else {
-            createScene();
-        }
-
     } else {
 
         let info = document.createElement('p');
         info.setAttribute("class", "experience-info");
         info.innerText = "el teu navegador no pot reproduïr l'experiència. intenta-ho amb un més modern."
     }
+
+    document.getElementById('start-button').onclick = createScene;
+
+}
+
+function graphEl(img, offsetX, offsetY) {
+    this.img = img;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
 }
 
 function createScene() {
 
-    var container = document.querySelector("#display");
     var draw_canvas = document.querySelector("#draw");
     var draw_ctx = draw_canvas.getContext('2d');
     var tmp_canvas = document.querySelector("#current_draw");
     var tmp_ctx = tmp_canvas.getContext('2d');
+
+    draw_ctx.imageSmoothingEnabled = true;
+    tmp_ctx.imageSmoothingEnabled = true;
+
 
     /*var fader = anime({
         targets: '#draw',
@@ -77,7 +85,7 @@ function createScene() {
     tmp_canvas.width = width;
     tmp_canvas.height = height;
 
-    var onPaint = function(e) {
+    var onPaint = function (e) {
 
         let context;
 
@@ -144,7 +152,8 @@ function createScene() {
 
     function init() {
 
-        //render();
+        loadImages();
+        animationSetup();
 
         if (isMobile()) {
             tmp_canvas.addEventListener("touchstart", handleStart, {passive: false});
@@ -162,6 +171,65 @@ function createScene() {
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('#start-button').remove();
+    }
+
+    function loadImages() {
+
+        var img = new Image();
+        img.src = 'media/img/mouth-cover.png';
+        var el = new graphEl(img, -50,120);
+        graphics.push(el);
+
+        img = new Image();
+        img.src = 'media/img/nord-gradient.png';
+        el = new graphEl(img, 0,0);
+        graphics.push(el);
+    }
+
+    function animationSetup() {
+        tl = anime.timeline();
+
+        tl.add({
+            targets: draw_canvas,
+            opacity: [1.0, 0.0],
+            easing: 'easeInOutSine',
+            duration: 100,
+            complete: function () {
+                draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
+            }
+        }, 100);
+
+        tl.add({
+            targets: draw_canvas,
+            opacity: 1.0,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                if (graphics[0].img.complete) {
+                    let scale = (height / 1000) / 2;
+                    let posX = width/2 - graphics[0].img.width * scale / 2 + graphics[0].offsetX * scale;
+                    let posY = height/2 - graphics[0].img.height * scale / 2 + graphics[0].offsetY * scale;
+
+                    draw_ctx.drawImage(graphics[0].img,posX,posY,graphics[0].img.width * scale, graphics[0].img.height * scale);
+                }
+            },
+        }, 1000);
+
+        tl.add({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 1000,
+            begin: function () {
+                document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay').cloneNode('template');
+                document.querySelector('.overlay').setAttribute("class", "overlay end");
+            },
+            complete: function () {
+                draw_canvas.remove();
+                tmp_canvas.remove();
+                document.querySelector('video').remove();
+            }
+        }, sound.duration() * 1000);
     }
 
     function handleStart(e) {
@@ -218,28 +286,6 @@ function createScene() {
         }*/
 
     }
-
-    function playMusic() {
-        /*tl = anime.timeline({
-            easing: 'easeInOutSine'
-        });
-
-        tl.add({
-            target: document,
-            easing: 'easeInOutSine',
-            duration: 1000,
-            begin: function () {
-                document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay').cloneNode('template');
-                document.querySelector('.overlay').setAttribute("class", "overlay end");
-            },
-            complete: function () {
-                container.remove();
-            }
-        }, sound.duration() * 1000);*/
-
-    }
-
     function resize() {
 
         document.querySelector("#draw").setAttribute("width", width);
