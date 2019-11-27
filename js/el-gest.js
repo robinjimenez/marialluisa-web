@@ -30,7 +30,11 @@ function videoSetup() {
 
         document.querySelector('.video-container').appendChild(video);
 
-        document.getElementById('start-button').onclick = createScene;
+        if (isMobile()) {
+            document.getElementById('start-button').onclick = createScene;
+        } else {
+            createScene();
+        }
 
     } else {
 
