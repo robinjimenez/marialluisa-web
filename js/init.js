@@ -48,6 +48,12 @@ var isMobile = function () {
 const targetElement = document.querySelector("html");
 bodyScrollLock.disableBodyScroll(targetElement);
 
+const wholeHeight = document.querySelector("body").getBoundingClientRect().height;
+const barHeight = wholeHeight - window.innerHeight;
+document.querySelector("html").style.height = 'calc(100vh - ' + barHeight + 'px)';
+document.querySelector("body").style.height = 'calc(100vh - ' + barHeight + 'px)';
+document.querySelector(".content").style.height = 'calc(100vh - ' + barHeight + 'px)';
+
 // Force HTTPS to receive data
 if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);

@@ -11,6 +11,7 @@ import anime from '../lib/animejs/lib/anime.es.js';
 var points = [];
 var mode = "draw";
 
+var addingElement = false;
 var graphics = [];
 
 $("#tool-change").click(function () {
@@ -29,9 +30,10 @@ function videoSetup() {
         video.appendChild(mp4);
         video.setAttribute("playsinline", "");
         video.setAttribute("preload", "");
+        video.style.maxHeight = window.innerHeight + "px";
 
         document.querySelector('.video-container').appendChild(video);
-
+        
     } else {
 
         let info = document.createElement('p');
@@ -55,6 +57,8 @@ function createScene() {
     var draw_ctx = draw_canvas.getContext('2d');
     var tmp_canvas = document.querySelector("#current_draw");
     var tmp_ctx = tmp_canvas.getContext('2d');
+    var el_canvas = document.querySelector("#elements");
+    var el_ctx = el_canvas.getContext('2d');
 
     draw_ctx.imageSmoothingEnabled = true;
     tmp_ctx.imageSmoothingEnabled = true;
@@ -79,11 +83,17 @@ function createScene() {
         }
     });*/
 
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    var width = document.querySelector('body').getBoundingClientRect().width;
+    var height = document.querySelector('body').getBoundingClientRect().height;
+
+    draw_canvas.width = width;
+    draw_canvas.height = height;
 
     tmp_canvas.width = width;
     tmp_canvas.height = height;
+
+    el_canvas.width = width;
+    el_canvas.height = height;
 
     var onPaint = function (e) {
 
@@ -164,9 +174,6 @@ function createScene() {
             tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
         }
 
-        //window.addEventListener("resize", resize);
-        resize();
-
         document.querySelector('video').play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
@@ -189,31 +196,49 @@ function createScene() {
     function animationSetup() {
         tl = anime.timeline();
 
-        tl.add({
-            targets: draw_canvas,
-            opacity: [1.0, 0.0],
-            easing: 'easeInOutSine',
-            duration: 100,
-            complete: function () {
-                draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
-            }
-        }, 100);
+        let scale = (height / 1000) / 2;
+
+        // Mouth cover
 
         tl.add({
-            targets: draw_canvas,
-            opacity: 1.0,
+            targets: el_canvas,
+            opacity: [0.0, 1.0],
             easing: 'easeInOutSine',
-            duration: 1000,
+            duration: 5000,
             begin: function () {
                 if (graphics[0].img.complete) {
-                    let scale = (height / 1000) / 2;
+                    addingElement = true;
                     let posX = width/2 - graphics[0].img.width * scale / 2 + graphics[0].offsetX * scale;
                     let posY = height/2 - graphics[0].img.height * scale / 2 + graphics[0].offsetY * scale;
 
-                    draw_ctx.drawImage(graphics[0].img,posX,posY,graphics[0].img.width * scale, graphics[0].img.height * scale);
+                    el_ctx.drawImage(graphics[0].img,posX,posY,graphics[0].img.width * scale, graphics[0].img.height * scale);
                 }
             },
-        }, 1000);
+            complete: function () {
+
+                let posX = width/2 - graphics[0].img.width * scale / 2 + graphics[0].offsetX * scale;
+                let posY = height/2 - graphics[0].img.height * scale / 2 + graphics[0].offsetY * scale;
+
+                draw_ctx.globalCompositeOperation = 'source-over';
+                draw_ctx.drawImage(graphics[0].img,posX,posY,graphics[0].img.width * scale, graphics[0].img.height * scale);
+                el_ctx.clearRect(0, 0, el_canvas.width, el_canvas.height);
+
+                el_canvas.setAttribute("style", "opacity: 0");
+                addingElement = false;
+            }
+        }, 10000);
+
+        tl.add({
+            targets: draw_canvas, tmp_canvas,
+            opacity: [1.0, 0.0],
+            easing: 'easeInOutSine',
+            duration: 1000,
+            complete: function () {
+                draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
+                draw_canvas.setAttribute("style", "opacity: 1");
+
+            }
+        }, 20000);
 
         tl.add({
             target: document,
@@ -285,11 +310,6 @@ function createScene() {
             fader.began = false;
         }*/
 
-    }
-    function resize() {
-
-        document.querySelector("#draw").setAttribute("width", width);
-        document.querySelector("#draw").setAttribute("height", height);
     }
 
 

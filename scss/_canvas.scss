@@ -71,6 +71,10 @@ canvas {
     bottom: 0;
     top: 0;
   }
+
+  &#elements {
+    z-index: 11;
+  }
 }
 
 .output {
@@ -200,11 +204,11 @@ canvas {
   width: 100vw;
   height: 100vh;
   background: #b9b9b9;
+  object-fit: fill;
 
   .gradient {
     display: none
   }
-
 
   @media screen and (orientation: landscape) and (min-width: $big_screen_width) {
     .gradient {
@@ -243,12 +247,13 @@ canvas {
   }
 
   video {
+    object-fit: fill;
     z-index: 0;
     position: absolute;
-    right: 0;
-    bottom: 0;
+    left: 0;
+    top: 0;
     height: 100%;
-    transform: translateX(calc((100% - 100vw) / 2));
+    transform: translateX(calc((100% - 100vw) / -2));
   }
 }
 
