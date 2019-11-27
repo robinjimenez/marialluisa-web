@@ -172,7 +172,7 @@ function createScene() {
 
     function sceneTextures() {
         // pallete
-        new THREE.TextureLoader().load('img/waves_edges.png', function (texture) {
+        new THREE.TextureLoader().load('img/waves.png', function (texture) {
             //terrain.material.uniforms.palette.value = texture;
             //terrain.material.needsUpdate = true;
         });

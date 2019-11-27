@@ -353,7 +353,7 @@ function createScene() {
 
     function sceneTextures() {
         // pallete
-        new THREE.TextureLoader().load('img/waves_edges.png', function (texture) {
+        new THREE.TextureLoader().load('media/img/waves.png', function (texture) {
             terrain.material.uniforms.palette.value = texture;
             terrain.material.needsUpdate = true;
         });
@@ -363,7 +363,7 @@ function createScene() {
         var skyGeo = new THREE.SphereGeometry(500, 25, 25);
 
         var loader = new THREE.TextureLoader();
-        var texture = loader.load("img/sky.png");
+        var texture = loader.load("media/img/sky.png");
 
         var material = new THREE.MeshBasicMaterial({
             map: texture,

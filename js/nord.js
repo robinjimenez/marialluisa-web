@@ -210,7 +210,7 @@ function createScene() {
         var sphere = new THREE.SphereGeometry(500, 50, 50);
 
         var loader = new THREE.TextureLoader();
-        var texture = loader.load("img/nord_gradient.png");
+        var texture = loader.load("media/img/nord-gradient.png");
 
         var material = new THREE.MeshBasicMaterial({
             map: texture,
