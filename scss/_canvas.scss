@@ -147,7 +147,7 @@ canvas {
     transition: all 1s ease-in-out;
   }
 
-  .experience-info, button, #back-button {
+  .experience-info, button, #back-button, .loading-info {
     opacity: 0;
     transform: translateY(5px);
     transition: all 1s ease-in-out;
@@ -199,6 +199,7 @@ canvas {
   position: absolute;
   width: 100vw;
   height: 100vh;
+  background: #b9b9b9;
 
   .gradient {
     display: none
@@ -219,6 +220,24 @@ canvas {
       background: -moz-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
       background: -webkit-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
       background: linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,1) 95%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+    }
+  }
+
+  @media screen and (orientation: landscape) and (min-width: $huge_screen_width) {
+    .gradient {
+      z-index: 5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      opacity: 1;
+      background: rgb(255,255,255);
+      background: -moz-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 95%);
+      background: -webkit-linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 95%);
+      background: linear-gradient(90deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 95%);
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
     }
   }
