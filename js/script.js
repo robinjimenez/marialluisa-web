@@ -26,6 +26,7 @@ var backgrounds = new Map([
 
 var touchStart = 0;
 
+
 $(document).ready(function () {
 
     var playSVG = document.getElementsByTagName("template")[0];
@@ -167,6 +168,7 @@ $(document).ready(function () {
 
     function animateStart(url, container) {
         let tl = anime.timeline();
+        tl.restart();
 
         tl.add({
             targets: container.find('.slide-dropdown h2')[0],
