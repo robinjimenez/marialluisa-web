@@ -7,7 +7,7 @@
     <title>marialluïsa</title>
     <meta name="description" content="marialluïsa">
     <meta name="author" content="Robin Jiménez">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <link rel="stylesheet" href="css/styles.css">
@@ -25,17 +25,45 @@
     </svg>
 </template>
 <header>
-    <nav>
-        <a href="/agenda.html">Agenda</a>
-        <a class="logo-container" href="/">
-            <svg width="100" height="100">
-                <circle cx="50" cy="50" r="40"/>
-            </svg>
-            <p>M</p>
-        </a>
-        <a href="/botiga.html">Botiga</a>
-    </nav>
+    <a class="logo-container" href="/">
+        <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40"/>
+        </svg>
+        <p>M</p>
+    </a>
+    <button id="menu-hamburger" type="button">
+        <svg class="icon icon-menu-toggle" aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100">
+            <g class="svg-menu-toggle">
+                <path class="line line-1" d="M5 13h90v14H5z"/>
+                <path class="line line-2" d="M5 43h90v14H5z"/>
+                <path class="line line-3" d="M5 73h90v14H5z"/>
+            </g>
+        </svg>
+    </button>
+    <!--<a href="/agenda.html">Agenda</a>
+    <a href="/botiga.html">Botiga</a>-->
 </header>
+<div class="menu-container" data-expanded="false">
+    <nav>
+        <ul>
+            <li class="menu-item">
+                <a>per tu i per mi</a>
+            </li>
+            <li class="menu-item">
+                <a>concerts</a>
+            </li>
+            <li class="menu-item">
+                <a>botiga</a>
+            </li>
+            <li class="menu-item">
+                <a>discografia</a>
+            </li>
+            <li class="menu-item">
+                <a>contacte</a>
+            </li>
+        </ul>
+    </nav>
+</div>
 <main>
     <section id="no-hi-pensis">
         <h1>No hi pensis tant</h1>
@@ -45,53 +73,64 @@
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Miracle</h2></div>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Miracle</h2></div>
                 </a>
                 <a href="mala-sang.html" class="slide-container slide-turquoise" data-index="-3">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Mala Sang</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Mala Sang</h2></div>
+                </a>
                 <a href="nord.html" class="slide-container slide-yellow" data-index="-2">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nord</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Nord</h2></div>
+                </a>
                 <a href="bestia.html" class="slide-container slide-pink" data-index="-1">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Bèstia</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Bèstia</h2></div>
+                </a>
                 <a href="girasol.html" class="slide-container slide-turquoise" data-index="0">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Girasol</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Girasol</h2></div>
+                </a>
                 <a href="nica.html" class="slide-container slide-yellow" data-index="1">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Nica</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Nica</h2></div>
+                </a>
                 <a href="estres.html" class="slide-container slide-pink" data-index="2">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>Estrès</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>Estrès</h2></div>
+                </a>
                 <a href="el-gest.html" class="slide-container slide-turquoise" data-index="3">
                     <div class="slide slide-content">
                         <div class="play-container"></div>
                     </div>
-                    <div class="slide slide-shadow"></div><div class="slide slide-dropdown"><h2>El Gest</h2></div></a>
+                    <div class="slide slide-shadow"></div>
+                    <div class="slide slide-dropdown"><h2>El Gest</h2></div>
+                </a>
             </div>
         </div>
     </section>
-
-    <section id="calma">
-        <h1>Pren-t'ho amb calma</h1>
-        <div class="filler"></div>
-    </section>
 </main>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 <script type="module" src="js/script.js"></script>
 </body>
 </html>
