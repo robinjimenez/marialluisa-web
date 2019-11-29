@@ -18,7 +18,8 @@ window.THREE = THREE; // for debugger
 // Interaction triggers
 // Either boolean or influence percentage
 var triggers = {
-    rotateSea: 0
+    rotateSea: 0,
+    cameraLift: 0
 };
 
 document.getElementById('start-button').onclick = requestPermissions;
@@ -79,8 +80,10 @@ function createScene() {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var scene, renderer, camera, composer, filmPass;
+    var scene, renderer, composer, filmPass;
+    var camera;
     var terrain, sky, largeSphere, mediumSphere, smallSphere;
+    var wavesTextureEnd, skyTextureEnd;
     var bubbles = [];
     var then = 0;
 
@@ -121,11 +124,13 @@ function createScene() {
             }
         });
 
-        tl.add({
+        /*tl.add({
             targets: terrain.material.uniforms.speed,
             duration: sound.duration() * 1000,
             value: 2
-        });
+        });*/
+
+        // Gray transition @ 13s
 
         tl.add({
             targets: terrain.material.uniforms.greyness,
@@ -139,23 +144,27 @@ function createScene() {
             duration: 500
         }, 13000);
 
+        // Spheres appear @ 10s - 14s
+
         tl.add({
             targets: largeSphere.position,
-            y: 5,
+            y: 4,
             duration: 4500
         }, 10000);
 
         tl.add({
             targets: mediumSphere.position,
-            y: 2,
+            y: 3,
             duration: 4500
         }, 10100);
 
         tl.add({
             targets: smallSphere.position,
-            y: 0,
+            y: 1,
             duration: 4500
         }, 10200);
+
+        // Camera rotation enabling @ 13s
 
         tl.add({
             targets: triggers,
@@ -163,54 +172,179 @@ function createScene() {
             rotateSea: 1
         }, 13000);
 
+        // Spheres go down @ 55s
+
         tl.add({
             targets: largeSphere.position,
-            easing: 'easeInQuint',
-            y: -200,
+            easing: 'easeInQuad',
+            y: "-= 200",
             duration: 5000
         }, 55000);
 
         tl.add({
             targets: mediumSphere.position,
-            easing: 'easeInQuint',
-            y: -200,
+            easing: 'easeInQuad',
+            y: "-= 200",
             duration: 5000
         }, 56000);
 
         tl.add({
             targets: smallSphere.position,
-            easing: 'easeInQuint',
-            y: -200,
+            easing: 'easeInQuad',
+            y: "-= 200",
             duration: 5000
         }, 57000);
+
+        // Particles float in @ 55s
 
         for (let i = 0; i < bubbles.length; i++) {
             tl.add({
                 targets: bubbles[i].position,
                 easing: 'easeOutSine',
-                y: "-= 200",
+                y: "-= 300",
                 delay: i * 100,
                 duration: 8000
             }, 55000);
         }
 
+        // Spheres reappear @ 68s
+
         tl.add({
             targets: largeSphere.position,
-            y: 5,
+            y: "+=200",
             duration: 4500
         }, 68000);
 
         tl.add({
             targets: mediumSphere.position,
-            y: 2,
+            y: "+=200",
             duration: 4500
         }, 68100);
 
         tl.add({
             targets: smallSphere.position,
-            y: 0,
+            y: "+=200",
             duration: 4500
         }, 68200);
+
+        // Camera and particles up and gray transition @ 125s
+
+        tl.add({
+            targets: triggers ,
+            cameraLift: 500,
+            duration: 6000,
+            easing: 'cubicBezier(.26,-0.21,0,1)',
+            update: function () {
+                sky.position.y = triggers.cameraLift * 0.7;
+            },
+            complete: function () {
+                terrain.material.uniforms.speed.value = 2;
+                terrain.material.uniforms.palette.value = wavesTextureEnd;
+                terrain.material.needsUpdate = true;
+
+                largeSphere.material.color.set(0xffffff);
+                largeSphere.material.needsUpdate = true;
+
+                mediumSphere.material.color.set(0xffffff);
+                mediumSphere.material.needsUpdate = true;
+
+                smallSphere.material.color.set(0xffffff);
+                smallSphere.material.needsUpdate = true;
+            }
+        }, 125000);
+
+        tl.add({
+            targets: camera.rotation,
+            x: 0,
+            duration: 6000,
+            easing: 'cubicBezier(.43,-0.35,.68,1.41)'
+        }, 125000);
+
+        tl.add({
+            targets: terrain.material.uniforms.greyness,
+            value: 1.0,
+            duration: 5000,
+            easing: 'easeInOutSine'
+        }, 130000);
+
+        tl.add({
+            targets: sky.material,
+            opacity: 0.0,
+            duration: 5000,
+            easing: 'easeInOutSine',
+            complete: function () {
+                sky.material.map = skyTextureEnd;
+                sky.material.map.needsUpdate = true;
+                sky.material.needsUpdated = true;
+            }
+        }, 130000);
+
+        for (let i = 0; i < bubbles.length; i++) {
+            tl.add({
+                targets: bubbles[i].position,
+                easing: 'easeOutSine',
+                y: "+= 400",
+                delay: i * 100,
+                duration: 5000
+            }, 125000);
+            tl.add({
+                targets: bubbles[i].material,
+                easing: 'easeOutSine',
+                color: {
+                    r: 1,
+                    g: 1,
+                    b: 1
+                },
+                opacity: 1,
+                delay: i * 100,
+                duration: 5000,
+                update: function () {
+                    bubbles[i].material.needsUpdate = true;
+                }
+            }, 125000);
+        }
+
+        // Camera and particles down and gray transition @ 165s
+
+        tl.add({
+            targets: triggers,
+            cameraLift: 50,
+            duration: 3000,
+            easing: 'easeInOutSine',
+        }, 168000);
+
+        tl.add({
+            targets: camera.rotation,
+            x: -Math.PI / 8,
+            duration: 3000,
+            easing: 'cubicBezier(.43,-0.35,.68,1.41)'
+        }, 168000);
+
+        tl.add({
+            targets: terrain.material.uniforms.greyness,
+            value: 0.0,
+            duration: 3000,
+            easing: 'easeInOutSine'
+        }, 168000);
+
+        tl.add({
+            targets: sky.material,
+            opacity: 1.0,
+            duration: 3000,
+            easing: 'easeInOutSine'
+        }, 168000);
+
+        for (let i = 0; i < bubbles.length; i++) {
+            tl.add({
+                targets: bubbles[i].position,
+                easing: 'easeOutSine',
+                y: "-= 400",
+                delay: i * 100,
+                duration: 3000
+            }, 168000);
+        }
+
+        // End overlay animation
 
         tl.add({
             target: document,
@@ -235,7 +369,8 @@ function createScene() {
         createSky();
 
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
-        camera.position.y = 50;
+        camera.name = "camera";
+        triggers.cameraLift = 50;
         camera.rotation.x = -Math.PI / 8;
 
         var ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -290,9 +425,9 @@ function createScene() {
             uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
             vertexShader: document.getElementById('custom-vertex').textContent,
             fragmentShader: document.getElementById('custom-fragment').textContent,
-            wireframe: false,
-            transparent: true,
-            opacity: 0.8
+            //wireframe: false,
+            //transparent: true,
+            //opacity: 0.8
         });
 
         terrain = new THREE.Mesh(geometry, material);
@@ -330,33 +465,33 @@ function createScene() {
         smallSphere.position.y = -500;
         smallSphere.position.z = -100;
 
-        // Secondary meshes
+        // Sky particles
         for (let i = 0; i < 29; i++) {
-            let colorSeed = Math.random();
             geometry = new THREE.SphereGeometry(Math.random() * 5, 32, 32);
             material = new THREE.MeshBasicMaterial({
                 color: 0x69B3CB,
                 transparent: true,
                 opacity: Math.random() + 0.5,
-                blendingMode: THREE.AdditiveBlending,
+                //blendingMode: THREE.AdditiveBlending,
                 depthFunc: THREE.AlwaysDepth
             });
 
             bubbles.push(new THREE.Mesh(geometry,material));
             scene.add(bubbles[i]);
-            bubbles[i].position.x = Math.floor(Math.random() * 401) - 200;
-            bubbles[i].position.y = Math.floor(Math.random() * 101) + 200;
+            bubbles[i].position.x = Math.floor(Math.random() * 201) - 100;
+            bubbles[i].position.y = Math.floor(Math.random() * 201) + 300;
             bubbles[i].position.z = -Math.floor(Math.random() * 401) + 100;
         }
 
     }
 
     function sceneTextures() {
-        // pallete
-        new THREE.TextureLoader().load('media/img/waves.png', function (texture) {
+        let texLoader = new THREE.TextureLoader();
+        texLoader.load('media/img/waves.png', function (texture) {
             terrain.material.uniforms.palette.value = texture;
             terrain.material.needsUpdate = true;
         });
+        wavesTextureEnd = texLoader.load('media/img/waves-end.png');
     }
 
     function createSky() {
@@ -374,6 +509,7 @@ function createScene() {
         sky = new THREE.Mesh(skyGeo, material);
         sky.material.side = THREE.BackSide;
 
+        skyTextureEnd = loader.load("media/img/end-sky.png");
         scene.add(sky);
     }
 
@@ -420,7 +556,8 @@ function createScene() {
             mediumSphere.position.y += Math.cos(time * 1.35 + 50) * 0.05;
             smallSphere.position.y += Math.cos(time * 1.35) * 0.03;
 
-            camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
+            //camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
+            camera.position.y = triggers.cameraLift + Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 0, 50);
 
 
         } else {
@@ -436,7 +573,7 @@ function createScene() {
             mediumSphere.position.y += Math.cos(time * 1.35 + 50) * 0.05;
             smallSphere.position.y += Math.cos(time * 1.35) * 0.02;
 
-            camera.position.y += Math.sin(time * 1.05) * 0.25;
+            camera.position.y = triggers.cameraLift + Math.sin(time * 1.05) * 10 + map(input.yDamped, 0, height, 50, 0);
 
         }
 
