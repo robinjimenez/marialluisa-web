@@ -115,10 +115,12 @@ header {
   z-index: 30;
   width: 100%;
   height: 100%;
+  transform: translateY(-200%);
   transition: opacity 0.5s ease-in-out;
 
   &[data-expanded=true] {
     opacity: 1;
+    transform: translateY(0);
   }
 
   nav {
