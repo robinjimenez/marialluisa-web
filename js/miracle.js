@@ -76,7 +76,7 @@ function onDeviceMove(e) {
 
 function createScene() {
 
-    var container = document.querySelector(".landscape");
+    var container = document.querySelector("#display");
     var width = window.innerWidth;
     var height = window.innerHeight;
 
