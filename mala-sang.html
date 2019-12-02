@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>marialluïsa - mala sang</title>
+    <meta name="description" content="marialluïsa">
+    <meta name="author" content="Robin Jiménez">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  </head>
+  <body class="mala-sang">
+  <template>
+    <a class="btn" id="back-button" href="index.html" disabled>torna enrere</a>
+  </template>
+  <main>
+    <div class="content">
+      <div id="output" class="output"></div>
+      <div id="overlay" class="overlay">
+        <div class="overlay-message">
+          <p class="experience-info">
+            per gaudir de l'experiència només ens has de permetre <wbr> conèixer l'orientació del teu mòbil.
+          </p>
+          <p class="experience-info">
+            no s'emmagatzemarà cap dada.
+          </p>
+          <p class="loading-info show">carregant</p>
+          <p id="orientation-info">posa el dispositiu en vertical</p>
+          <button class="text-button" id="start-button" title="Acceptar" type="button">d'acord</button>
+        </div>
+      </div>
+      <canvas id="display"></canvas>
+    </div>
+  </main>
+  <script src="lib/howler.js-master/dist/howler.js"></script>
+  <script src="lib/body-scroll-lock-master/lib/bodyScrollLock.js"></script>
+  <script src="js/init.js"></script>
+  <script type="module" src="js/mala-sang.js"></script>
+  </body>
+</html>
