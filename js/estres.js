@@ -10,6 +10,7 @@ import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectCom
 import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
 import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
+import { UnrealBloomPass } from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
@@ -52,7 +53,7 @@ function createScene() {
 
     var physicsWorld;
     var rigidBodies = [], tmpTrans;
-    var scene, renderer, camera, composer, filmPass, generatorPlane;
+    var scene, renderer, camera, composer, filmPass, generatorPlane, background;
     var tunnels = [];
     var then = 0;
 
@@ -106,10 +107,10 @@ function createScene() {
         let pos = {x: x, y: y, z: -20};
         let radius = Math.random() + 1;
         let quat = {x: 0, y: 0, z: 0, w: 1};
-        let mass = Math.random() * 20;
+        let mass = Math.random() * 100;
 
         //threeJS Section
-        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: 0xaabbcc}));
+        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: 0x111111}));
 
         ball.position.set(pos.x, pos.y, pos.z);
 
@@ -170,6 +171,7 @@ function createScene() {
                 if (objThree.position.z < -500) {
                     physicsWorld.removeCollisionObject(objAmmo);
                     scene.remove(objThree);
+                    rigidBodies.splice(i,1);
                 }
 
             }
@@ -238,6 +240,9 @@ function createScene() {
         filmPass.renderToScreen = true;
         composer.addPass(filmPass);
 
+        var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+        composer.addPass( bloomPass );
+
         var SMAApass = new SMAAPass(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio());
         composer.addPass(SMAApass);
 
@@ -252,7 +257,14 @@ function createScene() {
 
         geometry = new THREE.CylinderGeometry(200, 50, 1000, 32, 32, true);
         geometry.rotateX(Math.PI / 2);
-        var sphere = new THREE.SphereBufferGeometry(2, 8, 8);
+
+        // Glowing sphere
+
+        var sphere = new THREE.SphereBufferGeometry(100, 32, 32);
+        material = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
+        var glowingOrb = new THREE.Mesh(sphere,material);
+        scene.add(glowingOrb);
+        glowingOrb.position.z = -1400;
 
         material = new THREE.MeshBasicMaterial({
             color: 0xf4f4f4,
@@ -261,19 +273,42 @@ function createScene() {
             opacity: 0.5
         });
 
-        for (let i = 0; i < geometry.vertices.length; i++) {
+        /*for (let i = 0; i < geometry.vertices.length; i++) {
             let dot = new THREE.Mesh(sphere, material);
             dot.position.copy(geometry.vertices[i]);
             scene.add(dot);
-        }
+        }*/
+
+        //geometry = new THREE.PlaneBufferGeometry(width*2.5, height*2.5);
+
+        var uniforms = {
+            u_time: { type: 'f', value: 0.0 },
+            u_resolution: new THREE.Uniform(new THREE.Vector2(400,400)),
+            u_colorA: new THREE.Uniform(new THREE.Vector3(0.207,0.232,0.740)),
+            u_colorB: new THREE.Uniform(new THREE.Vector3(0.120,0.337,0.416)),
+            u_colorC: new THREE.Uniform(new THREE.Vector3(0.711,0.226,0.635)),
+            u_colorD: new THREE.Uniform(new THREE.Vector3(0.715,0.375,0.700)),
+        };
+
+        material = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
+            vertexShader: document.getElementById('custom-vertex').textContent,
+            fragmentShader: document.getElementById('custom-fragment').textContent,
+            side: THREE.BackSide
+        });
 
         for (let i = 0; i < 1; i++) {
+
             tunnels.push(new THREE.Mesh(geometry, material));
             tunnels[i].position.z = -600;
+            tunnels[i].rotation.z = Math.PI/4;
             tunnels[i].scale.copy(new THREE.Vector3(1.5, 1.5, 1));
             scene.add(tunnels[i]);
         }
 
+        /*background = new THREE.Mesh(geometry, material);
+        background.position.z = -1500;
+        scene.add(background);*/
     }
 
     function sceneTextures() {
@@ -354,7 +389,7 @@ function createScene() {
 
     function render() {
 
-        var time = performance.now() * 0.001;
+        var time = performance.now() / 1000;
         const deltaTime = time - then;
         then = time;
 
@@ -381,6 +416,9 @@ function createScene() {
         }
 
         updatePhysics(deltaTime);
+
+        tunnels[0].material.uniforms.u_time.value = time * 0.04;
+        tunnels[0].material.needsUpdate = true;
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
