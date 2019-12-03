@@ -41,10 +41,10 @@ function setBackground(position) {
         mode = "sunset";
     }
 
-    console.log(mode);
+    document.getElementById('start-button').onclick = createScene;
+
 }
 
-document.getElementById('start-button').onclick = createScene;
 
 function createScene() {
 
@@ -54,7 +54,7 @@ function createScene() {
 
     var scene, renderer, composer, filmPass;
     var camera;
-    var terrain, sun, moon, pointLight;
+    var terrain, sunMoon, pointLight;
     var spheres = [];
     var then = 0;
 
@@ -179,46 +179,46 @@ function createScene() {
                 ambientLight  = new THREE.AmbientLight(0x555555, 1);
                 sunGeometry = new THREE.SphereGeometry(20, 32, 32);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
-                sun = new THREE.Mesh(sunGeometry, sunMaterial);
-                sun.position.y = 100;
-                sun.position.z = -400;
+                sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
+                sunMoon.position.y = 100;
+                sunMoon.position.z = -400;
 
                 pointLight = new THREE.PointLight(0xE6D36E, 1, 300);
                 break;
             case "sunset":
                 ambientLight  = new THREE.AmbientLight(0xed6b00, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xed6b00});
-                sun = new THREE.Mesh(sunGeometry, sunMaterial);
-                sun.position.y = -50;
-                sun.position.z = -500;
-                sun.scale.set(4, 4, 4);
+                sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
+                sunMoon.position.y = -50;
+                sunMoon.position.z = -500;
+                sunMoon.scale.set(4, 4, 4);
 
                 pointLight = new THREE.PointLight(0xFFC412, 2, 300);
                 break;
             case "sunrise":
                 ambientLight  = new THREE.AmbientLight(0xffe500, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
-                sun = new THREE.Mesh(sunGeometry, sunMaterial);
-                sun.position.y = -50;
-                sun.position.z = -500;
-                sun.scale.set(4, 4, 4);
+                sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
+                sunMoon.position.y = -50;
+                sunMoon.position.z = -500;
+                sunMoon.scale.set(4, 4, 4);
 
                 pointLight = new THREE.PointLight(0xFF9D35, 2, 300);
                 break;
             default:
                 ambientLight  = new THREE.AmbientLight(0xffe500, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
-                sun = new THREE.Mesh(sunGeometry, sunMaterial);
-                sun.position.y = 100;
-                sun.position.z = -300;
+                sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
+                sunMoon.position.y = 100;
+                sunMoon.position.z = -300;
 
                 pointLight = new THREE.PointLight(0xffe500, 2, 300);
                 break;
         }
 
-        scene.add(sun);
+        scene.add(sunMoon);
         scene.add(ambientLight);
-        pointLight.position.copy(sun.position);
+        pointLight.position.copy(sunMoon.position);
         scene.add(pointLight);
 
 
@@ -301,12 +301,12 @@ function createScene() {
             input.yDamped = lerp(input.yDamped, input.y, 0.1);
 
             if (isMobile()) {
-                sun.position.x = map(input.xDamped, 0, width, -width/2, width/2);
+                sunMoon.position.x = map(input.xDamped, 0, width, -width/2, width/2);
             } else {
-                sun.position.x = map(input.xDamped, 0, width, -250, 250);
+                sunMoon.position.x = map(input.xDamped, 0, width, -250, 250);
             }
-            sun.position.z = map(input.yDamped, 0, height, -300, -50);
-            pointLight.position.copy(sun.position);
+            sunMoon.position.z = map(input.yDamped, 0, height, -300, -50);
+            pointLight.position.copy(sunMoon.position);
         }
 
         composer.render(deltaTime);
