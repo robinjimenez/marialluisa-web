@@ -20,10 +20,15 @@ var i = 0;
 var colors = [
     new THREE.Color("rgb(242, 168, 247)"),
     new THREE.Color("rgb(196,205,255)"),
-    new THREE.Color("rgb(247,146,108)"),
+    new THREE.Color("rgb(247,158,184)"),
     new THREE.Color("rgb(162,225,250)"),
     new THREE.Color("rgb(224, 228, 255)")
 ];
+
+var triggers = {
+    lerpValue: 0.005,
+    bgRotation: 0
+};
 
 document.getElementById('start-button').onclick = requestPermissions;
 
@@ -79,7 +84,6 @@ function createScene() {
     var updateTarget = false;
 
     var mainSphere, innerSphere, outerSphere, backgroundSphere;
-    var lSphere, rSphere, fSphere, baSphere, tSphere, boSphere;
 
     var pulseLoop;
 
@@ -117,7 +121,11 @@ function createScene() {
 
     function animationSetup() {
         tl = anime.timeline({
-            easing: 'easeInOutSine'
+            easing: 'easeInOutSine',
+            autoplay: true,
+            update: function () {
+                output.innerHTML = triggers.lerpValue;
+            }
         });
 
         anime({
@@ -146,6 +154,19 @@ function createScene() {
                 if (i >= colors.length) i = 0;
             }
         });
+
+        tl.add({
+            targets: triggers,
+            lerpValue: 0.1,
+            bgRotation: 1.0,
+            duration: 5000,
+        }, 5000);
+
+        tl.add({
+            targets: camera.pov,
+            value: 90,
+            duration: 5000
+        }, 5000);
 
         tl.add({
             target: document,
@@ -252,36 +273,9 @@ function createScene() {
         mainSphere = new THREE.Mesh(geometry, material);
         mainSphere.position.set(100, 0, 0);
 
-        material = new THREE.MeshBasicMaterial({color: 0xb2b2b2});
-
-        lSphere = new THREE.Mesh(geometry, material);
-        lSphere.position.set(-200, 0, 0);
-
-        rSphere = new THREE.Mesh(geometry, material);
-        rSphere.position.set(200, 0, 0);
-
-        fSphere = new THREE.Mesh(geometry, material);
-        fSphere.position.set(0, 0, 200);
-
-        baSphere = new THREE.Mesh(geometry, material);
-        baSphere.position.set(0, 0, -200);
-
-        tSphere = new THREE.Mesh(geometry, material);
-        tSphere.position.set(0, 200, 0);
-
-        boSphere = new THREE.Mesh(geometry, material);
-        boSphere.position.set(0, -200, 0);
-
         scene.add(mainSphere);
         scene.add(innerSphere);
         scene.add(outerSphere);
-
-        /*scene.add(lSphere);
-        scene.add(rSphere);
-        scene.add(fSphere);
-        scene.add(baSphere);
-        scene.add(tSphere);
-        scene.add(boSphere);*/
 
     }
 
@@ -335,9 +329,11 @@ function createScene() {
 
         target.lat = Math.max(-85, Math.min(85, target.lat));
 
-        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, 0.005);
-        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y / 2, 0.005);
-        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z / 2, 0.005);
+
+        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, triggers.lerpValue);
+        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y / 2, triggers.lerpValue);
+        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z / 2, triggers.lerpValue);
+
         innerSphere.position.copy(mainSphere.position);
         outerSphere.position.copy(mainSphere.position);
 
@@ -401,6 +397,11 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
+
+        //backgroundSphere.rotation.x += Math.sin(time) * 0.5 * (1.5 - triggers.bgRotation);
+        //backgroundSphere.rotation.y += Math.cos(time) * 0.5 * (1.5 - triggers.bgRotation);
+        //backgroundSphere.rotation.z += Math.sin(time) * 0.5 * (1.5 - triggers.bgRotation);
+
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
