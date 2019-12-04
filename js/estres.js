@@ -53,7 +53,7 @@ function createScene() {
 
     var physicsWorld;
     var rigidBodies = [], tmpTrans;
-    var scene, renderer, camera, composer, filmPass, generatorPlane, background;
+    var scene, renderer, camera, composer, filmPass, generatorPlane, glowingOrb;
     var tunnels = [];
     var then = 0;
 
@@ -102,15 +102,15 @@ function createScene() {
 
     }
 
-    function createBall(x, y) {
+    function createBall(x, y, z, scale, color) {
 
-        let pos = {x: x, y: y, z: -20};
-        let radius = Math.random() + 1;
+        let pos = {x: x, y: y, z: z};
+        let radius = Math.floor(Math.random() * scale) + 1;
         let quat = {x: 0, y: 0, z: 0, w: 1};
-        let mass = Math.random() * 100;
+        let mass = Math.random() * radius * 100;
 
         //threeJS Section
-        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: 0x111111}));
+        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: color}));
 
         ball.position.set(pos.x, pos.y, pos.z);
 
@@ -134,7 +134,6 @@ function createScene() {
 
         let rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
         let body = new Ammo.btRigidBody(rbInfo);
-
 
         physicsWorld.addRigidBody(body);
 
@@ -182,6 +181,16 @@ function createScene() {
     function animationSetup() {
         let start;
 
+        anime({
+            loop: true,
+            duration: 5000,
+            loopBegin: function () {
+                for (let i = 0; i <= Math.floor(Math.random() * 3); i++) {
+                    createBall(Math.floor(Math.random()*21) - 10,Math.floor(Math.random()*21) - 10, 20 + Math.random()*50, 0.5, 0xf4f4f4);
+                }
+            }
+        });
+
         tl = anime.timeline({
             easing: 'easeInOutSine',
             begin: function (anim) {
@@ -193,7 +202,13 @@ function createScene() {
         });
 
         tl.add({
-            target: document,
+            targets: tunnels[0].material.uniforms.u_opacity,
+            value: 1.0,
+            easing: 'easeInOutSine',
+            duration: 2000
+        }, 29000);
+
+        tl.add({
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
@@ -238,7 +253,7 @@ function createScene() {
             false,  // grayscale
         );
         filmPass.renderToScreen = true;
-        composer.addPass(filmPass);
+        //composer.addPass(filmPass);
 
         var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
         composer.addPass( bloomPass );
@@ -260,20 +275,20 @@ function createScene() {
 
         // Glowing sphere
 
-        var sphere = new THREE.SphereBufferGeometry(100, 32, 32);
+        var sphereGeom = new THREE.SphereBufferGeometry(100, 32, 32);
         material = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
-        var glowingOrb = new THREE.Mesh(sphere,material);
+        glowingOrb = new THREE.Mesh(sphereGeom,material);
         scene.add(glowingOrb);
         glowingOrb.position.z = -1400;
 
-        material = new THREE.MeshBasicMaterial({
-            color: 0xf4f4f4,
-            transparent: true,
-            side: THREE.BackSide,
-            opacity: 0.5
+        /*material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            side: THREE.BackSide
         });
 
-        /*for (let i = 0; i < geometry.vertices.length; i++) {
+        var sphere = new THREE.SphereBufferGeometry(1, 8, 8);
+
+        for (let i = 0; i < geometry.vertices.length; i++) {
             let dot = new THREE.Mesh(sphere, material);
             dot.position.copy(geometry.vertices[i]);
             scene.add(dot);
@@ -284,17 +299,19 @@ function createScene() {
         var uniforms = {
             u_time: { type: 'f', value: 0.0 },
             u_resolution: new THREE.Uniform(new THREE.Vector2(400,400)),
-            u_colorA: new THREE.Uniform(new THREE.Vector3(0.207,0.232,0.740)),
+            u_colorA: new THREE.Uniform(new THREE.Vector3(0.207,0.432,0.840)),
             u_colorB: new THREE.Uniform(new THREE.Vector3(0.120,0.337,0.416)),
             u_colorC: new THREE.Uniform(new THREE.Vector3(0.711,0.226,0.635)),
             u_colorD: new THREE.Uniform(new THREE.Vector3(0.715,0.375,0.700)),
+            u_opacity: { type: 'f', value: 0.0 },
         };
 
         material = new THREE.ShaderMaterial({
             uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
             vertexShader: document.getElementById('custom-vertex').textContent,
             fragmentShader: document.getElementById('custom-fragment').textContent,
-            side: THREE.BackSide
+            side: THREE.BackSide,
+            transparent: true
         });
 
         for (let i = 0; i < 1; i++) {
@@ -343,7 +360,7 @@ function createScene() {
         raycaster.setFromCamera( screenPos, camera );
         let intersection = raycaster.intersectObject( generatorPlane )[0];
 
-        createBall(intersection.point.x, intersection.point.y);
+        createBall(intersection.point.x, intersection.point.y, - 20, 1, 0x000000);
 
     }
 

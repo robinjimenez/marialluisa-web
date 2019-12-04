@@ -134,6 +134,8 @@
                   +0.0666667*simplex3d(8.0*m);
       }
 
+      // Custom code
+
       uniform vec2 u_resolution;
       uniform float u_time;
 
@@ -141,6 +143,8 @@
       uniform vec3 u_colorB;
       uniform vec3 u_colorC;
       uniform vec3 u_colorD;
+
+      uniform float u_opacity;
 
       varying vec3 v_uv;
 
@@ -150,9 +154,9 @@
 
         vec3 color = vec3(0.0);
         float f1 = simplex3d_fractal(st3*8.0+5.0);
-        f1 = 0.3 + 0.7*f1;
-        float f2 = simplex3d_fractal(st3*5.0+1.0);
-        f2 = 0.1 + 0.6*f2;
+        f1 = 0.4 + 0.7*f1;
+        float f2 = simplex3d(st3*5.0+1.0);
+        f2 = 0.2 + 0.6*f2;
         float f3 = simplex3d_fractal(st3*2.0+8.0);
         f3 = 0.2 + 0.5*f3;
 
@@ -162,7 +166,7 @@
 
         color = mix(color,u_colorD,clamp(f3,0.0,1.0));
 
-        gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1)*color,1.0);
+        gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1)*color,u_opacity);
       }
     </script>
 </main>
