@@ -10,7 +10,7 @@ import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectCom
 import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
 import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
-import { UnrealBloomPass } from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import {UnrealBloomPass} from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
@@ -52,7 +52,7 @@ function createScene() {
     var raycaster = new THREE.Raycaster();
 
     var physicsWorld;
-    var rigidBodies = [], tmpTrans;
+    var rigidBodies = [], tmpTrans, removalZCoord = -1000;
     var scene, renderer, camera, composer, filmPass, generatorPlane, glowingOrb;
     var tunnels = [];
     var then = 0;
@@ -79,12 +79,9 @@ function createScene() {
         resize();
 
         animationSetup();
-        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
-        document.querySelector('#start-button').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {el.remove()});
 
     }
 
@@ -167,10 +164,10 @@ function createScene() {
                 objThree.position.set(p.x() + turbulenceX, p.y() + turbulenceY, p.z());
                 objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
 
-                if (objThree.position.z < -500) {
+                if (objThree.position.z < removalZCoord) {
                     physicsWorld.removeCollisionObject(objAmmo);
                     scene.remove(objThree);
-                    rigidBodies.splice(i,1);
+                    rigidBodies.splice(i, 1);
                 }
 
             }
@@ -181,24 +178,30 @@ function createScene() {
     function animationSetup() {
         let start;
 
-        anime({
-            loop: true,
-            duration: 5000,
-            loopBegin: function () {
-                for (let i = 0; i <= Math.floor(Math.random() * 3); i++) {
-                    createBall(Math.floor(Math.random()*21) - 10,Math.floor(Math.random()*21) - 10, 20 + Math.random()*50, 0.5, 0xf4f4f4);
-                }
-            }
-        });
-
         tl = anime.timeline({
             easing: 'easeInOutSine',
             begin: function (anim) {
-                start = new Date().getTime();
+                //start = new Date().getTime();
+                sound.play();
             },
             update: function (anim) {
-                //output.innerHTML = new Date().getTime() - start;
+                /*let time = new Date().getTime() - start;
+                output.innerHTML = time + "<br>";
+                output.innerHTML += performance.now() + "<br>";
+                output.innerHTML += performance.now() - time;*/
             }
+        });
+
+        tl.add({
+            targets: glowingOrb.scale,
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+            update: function(){
+                removalZCoord = -500 - 500 * (1.0 - glowingOrb.scale.x);
+            },
+            easing: "easeInQuint",
+            duration: 29000
         });
 
         tl.add({
@@ -206,7 +209,53 @@ function createScene() {
             value: 1.0,
             easing: 'easeInOutSine',
             duration: 2000
-        }, 29000);
+        }, 29000); //29000
+
+        tl.add({
+            targets: tunnels[0].rotation,
+            z: [
+                {value: "*=1.5", duration: 250, endDelay: 250},
+                {value: "*=1.5", duration: 250}
+            ]
+        }, 58500); //58500
+
+        tl.add({
+            targets: glowingOrb.scale,
+            x: [
+                {value: "*=1.2", duration: 250, endDelay: 250},
+                {value: "*=0.8", duration: 250}
+            ],
+            y: [
+                {value: "*=1.2", duration: 250, endDelay: 250},
+                {value: "*=0.8", duration: 250}
+            ],
+            z: [
+                {value: "*=1.2", duration: 250, endDelay: 250},
+                {value: "*=0.8", duration: 250}
+            ],
+            easing: "easeInOutQuart"
+        }, 58500); //58500
+
+        tl.add({
+            targets: tunnels[0].material.uniforms.u_zTrans,
+            value: 5.0,
+            duration: 206000 - 130000,
+            easing: 'linear'
+        }, 130000); //130000
+
+        tl.add({
+            targets: tunnels[0].material.uniforms.u_zTrans,
+            value: 6.0,
+            duration: sound.duration()*1000 - 206000,
+            easing: 'easeOutSine'
+        }, 206000); //206000
+
+        tl.add({
+            targets: tunnels[0].material.uniforms.u_opacity,
+            value: 0.0,
+            duration: sound.duration()*1000 - 206000,
+            easing: 'easeOutSine'
+        }, 206000); //206000
 
         tl.add({
             easing: 'easeInOutSine',
@@ -220,6 +269,18 @@ function createScene() {
                 container.remove();
             }
         }, sound.duration() * 1000);
+
+        tl.play();
+
+        anime({
+            loop: true,
+            duration: 5000,
+            loopBegin: function () {
+                for (let i = 0; i <= Math.floor(Math.random() * 3); i++) {
+                    createBall(Math.floor(Math.random() * 21) - 10, Math.floor(Math.random() * 21) - 10, 20 + Math.random() * 50, 0.5, 0xf4f4f4);
+                }
+            }
+        });
 
     }
 
@@ -253,10 +314,10 @@ function createScene() {
             false,  // grayscale
         );
         filmPass.renderToScreen = true;
-        //composer.addPass(filmPass);
+        composer.addPass(filmPass);
 
-        var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-        composer.addPass( bloomPass );
+        var bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        composer.addPass(bloomPass);
 
         var SMAApass = new SMAAPass(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio());
         composer.addPass(SMAApass);
@@ -270,16 +331,17 @@ function createScene() {
         generatorPlane.position.z = -20;
         scene.add(generatorPlane);
 
-        geometry = new THREE.CylinderGeometry(200, 50, 1000, 32, 32, true);
+        geometry = new THREE.CylinderGeometry(200, 50, 1500, 32, 32, true);
         geometry.rotateX(Math.PI / 2);
 
         // Glowing sphere
 
         var sphereGeom = new THREE.SphereBufferGeometry(100, 32, 32);
         material = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
-        glowingOrb = new THREE.Mesh(sphereGeom,material);
+        glowingOrb = new THREE.Mesh(sphereGeom, material);
         scene.add(glowingOrb);
         glowingOrb.position.z = -1400;
+        glowingOrb.scale.set(0,0,0);
 
         /*material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
@@ -297,13 +359,16 @@ function createScene() {
         //geometry = new THREE.PlaneBufferGeometry(width*2.5, height*2.5);
 
         var uniforms = {
-            u_time: { type: 'f', value: 0.0 },
-            u_resolution: new THREE.Uniform(new THREE.Vector2(400,400)),
-            u_colorA: new THREE.Uniform(new THREE.Vector3(0.207,0.432,0.840)),
-            u_colorB: new THREE.Uniform(new THREE.Vector3(0.120,0.337,0.416)),
-            u_colorC: new THREE.Uniform(new THREE.Vector3(0.711,0.226,0.635)),
-            u_colorD: new THREE.Uniform(new THREE.Vector3(0.715,0.375,0.700)),
-            u_opacity: { type: 'f', value: 0.0 },
+            u_time: {type: 'f', value: 0.0},
+            u_resolution: new THREE.Uniform(new THREE.Vector2(300, 300)),
+            u_colorA: new THREE.Uniform(new THREE.Vector3(0.207, 0.432, 0.840)),
+            u_colorB: new THREE.Uniform(new THREE.Vector3(0.120, 0.337, 0.416)),
+            u_colorC: new THREE.Uniform(new THREE.Vector3(0.711, 0.226, 0.635)),
+            u_colorD: new THREE.Uniform(new THREE.Vector3(0.715, 0.375, 0.700)),
+            u_opacity: {type: 'f', value: 0.0},
+            u_depthDarkness: {type: 'f', value: 0.0},
+            u_zTrans: {type: 'f', value: 0.5},
+
         };
 
         material = new THREE.ShaderMaterial({
@@ -318,7 +383,7 @@ function createScene() {
 
             tunnels.push(new THREE.Mesh(geometry, material));
             tunnels[i].position.z = -600;
-            tunnels[i].rotation.z = Math.PI/4;
+            tunnels[i].rotation.z = Math.PI / 4;
             tunnels[i].scale.copy(new THREE.Vector3(1.5, 1.5, 1));
             scene.add(tunnels[i]);
         }
@@ -350,17 +415,17 @@ function createScene() {
 
         var screenPos = new THREE.Vector2();
         if (e.type === "click") {
-            screenPos.x = ( e.clientX / width ) * 2 - 1;
-            screenPos.y = - ( e.clientY / height ) * 2 + 1;
+            screenPos.x = (e.clientX / width) * 2 - 1;
+            screenPos.y = -(e.clientY / height) * 2 + 1;
         } else {
-            screenPos.x = (e.changedTouches[0].pageX / width ) * 2 - 1;
-            screenPos.y = - (e.changedTouches[0].pageY  / height ) * 2 + 1;
+            screenPos.x = (e.changedTouches[0].pageX / width) * 2 - 1;
+            screenPos.y = -(e.changedTouches[0].pageY / height) * 2 + 1;
         }
 
-        raycaster.setFromCamera( screenPos, camera );
-        let intersection = raycaster.intersectObject( generatorPlane )[0];
+        raycaster.setFromCamera(screenPos, camera);
+        let intersection = raycaster.intersectObject(generatorPlane)[0];
 
-        createBall(intersection.point.x, intersection.point.y, - 20, 1, 0x000000);
+        createBall(intersection.point.x, intersection.point.y, -20, 1, 0x000000);
 
     }
 
@@ -414,7 +479,7 @@ function createScene() {
 
             // Fixes discontinuity at -180/180
             if (Math.abs(input.a - input.aPrev) > 270) {
-                input.aPrev = 2*input.a + input.aPrev;
+                input.aPrev = 2 * input.a + input.aPrev;
             } else {
                 input.aPrev = lerp(input.aPrev, input.a, 0.1);
             }

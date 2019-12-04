@@ -138,6 +138,7 @@
 
       uniform vec2 u_resolution;
       uniform float u_time;
+      uniform float u_zTrans;
 
       uniform vec3 u_colorA;
       uniform vec3 u_colorB;
@@ -145,12 +146,13 @@
       uniform vec3 u_colorD;
 
       uniform float u_opacity;
+      uniform float u_depthDarkness;
 
       varying vec3 v_uv;
 
       void main() {
         vec2 st = v_uv.xy/u_resolution.xy;
-        vec3 st3 = vec3(st, u_time*0.3);
+        vec3 st3 = vec3(st, u_time*0.3*u_zTrans - v_uv.z/2000.0);
 
         vec3 color = vec3(0.0);
         float f1 = simplex3d_fractal(st3*8.0+5.0);
@@ -166,7 +168,8 @@
 
         color = mix(color,u_colorD,clamp(f3,0.0,1.0));
 
-        gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1)*color,u_opacity);
+        //gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1)*color, u_opacity * (v_uv.z * 0.005 + 3.0));
+        gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1) * color, u_opacity * (v_uv.z * 0.005 + 3.0));
       }
     </script>
 </main>
