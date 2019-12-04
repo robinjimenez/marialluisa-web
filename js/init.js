@@ -25,10 +25,9 @@ var sound = new Howl({
             document.querySelector('#orientation-info').setAttribute("class","experience-info show");
         }
 
-        var messages = document.querySelectorAll('.experience-info');
-        for (let i = 0; i < messages.length; i++) {
-            messages[i].setAttribute("class","experience-info show");
-        }
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.classList.add("show");
+        });
 
         var startButton = document.querySelector("#overlay button");
         if (startButton !== null) startButton.setAttribute("class", "experience-info show");
