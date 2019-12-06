@@ -70,7 +70,7 @@ $(document).ready(function () {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) - 1);
             if ($(this).attr("data-index") < -4) {
-                $(this).attr("data-index", 3);
+                $(this).attr("data-index", 4);
             }
         });
         updatePageStatus();
@@ -79,7 +79,7 @@ $(document).ready(function () {
     function shiftRight() {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) + 1);
-            if ($(this).attr("data-index") > 3) {
+            if ($(this).attr("data-index") > 4) {
                 $(this).attr("data-index", -4);
             }
         });
@@ -88,15 +88,28 @@ $(document).ready(function () {
 
     function updatePageStatus() {
         var $active_slide = $(".slide-container[data-index='0']");
-        $('body').removeClass();
-        if ($active_slide.hasClass('slide-yellow')) {
-            $('body').addClass('yellow-page');
-        } else if ($active_slide.hasClass('slide-pink')) {
-            $('body').addClass('pink-page');
-        } else {
-            $('body').addClass('turquoise-page');
+        var $body = $('body');
+        $body.removeClass();
+        switch (true) {
+            case ($active_slide.hasClass('slide-yellow')):
+                $body.addClass('yellow-page');
+                break;
+            case ($active_slide.hasClass('slide-blue')):
+                $body.addClass('blue-page');
+                break;
+            case ($active_slide.hasClass('slide-pink')):
+                $body.addClass('pink-page');
+                break;
+            case ($active_slide.hasClass('slide-orange')):
+                $body.addClass('orange-page');
+                break;
+            case ($active_slide.hasClass('slide-turquoise')):
+                $body.addClass('turquoise-page');
+                break;
+            case ($active_slide.hasClass('slide-purple')):
+                $body.addClass('purple-page');
+                break;
         }
-        ;
     }
 
     $('.slide-container').on('click', function (e) {
