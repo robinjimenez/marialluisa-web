@@ -11,7 +11,7 @@ $page_horizontal_padding: 40px;
 
 $mobile_slider_width: 300px;
 $mid_slider_width: 400px;
-$desktop_slider_width: 600px;
+$desktop_slider_width: 800px;
 
 // Fonts
 $base_font_stack: "Anton", "Helvetica", Arial, sans-serif;
@@ -32,26 +32,38 @@ $theme_blue: rgb(99, 167, 196);
 $theme_blue_darker: rgb(92, 157, 184);
 $theme_blue_darkest: rgb(46, 117, 145);
 $theme_blue_shadow: rgba(99, 167, 196, 0.2);
+$theme_blue_faded: rgb(194, 229, 242);
+
 $theme_purple: rgb(156, 136, 182);
 $theme_purple_darker: rgb(132, 99, 171);
 $theme_purple_darkest: rgb(100, 65, 140);
 $theme_purple_shadow: rgba(156, 136, 182, 0.2);
+$theme_purple_faded: rgb(236, 225, 250);
+
 $theme_pink: rgb(208, 155, 182);
 $theme_pink_darker: rgb(197, 125, 178);
 $theme_pink_darkest: rgb(169, 88, 151);
 $theme_pink_shadow: rgba(208, 155, 182, 0.2);
+$theme_pink_faded: rgb(242, 218, 231);
+
 $theme_orange: rgb(218, 154, 104);
 $theme_orange_darker: rgb(207, 136, 77);
 $theme_orange_darkest: rgb(211, 113, 53);
 $theme_orange_shadow: rgba(218, 154, 104, 0.2);
+$theme_orange_faded: rgb(242, 215, 194);
+
 $theme_yellow: rgb(227, 196, 85);
 $theme_yellow_darker: rgb(219, 184, 60);
 $theme_yellow_darkest: rgb(194, 156, 29);
 $theme_yellow_shadow: rgba(227, 196, 85, 0.1);
+$theme_yellow_faded: rgb(247, 232, 186);
+
 $theme_turquoise: rgb(155, 215, 192);
 $theme_turquoise_darker: rgb(108, 194, 152);
 $theme_turquoise_darkest: rgb(64, 156, 113);
 $theme_turquoise_shadow: rgba(155, 215, 192, 0.2);
+$theme_turquoise_faded: rgb(218, 242, 233);
+
 
 $theme_almost_white: #F4EDEE;
 $theme_grey: #C4C4C4;
