@@ -419,7 +419,7 @@ function createScene() {
             waveSize: {type: "f", value: 20.0},
             greyness: {type: "f", value: 1.0},
             color: new THREE.Color(1, 1, 1)
-        }
+        };
 
         var material = new THREE.ShaderMaterial({
             uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
