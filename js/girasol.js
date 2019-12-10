@@ -137,8 +137,6 @@ function createScene() {
         camera.position.y = 50;
         camera.rotation.x = -Math.PI / 8;
 
-
-
         renderer = new THREE.WebGLRenderer({
             canvas: container,
             antialias: true,
