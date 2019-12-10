@@ -215,8 +215,8 @@ function createScene() {
         scene = new THREE.Scene();
         window.scene = scene; // for debugger
 
-        camera = new THREE.OrthographicCamera(-width/4, width/4, height/4, -height/4,0.1, 1000);
-        camera.position.set(0,0,0);
+        camera = new THREE.OrthographicCamera(-width / 4, width / 4, height / 4, -height / 4, 0.1, 1000);
+        camera.position.set(0, 0, 0);
 
         var ambientLight = new THREE.AmbientLight(0xffffff, 1);
         scene.add(ambientLight);
@@ -250,10 +250,10 @@ function createScene() {
     }
 
     function sceneElements() {
-        var geometry = new THREE.CubeGeometry(width, 400, 2, width/4, 50, 2);
+        var geometry = new THREE.CubeGeometry(width, 400, 2, width / 4, 50, 2);
         var uniforms = {
             u_time: {type: 'f', value: 0.0},
-            u_resolution: new THREE.Uniform(new THREE.Vector2(width/100, height/100)),
+            u_resolution: new THREE.Uniform(new THREE.Vector2(width / 100, height / 100)),
             u_color: new THREE.Uniform(new THREE.Vector3(0.9, 0.9, 0.9)),
             u_opacity: {type: 'f', value: 1.0},
             u_amp: {type: 'f', value: 50.0},
@@ -275,20 +275,19 @@ function createScene() {
             if (i === 0) {
                 terrain[i].material.uniforms.u_seed.value = 0.98;
                 terrain[i].material.uniforms.u_squareness.value = 1.0;
-                terrain[i].position.set(0,-200, -5.0);
+                terrain[i].position.set(0, -200, -5.0);
             } else {
                 terrain[i].material.uniforms.u_seed.value = Math.random() * 0.2 + i * 0.3;
                 terrain[i].material.uniforms.u_height.value = 0.0001 + 0.005 * i;
                 terrain[i].material.uniforms.u_amp.value = 50.0 + 10.0 * i;
 
-                terrain[i].position.set(0,-220-30*i, -5.0+i);
+                terrain[i].position.set(0, -220 - 30 * i, -5.0 + i);
             }
             console.log(terrain[i].material.uniforms.u_seed.value);
-            terrain[i].material.uniforms.u_color = new THREE.Uniform(new THREE.Vector3(i*0.2, (i * 0.6)*0.2, (i*0.01)*0.2));
+            terrain[i].material.uniforms.u_color = new THREE.Uniform(new THREE.Vector3(i * 0.2, (i * 0.6) * 0.2, (i * 0.01) * 0.2));
             terrain[i].material.needsUpdate = true;
             scene.add(terrain[i]);
         }
-
 
 
     }
@@ -308,13 +307,13 @@ function createScene() {
         sky.material.side = THREE.BackSide;
 
         var sunGeo = new THREE.SphereGeometry(100, 25, 25);
-        if (isMobile()) sunGeo.scale(0.7,0.7,0.7);
+        if (isMobile()) sunGeo.scale(0.7, 0.7, 0.7);
         material = new THREE.MeshBasicMaterial({
             color: 0xdb6612,
             side: THREE.DoubleSide
         });
         sun = new THREE.Mesh(sunGeo, material);
-        sun.position.set(0,0,-200);
+        sun.position.set(0, 0, -200);
 
         scene.add(sky);
         scene.add(sun);
@@ -349,13 +348,21 @@ function createScene() {
             input.y = e.changedTouches[0].pageY;
         }
 
-        raycaster.setFromCamera({x: input.x, y: input.y}, camera);
+        let screenCoord = {
+            x: (input.x / width) * 2 - 1,
+            y: -(input.y / height) * 2 + 1
+        };
+
+        raycaster.setFromCamera(screenCoord, camera);
         let intersected = raycaster.intersectObjects(scene.children);
         if (intersected.length) {
             let target = intersected[0].object;
 
-            target.material.uniforms.u_disp.value = 1.0;
-            target.material.needsUpdate = 1.0;
+            target.material.uniforms.u_seed.value = Math.random();
+            //target.material.uniforms.u_disp.value = 50.0;
+            //target.material.uniforms.u_color = new THREE.Uniform(new THREE.Vector3(0.9, 0.9, 0.9));
+
+            target.material.needsUpdate = true;
 
             console.log(target);
 
@@ -433,7 +440,7 @@ function createScene() {
 
         }
 
-        terrain.forEach(function (el,i) {
+        terrain.forEach(function (el, i) {
             el.material.uniforms.u_time.value = time * (i * 2.0 + 1.0) * 0.2;
         });
 
