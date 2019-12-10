@@ -26,7 +26,6 @@ var colors = [
 ];
 
 var triggers = {
-    lerpValue: 0.005,
     bgRotation: 0
 };
 
@@ -79,17 +78,21 @@ function createScene() {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
+    var world, timeStep=1/60, spring;
+
     var scene, bgColor, renderer, camera, composer, filmPass;
     var then = 0;
     var updateTarget = false;
 
-    var mainSphere, innerSphere, outerSphere, backgroundSphere;
+    var mainSphere, mainSphereBody, innerSphere, outerSphere, backgroundSphere, targetBody;
 
     var pulseLoop;
 
     init();
 
     function init() {
+
+        setupCannon();
 
         sceneSetup();
         sceneElements();
@@ -119,12 +122,22 @@ function createScene() {
         document.querySelector('#start-button').remove();
     }
 
+
+    function setupCannon() {
+        world = new CANNON.World();
+        world.quatNormalizeSkip = 0;
+        world.quatNormalizeFast = false;
+        world.gravity.set(0,0,0);
+        world.broadphase = new CANNON.NaiveBroadphase();
+    }
+
+
     function animationSetup() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             autoplay: true,
             update: function () {
-                output.innerHTML = triggers.lerpValue;
+                //output.innerHTML = triggers.lerpValue;
             }
         });
 
@@ -157,8 +170,19 @@ function createScene() {
 
         tl.add({
             targets: triggers,
-            lerpValue: 0.1,
-            bgRotation: 1.0,
+            begin: function() {
+                spring = new CANNON.Spring(mainSphereBody,targetBody,{
+                    localAnchorA: new CANNON.Vec3(5,5,5),
+                    localAnchorB: new CANNON.Vec3(10,10,10),
+                    restLength : 0,
+                    stiffness : 10,
+                    damping : 4,
+                });
+
+                world.addEventListener("postStep",function(){
+                    spring.applyForce();
+                });
+            },
             duration: 5000,
         }, 5000);
 
@@ -277,6 +301,20 @@ function createScene() {
         scene.add(innerSphere);
         scene.add(outerSphere);
 
+        mainSphereBody = new CANNON.Body({ mass: 1 });
+        mainSphereBody.addShape( new CANNON.Sphere(10));
+        mainSphereBody.position.set(100,0,0);
+        mainSphereBody.velocity.set(0,0,0);
+        mainSphereBody.angularVelocity.set(0,0,0);
+        world.addBody(mainSphereBody);
+
+        targetBody = new CANNON.Body({ mass: 1 });
+        targetBody.addShape( new CANNON.Sphere(10));
+        targetBody.position.set(100,0,0);
+        targetBody.velocity.set(0,0,0);
+        targetBody.angularVelocity.set(0,0,0);
+        world.addBody(targetBody);
+
     }
 
     function resize() {
@@ -324,16 +362,24 @@ function createScene() {
         updateTarget = false;
     }
 
+    function updatePhysics() {
+        // Step the physics world
+        world.step(timeStep);
+        // Copy coordinates from Cannon.js to Three.js
+        mainSphere.position.copy(mainSphereBody.position);
+        mainSphere.quaternion.copy(mainSphereBody.quaternion);
+        targetBody.position.set(camera.target.x/2,camera.target.y/2,camera.target.z/2);
+    }
 
     function render() {
 
         target.lat = Math.max(-85, Math.min(85, target.lat));
 
+        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, 0.01);
+        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y / 2, 0.01);
+        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z / 2, 0.01);
 
-        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, triggers.lerpValue);
-        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y / 2, triggers.lerpValue);
-        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z / 2, triggers.lerpValue);
-
+        mainSphereBody.position.copy(mainSphere.position);
         innerSphere.position.copy(mainSphere.position);
         outerSphere.position.copy(mainSphere.position);
 
@@ -402,7 +448,7 @@ function createScene() {
         //backgroundSphere.rotation.y += Math.cos(time) * 0.5 * (1.5 - triggers.bgRotation);
         //backgroundSphere.rotation.z += Math.sin(time) * 0.5 * (1.5 - triggers.bgRotation);
 
-
+        updatePhysics();
         composer.render(deltaTime);
         requestAnimationFrame(render);
     }
