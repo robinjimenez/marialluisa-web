@@ -18,8 +18,19 @@ var target = {
     y: 0
 };
 
+var colors = [
+    0x63A7C4,
+    0x9C88B6,
+    0xD09BB6,
+    0xDA9A68,
+    0xE3C455,
+    0x9BD7C0
+];
+
+var video = document.getElementById('video');
+var videoHeight, videoWidth;
 var triggers = {
-    lerpValue: 0.005
+    lerpValue: 0.005,
 };
 
 window.THREE = THREE; // for debugger
@@ -28,42 +39,32 @@ document.getElementById('start-button').onclick = requestPermissions;
 
 // For devices that need permission requesting
 function requestPermissions() {
-    if (isMobile()) {
+    var constraints;
 
-        if (typeof (DeviceMotionEvent) !== 'undefined' && typeof (DeviceMotionEvent.requestPermission) === 'function') {
-            DeviceMotionEvent.requestPermission()
-                .then(response => {
-                    if (response == 'granted') {
-                        window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
-                    }
-                })
-                .catch(console.error)
-        } else {
-            window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
-        }
+    if (isMobile()) {
+        constraints = {audio: false, video: {width: {ideal: 720}, height: {ideal: 1080}, facingMode: 'user'}};
+    } else {
+        constraints = {audio: false, video: {width: {ideal: 1080}, height: {ideal: 720}, facingMode: 'user'}};
     }
 
-    createScene();
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+            videoHeight = stream.getVideoTracks()[0].getSettings().height;
+            videoWidth = stream.getVideoTracks()[0].getSettings().width;
 
-}
-
-function onDeviceMove(e) {
-    e.preventDefault();
-
-    // Input for camera movement
-    /*target.lat = (input.b - e.beta) * 0.1 + target.prevLat;
-    target.long = (e.gamma - input.g) * 0.1 + target.prevLong;
-    target.lat = target.prevLat - (input.b - e.beta);
-    target.long = target.prevLong - (e.gamma - input.g);*/
-
-    // Input for color changes
-    input.a = e.alpha;
-    if (input.a > 180) input.a = 360 - input.a;
-    input.b = e.beta;
-    if (input.b < 0) input.b = -input.b;
-    input.g = e.gamma;
-    if (input.g < 0) input.g = -input.g;
-
+            // apply the stream to the video element used in the texture
+            video.srcObject = stream;
+            video.muted = true;
+            video.play();
+            createScene();
+        }).catch(function (error) {
+            output.innerHTML = 'Unable to access the camera/webcam.';
+            createScene();
+        });
+    } else {
+        console.error('MediaDevices interface not available.');
+        createScene();
+    }
 }
 
 function createScene() {
@@ -73,7 +74,7 @@ function createScene() {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var world, timeStep=1/60;
+    var world, timeStep = 1 / 60, groundMaterial;
 
     var scene, renderer, camera, spotlight, composer, filmPass;
     var then = 0;
@@ -82,6 +83,7 @@ function createScene() {
     var raycaster = new THREE.Raycaster();
 
     var mainSphere, childSphere, mainSphereBody, childSphereBody, background, backgroundBody;
+    var strips = [];
 
     init();
 
@@ -117,7 +119,7 @@ function createScene() {
         world = new CANNON.World();
         world.quatNormalizeSkip = 0;
         world.quatNormalizeFast = false;
-        world.gravity.set(0,-50,0);
+        world.gravity.set(0, -500, 0);
         world.broadphase = new CANNON.NaiveBroadphase();
     }
 
@@ -130,12 +132,40 @@ function createScene() {
             }
         });
 
+        var barSpawning = anime({
+            target: document,
+            easing: 'easeInOutSine',
+            duration: 5000,
+            loop: true,
+            autoplay: false,
+            loopBegin: function () {
+                console.log(this.duration);
+                let geometry = new THREE.BoxBufferGeometry(1000, 10, 50);
+                let material = new THREE.MeshPhongMaterial({color: colors[anime.random(0, colors.length-1)], shininess: 0.0, transparent: true});
+                let mesh = new THREE.Mesh(geometry, material);
+                strips.push(mesh);
+                mesh.castShadow = false;
+                mesh.position.set(400,100 + Math.random() * 100,-400);
+                mesh.rotation.set(0,-Math.PI/4,0);
+                scene.add(mesh);
+                if (this.duration > 1000)this.duration -= 200;
+            }
+        });
+
+        tl.add({
+            target: barSpawning,
+            duration: 5000,
+            begin: function () {
+               barSpawning.play();
+            },
+        }, 100000); //100000
 
         tl.add({
             target: document,
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
+                barSpawning.stop();
                 document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay').cloneNode('template');
                 document.querySelector('.overlay').setAttribute("class", "overlay end");
@@ -155,26 +185,30 @@ function createScene() {
         var ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
         scene.add(ambientLight);
 
-        camera = new THREE.PerspectiveCamera(70, width / height, .1, 1000);
-        camera.position.set(0, Math.min(width, 600), 0);
+        camera = new THREE.PerspectiveCamera(30, width / height, .1, 1000);
+        camera.position.set(0, 600, 0);
         camera.rotation.set(-Math.PI / 2, 0, 0);
         camera.lookAt = new THREE.Vector3(0, 0, 0);
 
         scene.add(camera);
 
-        spotlight = new THREE.SpotLight("rgb(255,255,255)", 0.5, width * 4);
-        spotlight.position.set(width, 100, -height);
+        spotlight = new THREE.SpotLight("rgb(255,255,255)", 0.35, 1400);
+        if (width < height) {
+            spotlight.position.set(300, 400, -300);
+        } else {
+            spotlight.position.set(600, 400, -600);
+        }
         spotlight.lookAt(new THREE.Vector3(0, 0, 0));
 
         spotlight.castShadow = true;
-        spotlight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(90, 1, 10, 10000));
-        spotlight.shadow.bias = 0.001;
-        spotlight.shadow.mapSize.width = width;
-        spotlight.shadow.mapSize.height = height;
+        spotlight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(50, 1, 100, 10000));
+        spotlight.shadow.bias = 0.0001;
+        spotlight.shadow.mapSize.width = 512;
+        spotlight.shadow.mapSize.height = 512;
 
         scene.add(spotlight);
 
-        var directional = new THREE.DirectionalLight("rgb(200,200,200)", 0.2);
+        var directional = new THREE.DirectionalLight("rgb(200,200,200)", 0.1);
         directional.position.set(0, 500, 0);
         directional.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -189,7 +223,7 @@ function createScene() {
         renderer.setSize(width, height);
 
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFShadowMap;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         composer = new EffectComposer(renderer);
         composer.setSize(width, height);
@@ -216,33 +250,30 @@ function createScene() {
     function createBackground() {
         var planeGeom = new THREE.PlaneGeometry(Math.max(1500, width), Math.max(1500, height), 100, 100);
 
-        //var loader = new THREE.TextureLoader();
-        //var texture = loader.load("media/img/nord-gradient.png");
-
-        var material = new THREE.MeshPhongMaterial({color: 0xeeeeee});
+        var material = new THREE.MeshPhongMaterial({color: 0xeeeeee, emissive: 0x111111});
         background = new THREE.Mesh(planeGeom, material);
         background.receiveShadow = true;
         background.rotation.set(-Math.PI / 2, 0, 0);
         scene.add(background);
 
-        var groundMaterial = new CANNON.Material("groundMaterial");
+        groundMaterial = new CANNON.Material("groundMaterial");
 
         // Adjust constraint equation parameters for ground/ground contact
         var groundContact = new CANNON.ContactMaterial(groundMaterial, groundMaterial, {
-            friction: 0.8,
+            friction: 0.3,
             restitution: 0.3,
             contactEquationStiffness: 1e8,
-            contactEquationRelaxation: 3,
+            contactEquationRelaxation: 1,
             frictionEquationStiffness: 1e8,
-            frictionEquationRegularizationTime: 3,
+            frictionEquationRegularizationTime: 1
         });
         // Add contact material to the world
         world.addContactMaterial(groundContact);
 
         var groundShape = new CANNON.Plane();
-        backgroundBody = new CANNON.Body({ mass: 0, material: groundMaterial});
+        backgroundBody = new CANNON.Body({mass: 0, material: groundMaterial});
         backgroundBody.addShape(groundShape);
-        backgroundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+        backgroundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
         world.addBody(backgroundBody);
 
     }
@@ -251,8 +282,8 @@ function createScene() {
 
         createBackground();
 
-        let geometry = new THREE.SphereGeometry(10, 32, 32);
-        let material = new THREE.MeshPhongMaterial({color: 0xeeeeee, shininess: 0.0});
+        var geometry = new THREE.SphereGeometry(10, 32, 32);
+        var material = new THREE.MeshPhongMaterial({color: 0xeeeeee, shininess: 0.0});
         mainSphere = new THREE.Mesh(geometry, material);
         mainSphere.castShadow = true;
         mainSphere.receiveShadow = true;
@@ -260,11 +291,11 @@ function createScene() {
         mainSphere.position.set(0, 20, 0);
         scene.add(mainSphere);
 
-        mainSphereBody = new CANNON.Body({ mass: 100 });
-        mainSphereBody.addShape( new CANNON.Sphere(10));
-        mainSphereBody.position.set(0,20,0);
-        mainSphereBody.velocity.set(0,0,0);
-        mainSphereBody.angularVelocity.set(0,0,0);
+        mainSphereBody = new CANNON.Body({mass: 100, material: groundMaterial});
+        mainSphereBody.addShape(new CANNON.Sphere(10));
+        mainSphereBody.position.set(0, 20, 0);
+        mainSphereBody.velocity.set(0, 0, 0);
+        mainSphereBody.angularVelocity.set(0, 0, 0);
         world.addBody(mainSphereBody);
 
 
@@ -276,24 +307,37 @@ function createScene() {
 
         scene.add(childSphere);
 
-        childSphereBody = new CANNON.Body({ mass: 5 });
-        childSphereBody.addShape( new CANNON.Sphere(5));
-        childSphereBody.position.set(-15,10,15);
-        childSphereBody.velocity.set(0,0,0);
-        childSphereBody.angularVelocity.set(0,0,0);
+        childSphereBody = new CANNON.Body({mass: 50, material: groundMaterial});
+        childSphereBody.addShape(new CANNON.Sphere(5));
+        childSphereBody.position.set(-15, 10, 15);
+        childSphereBody.velocity.set(0, 0, 0);
+        childSphereBody.angularVelocity.set(0, 0, 0);
         world.addBody(childSphereBody);
 
-        var spring = new CANNON.Spring(childSphereBody,mainSphereBody,{
-            localAnchorA: new CANNON.Vec3(5,5,5),
-            localAnchorB: new CANNON.Vec3(10,10,10),
-            restLength : 10,
-            stiffness : 50,
-            damping : 4,
+        var constraint = new CANNON.ConeTwistConstraint(mainSphereBody, childSphereBody, {
+            pivotA: new CANNON.Vec3(-15, 0, 15),
+            axisA: new CANNON.Vec3(0, 1, 0),
+            angleA: 0,
+            angleB: 0,
+            twistAngle: 0
         });
+        world.addConstraint(constraint);
 
-        world.addEventListener("postStep",function(){
-            spring.applyForce();
-        });
+        if (video.srcObject) {
+            var texture = new THREE.VideoTexture(video);
+            geometry = new THREE.PlaneBufferGeometry(videoWidth, videoHeight);
+            material = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true,
+                opacity: 0.07
+            });
+            var videoMesh = new THREE.Mesh(geometry, material);
+            videoMesh.position.set(0, 1, 0);
+            videoMesh.scale.set(-0.5, 0.5, 0.5);
+            videoMesh.lookAt(camera.position);
+            scene.add(videoMesh);
+        }
+
     }
 
     function resize() {
@@ -346,19 +390,23 @@ function createScene() {
     function updatePhysics() {
         // Step the physics world
         world.step(timeStep);
-        // Copy coordinates from Cannon.js to Three.js
+        // Copy coordinates from Cannon.js to Three.js and limit Angular
         mainSphere.position.copy(mainSphereBody.position);
         mainSphere.quaternion.copy(mainSphereBody.quaternion);
+        mainSphereBody.angularVelocity.set(0, 0, 0);
+
         childSphere.position.copy(childSphereBody.position);
         childSphere.quaternion.copy(childSphereBody.quaternion);
+        childSphereBody.angularVelocity.set(0, 0, 0);
+
         background.position.copy(backgroundBody.position);
         background.quaternion.copy(backgroundBody.quaternion);
     }
 
     function render() {
 
-        input.xDamped = lerp(input.xDamped, target.x, 0.05);
-        input.yDamped = lerp(input.yDamped, target.y, 0.05);
+        input.xDamped = lerp(input.xDamped, target.x, 0.08);
+        input.yDamped = lerp(input.yDamped, target.y, 0.08);
 
         mainSphere.position.x = input.xDamped;
         mainSphere.position.z = input.yDamped;
@@ -395,6 +443,17 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
+
+        strips.forEach(function (el,i) {
+            el.position.x -= deltaTime * 50;
+            el.position.z += deltaTime * 50;
+
+            if (el.position.x < -500 || el.position.z > 300 ) {
+                scene.remove(el);
+                strips.splice(i,1);
+                console.log("removed");
+            }
+        });
 
         updatePhysics();
         composer.render(deltaTime);
