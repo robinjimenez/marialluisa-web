@@ -19,12 +19,12 @@ var target = {
 };
 
 var colors = [
-    0x63A7C4,
-    0x9C88B6,
-    0xD09BB6,
-    0xDA9A68,
-    0xE3C455,
-    0x9BD7C0
+    "#63A7C4",
+    "#9C88B6",
+    "#D09BB6",
+    "#DA9A68",
+    "#E3C455",
+    "#9BD7C0"
 ];
 
 var video = document.getElementById('video');
@@ -83,7 +83,7 @@ function createScene() {
     var raycaster = new THREE.Raycaster();
 
     var mainSphere, childSphere, mainSphereBody, childSphereBody, background, backgroundBody;
-    var strips = [];
+    let numStrips;
 
     init();
 
@@ -132,40 +132,49 @@ function createScene() {
             }
         });
 
-        var barSpawning = anime({
-            target: document,
-            easing: 'easeInOutSine',
-            duration: 5000,
-            loop: true,
-            autoplay: false,
-            loopBegin: function () {
-                console.log(this.duration);
-                let geometry = new THREE.BoxBufferGeometry(1000, 10, 50);
-                let material = new THREE.MeshPhongMaterial({color: colors[anime.random(0, colors.length-1)], shininess: 0.0, transparent: true});
-                let mesh = new THREE.Mesh(geometry, material);
-                strips.push(mesh);
-                mesh.castShadow = false;
-                mesh.position.set(400,100 + Math.random() * 100,-400);
-                mesh.rotation.set(0,-Math.PI/4,0);
-                scene.add(mesh);
-                if (this.duration > 1000)this.duration -= 200;
-            }
-        });
+        function barSpawning(toggle) {
+            anime({
+                targets: '.strip',
+                easing: 'easeInOutSine',
+                duration: 100,
+                opacity: function () {
+                    if (anime.random(0,1) === 1) {
+                        return anime.random(0, 1);
+                    }
+                    return 0;
+                },
+                backgroundColor: function () {
+                    return colors[anime.random(0, colors.length - 1)]
+                },
+                delay: anime.stagger((1000 - then/100) / numStrips, {from: 'center'}),
+                loopBegin: function () {
+                    //console.log(then/100);
+                    /*let geometry = new THREE.BoxBufferGeometry(1000, 10, 50);
+                    let material = new THREE.MeshPhongMaterial({color: colors[anime.random(0, colors.length-1)], shininess: 0.0, transparent: true});
+                    let mesh = new THREE.Mesh(geometry, material);
+                    strips.push(mesh);
+                    mesh.castShadow = false;
+                    mesh.position.set(400,100 + Math.random() * 100,-400);
+                    mesh.rotation.set(0,-Math.PI/4,0);
+                    scene.add(mesh);*/
+                },
+                complete: function() {
+                    if (toggle) barSpawning();
+                }
+            });
+        }
 
         tl.add({
-            target: barSpawning,
-            duration: 5000,
             begin: function () {
-               barSpawning.play();
+                barSpawning(true);
             },
-        }, 100000); //100000
+        }, 115000); //100000
 
         tl.add({
-            target: document,
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
-                barSpawning.stop();
+                barSpawning(false);
                 document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay').cloneNode('template');
                 document.querySelector('.overlay').setAttribute("class", "overlay end");
@@ -298,7 +307,6 @@ function createScene() {
         mainSphereBody.angularVelocity.set(0, 0, 0);
         world.addBody(mainSphereBody);
 
-
         childSphere = new THREE.Mesh(geometry, material);
         childSphere.castShadow = true;
         childSphere.receiveShadow = true;
@@ -338,6 +346,24 @@ function createScene() {
             scene.add(videoMesh);
         }
 
+        createStrips();
+
+    }
+
+    function createStrips() {
+        let distance = Math.sqrt(width * width + height * height);
+        numStrips = 20 + Math.floor(width / height) * 2;
+        for (let i = 0; i < numStrips; i++) {
+            let div = document.createElement('div');
+            div.style.width = distance / numStrips + 'px';
+            div.style.height = height + 'px';
+            div.style.left = distance / numStrips * i + 'px';
+            div.classList.add('strip');
+            div.setAttribute('data-index', i);
+            document.querySelector('.strips-container').appendChild(div);
+        }
+        let rotation = "rotate(-" + Math.atan2(height, width) * 180 / Math.PI + "deg)";
+        document.querySelector('.strips-container').style.transform = rotation + "scale(1.5,2) translate(-25%)";
     }
 
     function resize() {
@@ -420,42 +446,11 @@ function createScene() {
 
         //output.innerHTML = target.x + "<br>" + target.y + "<br>" + input.xDamped + "<br>" + input.yDamped;
 
-        if (isMobile()) {
-
-            /*camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
-            camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
-            camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
-            camera.rotation.x += target.lat * 0.05;
-            camera.rotation.y += target.long * 0.05;
-            target.prevLat = target.lat;
-            target.prevLong = target.long;
-            camera.lookAt(camera.target);*/
-
-        } else {
-
-            /*camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
-            camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
-            camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
-            camera.lookAt(camera.target);*/
-
-        }
-
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
 
-        strips.forEach(function (el,i) {
-            el.position.x -= deltaTime * 50;
-            el.position.z += deltaTime * 50;
-
-            if (el.position.x < -500 || el.position.z > 300 ) {
-                scene.remove(el);
-                strips.splice(i,1);
-                console.log("removed");
-            }
-        });
-
-        updatePhysics();
+        updatePhysics(deltaTime);
         composer.render(deltaTime);
         requestAnimationFrame(render);
     }

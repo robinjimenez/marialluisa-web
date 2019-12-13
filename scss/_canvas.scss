@@ -50,32 +50,7 @@ body {
 
 }
 
-canvas {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  touch-action: none;
-  margin: auto;
 
-  &#draw {
-    z-index: 10;
-  }
-
-  &#current_draw {
-    z-index: 15;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-  }
-
-  &#elements {
-    z-index: 11;
-  }
-}
 
 .output {
   position: absolute;
@@ -199,6 +174,42 @@ canvas {
 
 }
 
+
+canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  touch-action: none;
+  margin: auto;
+
+  // EL GEST SPECIFIC
+
+  &#draw {
+    z-index: 10;
+  }
+
+  &#current_draw {
+    z-index: 15;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+  }
+
+  &#elements {
+    z-index: 11;
+  }
+
+  // ----------------
+
+}
+
+
+// EL GEST SPECIFIC
+
 .video-container {
   position: absolute;
   width: 100vw;
@@ -281,5 +292,24 @@ canvas {
         fill: $theme_almost_black;
       }
     }
+  }
+}
+
+// BÈSTIA SPECIFIC
+
+.strips-container {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+
+  .strip {
+    opacity: 0;
+    z-index: 10;
+    display: block;
+    position: absolute;
+    background-color: white;
+    //border: 2px black solid;
   }
 }
