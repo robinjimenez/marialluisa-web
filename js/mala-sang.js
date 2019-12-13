@@ -20,24 +20,7 @@ window.THREE = THREE; // for debugger
 // Either boolean or influence percentage
 var triggers;
 
-document.getElementById('start-button').onclick = requestPermissions;
-
-// For devices that need permission requesting
-function requestPermissions() {
-    if (isMobile && typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
-        DeviceMotionEvent.requestPermission()
-            .then(response => {
-                if (response == 'granted') {
-                    window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
-                }
-            })
-            .catch(console.error)
-    } else {
-        window.addEventListener('deviceorientation', onDeviceMove, {passive: false});
-    }
-
-    createScene();
-}
+document.getElementById('start-button').onclick = createScene;
 
 // SCENE CREATION
 
@@ -47,21 +30,35 @@ function createScene() {
     var width = window.innerWidth;
     var height = window.innerHeight;
 
+    var raycaster = new THREE.Raycaster();
+
+    //var physicsWorld;
+    //var rigidBodies = [], tmpTrans,
+    var world, timeStep = 1 / 60;
+    var removalYCoord = -100;
+
     var scene, renderer, camera, composer, filmPass;
-    var tunnels = [];
+    var wall, drops = [];
     var then = 0;
 
+    //Ammo().then(init);
     init();
 
     function init() {
+        //tmpTrans = new Ammo.btTransform();
+
+        //setupPhysicsWorld();
+        setupCannon();
 
         sceneSetup();
         sceneElements();
-        sceneTextures();
         render();
 
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
+            window.addEventListener("click", handleClick);
+        } else {
+            window.addEventListener("touchstart", handleClick);
         }
 
         resize();
@@ -76,6 +73,73 @@ function createScene() {
 
     }
 
+    function setupCannon() {
+        world = new CANNON.World();
+        world.quatNormalizeSkip = 0;
+        world.quatNormalizeFast = false;
+        world.gravity.set(0, -10, 0);
+        world.broadphase = new CANNON.NaiveBroadphase();
+    }
+
+    /* PHYSICS SETUP
+
+    function setupPhysicsWorld() {
+
+        let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
+            dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration),
+            overlappingPairCache = new Ammo.btDbvtBroadphase(),
+            solver = new Ammo.btSequentialImpulseConstraintSolver();
+
+        physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+        physicsWorld.setGravity(new Ammo.btVector3(0, -5, 0));
+
+    }
+
+    function createBall(x, y, z, scale) {
+
+        let pos = {x: x, y: y, z: z};
+        let radius = scale;
+        let quat = {x: 0, y: 0, z: 0, w: 1};
+        let mass = scale;
+
+        //threeJS Section
+        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(1, radius * 128, radius * 128), new THREE.MeshPhongMaterial({color: 0xaa0000}));
+
+        ball.position.set(pos.x, pos.y, pos.z);
+        ball.scale.set(scale, scale, scale);
+
+        scene.add(ball);
+
+        //Ammojs Section
+        let transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+        transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+        let motionState = new Ammo.btDefaultMotionState(transform);
+
+        let colShape = new Ammo.btSphereShape(radius);
+        colShape.setMargin(0.05);
+
+        let localInertia = new Ammo.btVector3(0, 0, 0);
+        colShape.calculateLocalInertia(mass, localInertia);
+
+        let rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
+        let body = new Ammo.btRigidBody(rbInfo);
+
+        physicsWorld.addRigidBody(body);
+
+        ball.userData.physicsBody = body;
+
+        rigidBodies.push(ball);
+
+    }
+
+    function removeBall(objAmmo,objThree,index) {
+        physicsWorld.removeCollisionObject(objAmmo);
+        scene.remove(objThree);
+        rigidBodies.splice(index, 1);
+    }*/
+
     function animationSetup() {
         let start;
 
@@ -88,6 +152,17 @@ function createScene() {
                 output.innerHTML = new Date().getTime() - start;
             }
         });
+
+        anime({
+            loop: true,
+            duration: 2000,
+            loopBegin: function () {
+                for (let i = 0; i <= Math.floor(Math.random() * 5); i++) {
+                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , 1, new CANNON.Vec3(0,0,0));
+                }
+            }
+        });
+
 
         tl.add({
             target: document,
@@ -110,6 +185,7 @@ function createScene() {
         window.scene = scene; // for debugger
 
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
+        camera.position.set(0,0,100);
 
         var ambientLight = new THREE.AmbientLight(0xffffff, 1);
         scene.add(ambientLight);
@@ -142,33 +218,44 @@ function createScene() {
 
     }
 
-    function sceneElements() {
+    function createBall(x,y,scale,linearVel) {
+        var geometry = new THREE.SphereGeometry(10, 32, 32);
+        var material = new THREE.MeshPhongMaterial({color: 0xaa00000, shininess: 0.0});
+        let sphere = new THREE.Mesh(geometry, material);
 
-        var geometry = new THREE.CylinderGeometry(200, 50, 1000, 32, 32,  true);
-        geometry.rotateX(Math.PI/2);
-        var sphere = new THREE.SphereBufferGeometry(2, 8,8);
+        sphere.position.set(x, y, -20);
+        sphere.scale.set(scale, scale, scale);
 
-        var material = new THREE.MeshBasicMaterial({
-            color: 0xf4f4f4,
-            transparent: true,
-            side: THREE.BackSide,
-            opacity: 0.5
-        });
+        scene.add(sphere);
 
-        for (let i = 0; i < 1; i++) {
-            tunnels.push(new THREE.Mesh(geometry, material));
-            tunnels[i].position.z = -600;
-            tunnels[i].scale.copy(new THREE.Vector3(1.5,1.5,1));
-            scene.add(tunnels[i]);
-        }
+        let body = new CANNON.Body({mass: scale});
+        body.addShape(new CANNON.Sphere(scale));
+        body.position.set(x, y, -20);
+        body.velocity.set(linearVel.x,linearVel.y,linearVel.z);
+        world.addBody(body);
 
+        var drop = {mesh: sphere, body: body};
+        drops.push(drop);
     }
 
-    function sceneTextures() {
-        new THREE.TextureLoader().load('img/waves.png', function (texture) {
-            //terrain.material.uniforms.palette.value = texture;
-            //terrain.material.needsUpdate = true;
-        });
+    function removeBall(mesh) {
+        scene.remove(mesh);
+        let index = drops.findIndex(el => el.mesh === mesh);
+        world.remove(drops[index].body);
+        drops.splice(index,1);
+    }
+
+    function sceneElements() {
+
+        // Main terrain mesh
+        var geometry = new THREE.PlaneGeometry(500, 300, 20, 20);
+        geometry.translate(0, 0, -50);
+
+        var material = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
+
+        wall = new THREE.Mesh(geometry, material);
+        scene.add(wall);
+
     }
 
     function resize() {
@@ -178,6 +265,37 @@ function createScene() {
         camera.updateProjectionMatrix();
 
         renderer.setSize(width, height);
+    }
+
+    function handleClick(e) {
+        e.preventDefault();
+
+        var screenPos = new THREE.Vector2();
+        if (e.type === "click") {
+            screenPos.x = (e.clientX / width) * 2 - 1;
+            screenPos.y = -(e.clientY / height) * 2 + 1;
+        } else {
+            screenPos.x = (e.changedTouches[0].pageX / width) * 2 - 1;
+            screenPos.y = -(e.changedTouches[0].pageY / height) * 2 + 1;
+        }
+
+        raycaster.setFromCamera(screenPos, camera);
+        let intersectedObjects = raycaster.intersectObjects(scene.children);
+        if (intersectedObjects.length) {
+            // pick the first object. It's the closest one
+            let hitObject = intersectedObjects[0].object;
+
+            if (hitObject.geometry.type === 'SphereGeometry') {
+                let linearVel = drops.find(el => el.mesh === hitObject).body.velocity;
+                let scale = hitObject.scale.x * Math.random() * 0.5 + 0.2;
+                createBall(intersectedObjects[0].point.x - hitObject.scale.x, intersectedObjects[0].point.y, scale, new CANNON.Vec3(linearVel.x-5,linearVel.y + Math.random()*4 - 2,0));
+                createBall(intersectedObjects[0].point.x + hitObject.scale.x, intersectedObjects[0].point.y, hitObject.scale.x - scale, new CANNON.Vec3(linearVel.x+5,linearVel.y + Math.random()*4 - 2,0));
+
+                removeBall(hitObject);
+            }
+        }
+
+
     }
 
     function onInputMove(e) {
@@ -192,6 +310,46 @@ function createScene() {
 
     }
 
+    function updatePhysics() {
+
+        /* Step world
+        physicsWorld.stepSimulation(deltaTime, 10);
+
+        // Update rigid bodies
+        for (let i = 0; i < rigidBodies.length; i++) {
+            let objThree = rigidBodies[i];
+            let objAmmo = objThree.userData.physicsBody;
+            let ms = objAmmo.getMotionState();
+            if (ms) {
+
+                ms.getWorldTransform(tmpTrans);
+                let p = tmpTrans.getOrigin();
+                let q = tmpTrans.getRotation();
+
+                objThree.position.set(p.x(), p.y(), p.z());
+                objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
+
+                if (objThree.position.y < removalYCoord) {
+                    removeBall(objAmmo,objThree,i);
+                }
+
+            }
+        }*/
+
+        // Step the physics world
+        world.step(timeStep);
+        // Copy coordinates from Cannon.js to Three.js
+        drops.forEach(function (el) {
+            el.mesh.position.copy(el.body.position);
+            el.mesh.quaternion.copy(el.body.quaternion);
+
+            if (el.mesh.position.y < removalYCoord) {
+                removeBall(el.mesh);
+            }
+        });
+    }
+
+
     function render() {
 
         var time = performance.now() * 0.001;
@@ -201,14 +359,12 @@ function createScene() {
         if (isMobile()) {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
             input.yDamped = lerp(input.yDamped, input.y, 0.01);
-
-
         } else {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
             input.yDamped = lerp(input.yDamped, input.y, 0.01);
-
         }
 
+        updatePhysics();
         composer.render(deltaTime);
         requestAnimationFrame(render);
     }
