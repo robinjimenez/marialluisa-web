@@ -6,32 +6,13 @@
 
 import anime from '../lib/animejs/lib/anime.es.js';
 
-var colors = [
-    "green",
-    "yellow",
-    "pink"
-];
-
-var backgrounds = new Map([
-    ["miracle", ""],
-    ["mala-sang", ""],
-    ["nord", ""],
-    ["bestia", ""],
-    ["girasol", ""],
-    ["nica", ""],
-    ["estres", ""],
-    ["8", ""],
-    ["diga-m", ""]
-]);
-
 var touchStart = 0;
-
 
 $(document).ready(function () {
 
-    /*var playSVG = document.getElementsByTagName("template")[0];
+    var playSVG = document.getElementsByTagName("template")[0];
     var clone = playSVG.content.cloneNode(true);
-    $(".play-container").append(clone);*/
+    $(".play-container").append(clone);
 
     $('#menu-hamburger').on('click', function () {
         var menu = $('.menu-container');
@@ -115,14 +96,12 @@ $(document).ready(function () {
     $('.slide-container').on('click', function (e) {
         e.preventDefault();
         if ($(this).attr("data-index") > 0) {
-
             shiftLeft();
         } else if ($(this).attr("data-index") == 0) {
 
-            let container = $('.slide-container[data-index="0"]');
             let url = $(this).attr('href');
 
-            animateStart(url, container);
+            animateStart(url, $(this));
 
         } else {
             shiftRight();
@@ -211,58 +190,19 @@ $(document).ready(function () {
         tl.restart();
 
         tl.add({
-            targets: container.find('.slide-dropdown h2')[0],
-            translateY: "-20px",
-            duration: 400,
+            targets: container.find('.front-image')[0],
+            backgroundColor: "#F4F4F4",
+            opacity: 1,
+            width: "100vw",
+            height: "100vh",
+            duration: 300,
             easing: 'easeInOutSine'
         });
 
         tl.add({
-            targets: container.find('.slide-dropdown h2')[0],
-            opacity: 0,
-            duration: 200,
-            easing: 'easeInOutSine'
-        }, 0);
-
-        tl.add({
-            targets: container.find('.slide-shadow')[0],
-            height: ['75%', '60%'],
-            duration: 50,
-            easing: 'easeInOutSine'
-        }, 100);
-
-        tl.add({
-            targets: container.find('.slide-shadow')[0],
-            opacity: 0,
+            targets: container.find('.slide'),
+            translateY: "100%",
             duration: 100,
-            easing: 'easeInOutSine'
-        }, 200);
-
-        tl.add({
-            targets: container.find('.slide-dropdown')[0],
-            height: ['100%', '70%'],
-            duration: 100,
-            easing: 'easeInOutSine'
-        }, 100);
-
-        tl.add({
-            targets: container.find('.slide-dropdown')[0],
-            opacity: 0,
-            duration: 100,
-            easing: 'easeInOutSine'
-        }, 200);
-
-        tl.add({
-            targets: container.find('.slide-content')[0],
-            borderRadius: "20px",
-            duration: 100,
-            easing: 'easeInOutSine'
-        }, 500);
-
-        tl.add({
-            targets: container.find('.slide-content')[0],
-            backgroundColor: "#F4F4F4",
-            duration: 300,
             easing: 'easeInOutSine'
         });
 
@@ -271,7 +211,7 @@ $(document).ready(function () {
             opacity: 0,
             duration: 100,
             easing: 'easeInOutSine'
-        }, "-=300");
+        });
 
         tl.add({
             targets: container[0],
@@ -281,7 +221,7 @@ $(document).ready(function () {
             complete: function () {
                 window.location.href = url;
             }
-        });
+        }, 300);
     }
 
 });
