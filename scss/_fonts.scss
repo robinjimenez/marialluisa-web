@@ -7,26 +7,11 @@
 // Anton
 @import url('https://fonts.googleapis.com/css?family=Anton&display=swap&subset=latin-ext');
 
+// Alegreya Sans & Girassol (400 and 700)
+@import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,700|Girassol&display=swap');
+
 // PT Banana Split
 @font-face {
   font-family: 'PT Banana Split';
   src: url('../css/fonts/BANANASP.TTF');
-}
-
-// Syne Extra
-@font-face {
-  font-family: 'Syne Extra';
-  src: url('../css/fonts/Syne-Extra.woff2') format('woff2'),
-  url('../css/fonts/Syne-Extra.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-// Syne Regular
-@font-face {
-  font-family: 'Syne Regular';
-  src: url('../css/fonts/Syne-Regular.woff2') format('woff2'),
-  url('../css/fonts/Syne-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
 }

@@ -9,12 +9,17 @@ $header_height: 110px;
 $mobile_menu_min_width: 1000px;
 $page_horizontal_padding: 40px;
 
-$mobile_slider_width: 300px;
-$mid_slider_width: 400px;
-$desktop_slider_width: 800px;
+$mobile_slider_width: 80%;
+//$tablet_slider_width: 350px;
+//$mid_slider_width: 600px;
+//$desktop_slider_width: 800px;
+$tablet_slider_width: 60%;
+$desktop_slider_width: 50%;
+
 
 // Fonts
-$base_font_stack: "Anton", "Helvetica", Arial, sans-serif;
+$base_font_stack: "Alegreya Sans", "Helvetica", Arial, sans-serif;
+$header_font_stack: "Girassol", Times New Roman, serif;
 
 // Responsive breakpoints, change these as you see fit
 $huge_screen_width: 1440px;
@@ -23,8 +28,8 @@ $bigish_screen_width: 900px;
 $medium_screen_width: 800px;
 $small_screen_width: 680px;
 $tiny_screen_width: 600px;
-$micro_screen_width: 430px;
-$nano_screen_width: 320px;
+$micro_screen_width: 520px;
+$nano_screen_width: 350px;
 
 // Colors
 // -----------------------------
