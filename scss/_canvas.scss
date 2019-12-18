@@ -199,8 +199,14 @@ canvas {
     top: 0;
   }
 
-  &#elements {
+  &.element-canvas {
     z-index: 11;
+    opacity: 0;
+
+    &.visible {
+      opacity: 1;
+      transition: opacity 4s ease-in-out;
+    }
   }
 
   // ----------------
