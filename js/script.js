@@ -93,6 +93,9 @@ $(document).ready(function () {
         }
     }
 
+    $('.next-slide').on('click touchstart', shiftLeft);
+    $('.last-slide').on('click touchstart', shiftRight);
+
     $('.slide-container').on('click', function (e) {
         e.preventDefault();
         if ($(this).attr("data-index") > 0) {
@@ -139,12 +142,11 @@ $(document).ready(function () {
 
     $('.slide-container').on('touchend', function (e) {
         e.preventDefault();
-        if (($(this).attr("data-index") == 0) && ((new Date().getTime() - touchStart) < 200)) {
+        if (($(this).attr("data-index") == 0) && ((new Date().getTime() - touchStart) < 100)) {
 
-            let container = $('.slide-container[data-index="0"]');
             let url = $(this).attr('href');
 
-            animateStart(url, container);
+            animateStart(url);
 
         }
     });
@@ -183,45 +185,23 @@ $(document).ready(function () {
                 break;
         }
     });
+
     updatePageStatus();
 
-    function animateStart(url, container) {
-        let tl = anime.timeline();
-        tl.restart();
+    function animateStart(url) {
+        let overlay = document.createElement("div");
+        overlay.classList.add("trans-overlay");
+        document.body.insertAdjacentElement('afterbegin',overlay);
 
-        tl.add({
-            targets: container.find('.front-image')[0],
-            backgroundColor: "#F4F4F4",
-            opacity: 1,
-            width: "100vw",
-            height: "100vh",
-            duration: 300,
-            easing: 'easeInOutSine'
-        });
-
-        tl.add({
-            targets: container.find('.slide'),
-            translateY: "100%",
-            duration: 100,
-            easing: 'easeInOutSine'
-        });
-
-        tl.add({
-            targets: container.find('svg')[0],
-            opacity: 0,
-            duration: 100,
-            easing: 'easeInOutSine'
-        });
-
-        tl.add({
-            targets: container[0],
-            scale: 5,
-            duration: 500,
+        anime({
+            targets: overlay,
+            opacity: [0, 1],
             easing: 'easeInOutSine',
+            duration: 1000,
             complete: function () {
                 window.location.href = url;
             }
-        }, 300);
+        });
     }
 
 });
