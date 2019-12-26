@@ -103,7 +103,6 @@ function createScene() {
         resize();
 
         animationSetup();
-        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('.experience-info').remove();
@@ -118,9 +117,14 @@ function createScene() {
             easing: 'easeInOutSine',
             begin: function(anim) {
                 start = new Date().getTime();
+                anim.seek(sound.seek() * 1000);
+                sound.play();
             },
             update: function (anim) {
-                //output.innerHTML = new Date().getTime() - start;
+                let time = new Date().getTime() - start;
+                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML += "sound time: " + sound.seek() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
 
@@ -525,7 +529,7 @@ function createScene() {
     function onInputMove(e) {
         e.preventDefault();
 
-        var x, y;
+        let x, y;
         x = e.clientX;
         y = e.clientY;
 
@@ -537,8 +541,8 @@ function createScene() {
 
     function render() {
 
-        var time = performance.now() * 0.001;
-        const deltaTime = time - then;
+        let time = performance.now() * 0.001;
+        let deltaTime = time - then;
         then = time;
 
         if (isMobile()) {
@@ -559,6 +563,8 @@ function createScene() {
             //camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
             camera.position.y = triggers.cameraLift + Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 0, 50);
 
+            output.innerHTML = input.a;
+            output.innerHTML += "<br>" + input.b;
 
         } else {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);

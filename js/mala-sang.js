@@ -58,7 +58,6 @@ function createScene() {
         resize();
 
         animationSetup();
-        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('.experience-info').remove();
@@ -82,6 +81,7 @@ function createScene() {
             easing: 'easeInOutSine',
             begin: function(anim) {
                 start = new Date().getTime();
+                sound.play();
             },
             update: function (anim) {
                 output.innerHTML = new Date().getTime() - start;
@@ -97,7 +97,6 @@ function createScene() {
                 }
             }
         });
-
 
         tl.add({
             target: document,

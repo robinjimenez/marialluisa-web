@@ -107,7 +107,6 @@ function createScene() {
         resize();
 
         animationSetup();
-        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('.experience-info').remove();
@@ -127,6 +126,9 @@ function createScene() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             autoplay: true,
+            begin: function () {
+                sound.play();
+            },
             update: function () {
                 //output.innerHTML = triggers.lerpValue;
             }
@@ -147,17 +149,6 @@ function createScene() {
                     return colors[anime.random(0, colors.length - 1)]
                 },
                 delay: anime.stagger((1000 - then/100) / numStrips, {from: 'center'}),
-                loopBegin: function () {
-                    //console.log(then/100);
-                    /*let geometry = new THREE.BoxBufferGeometry(1000, 10, 50);
-                    let material = new THREE.MeshPhongMaterial({color: colors[anime.random(0, colors.length-1)], shininess: 0.0, transparent: true});
-                    let mesh = new THREE.Mesh(geometry, material);
-                    strips.push(mesh);
-                    mesh.castShadow = false;
-                    mesh.position.set(400,100 + Math.random() * 100,-400);
-                    mesh.rotation.set(0,-Math.PI/4,0);
-                    scene.add(mesh);*/
-                },
                 complete: function() {
                     if (toggle) barSpawning();
                 }

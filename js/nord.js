@@ -114,7 +114,6 @@ function createScene() {
         resize();
 
         animationSetup();
-        sound.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('.experience-info').remove();
@@ -136,6 +135,9 @@ function createScene() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             autoplay: true,
+            begin: function() {
+                sound.play();
+            },
             update: function () {
                 //output.innerHTML = triggers.lerpValue;
             }
@@ -384,8 +386,7 @@ function createScene() {
         outerSphere.position.copy(mainSphere.position);
 
         if (isMobile()) {
-
-
+            
             camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
             camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
             camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));

@@ -181,14 +181,15 @@ function createScene() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             begin: function (anim) {
-                //start = new Date().getTime();
+                start = new Date().getTime();
+                anim.seek(sound.seek() * 1000);
                 sound.play();
             },
             update: function (anim) {
-                /*let time = new Date().getTime() - start;
-                output.innerHTML = time + "<br>";
-                output.innerHTML += performance.now() + "<br>";
-                output.innerHTML += performance.now() - time;*/
+                let time = new Date().getTime() - start;
+                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML += "sound time: " + sound.seek() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
 
@@ -269,8 +270,6 @@ function createScene() {
                 container.remove();
             }
         }, sound.duration() * 1000);
-
-        tl.play();
 
         anime({
             loop: true,
@@ -465,7 +464,6 @@ function createScene() {
         input.a = alpha;
         //input.g = gamma;
         input.b = beta;
-
     };
 
 

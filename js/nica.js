@@ -50,9 +50,7 @@ function createScene() {
 
     var raycaster = new THREE.Raycaster();
 
-    //var physicsWorld;
-    //var rigidBodies = [], tmpTrans;
-    var scene, renderer, camera, composer, filmPass, generatorPlane;
+    var scene, renderer, camera, composer, filmPass;
     var terrain = [];
     var sky, sun;
     var then = 0;
@@ -61,9 +59,6 @@ function createScene() {
     init();
 
     function init() {
-        //tmpTrans = new Ammo.btTransform();
-
-        //setupPhysicsWorld();
 
         sceneSetup();
         sceneElements();
@@ -89,96 +84,6 @@ function createScene() {
 
     }
 
-    // PHYSICS SETUP
-
-    /*unction setupPhysicsWorld() {
-
-        let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
-            dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration),
-            overlappingPairCache = new Ammo.btDbvtBroadphase(),
-            solver = new Ammo.btSequentialImpulseConstraintSolver();
-
-        physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        physicsWorld.setGravity(new Ammo.btVector3(0, 0, -10));
-
-    }
-
-    function createBall(x, y, z, scale, color) {
-
-        let pos = {x: x, y: y, z: z};
-        let radius = Math.floor(Math.random() * scale) + 1;
-        let quat = {x: 0, y: 0, z: 0, w: 1};
-        let mass = Math.random() * radius * 100;
-
-        //threeJS Section
-        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: color}));
-
-        ball.position.set(pos.x, pos.y, pos.z);
-
-        ball.castShadow = true;
-        ball.receiveShadow = true;
-
-        scene.add(ball);
-
-        //Ammojs Section
-        let transform = new Ammo.btTransform();
-        transform.setIdentity();
-        transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-        transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
-        let motionState = new Ammo.btDefaultMotionState(transform);
-
-        let colShape = new Ammo.btSphereShape(radius);
-        colShape.setMargin(0.05);
-
-        let localInertia = new Ammo.btVector3(0, 0, 0);
-        colShape.calculateLocalInertia(mass, localInertia);
-
-        let rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
-        let body = new Ammo.btRigidBody(rbInfo);
-
-        physicsWorld.addRigidBody(body);
-
-        ball.userData.physicsBody = body;
-        ball.userData.turbulence = Math.random();
-
-        rigidBodies.push(ball);
-    }
-
-
-    function updatePhysics(deltaTime) {
-
-        // Step world
-        physicsWorld.stepSimulation(deltaTime, 10);
-
-        // Update rigid bodies
-        for (let i = 0; i < rigidBodies.length; i++) {
-            let objThree = rigidBodies[i];
-            let objAmmo = objThree.userData.physicsBody;
-            let ms = objAmmo.getMotionState();
-            if (ms) {
-
-
-                ms.getWorldTransform(tmpTrans);
-                let p = tmpTrans.getOrigin();
-                let q = tmpTrans.getRotation();
-
-                let turbulenceX = Math.sin(performance.now() * 0.005 * objThree.userData.turbulence);
-                let turbulenceY = Math.cos(performance.now() * 0.005 * objThree.userData.turbulence);
-
-                objThree.position.set(p.x() + turbulenceX, p.y() + turbulenceY, p.z());
-                objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-
-                if (objThree.position.z < removalZCoord) {
-                    physicsWorld.removeCollisionObject(objAmmo);
-                    scene.remove(objThree);
-                    rigidBodies.splice(i, 1);
-                }
-
-            }
-        }
-
-    }*/
-
     function animationSetup() {
         let start;
 
@@ -186,14 +91,14 @@ function createScene() {
             easing: 'easeInOutSine',
             autoplay: true,
             begin: function (anim) {
-                //start = new Date().getTime();
+                start = new Date().getTime();
                 sound.play();
             },
             update: function (anim) {
-                /*let time = new Date().getTime() - start;
+                let time = new Date().getTime() - start;
                 output.innerHTML = time + "<br>";
                 output.innerHTML += performance.now() + "<br>";
-                output.innerHTML += performance.now() - time;*/
+                output.innerHTML += performance.now() - time;
             }
         });
 
@@ -368,8 +273,6 @@ function createScene() {
 
         }
 
-        //createBall(intersection.point.x, intersection.point.y, -20, 1, 0x000000);
-
     }
 
     function onInputMove(e) {
@@ -444,8 +347,6 @@ function createScene() {
             el.material.uniforms.u_time.value = time * (i * 2.0 + 1.0) * 0.2;
         });
 
-
-        //updatePhysics(deltaTime);
         composer.render(deltaTime);
         requestAnimationFrame(render);
     }
