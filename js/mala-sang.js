@@ -32,8 +32,6 @@ function createScene() {
 
     var raycaster = new THREE.Raycaster();
 
-    //var physicsWorld;
-    //var rigidBodies = [], tmpTrans,
     var world, timeStep = 1 / 60;
     var removalYCoord = -100;
 
@@ -41,13 +39,9 @@ function createScene() {
     var wall, drops = [];
     var then = 0;
 
-    //Ammo().then(init);
     init();
 
     function init() {
-        //tmpTrans = new Ammo.btTransform();
-
-        //setupPhysicsWorld();
         setupCannon();
 
         sceneSetup();
@@ -80,65 +74,6 @@ function createScene() {
         world.gravity.set(0, -10, 0);
         world.broadphase = new CANNON.NaiveBroadphase();
     }
-
-    /* PHYSICS SETUP
-
-    function setupPhysicsWorld() {
-
-        let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
-            dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration),
-            overlappingPairCache = new Ammo.btDbvtBroadphase(),
-            solver = new Ammo.btSequentialImpulseConstraintSolver();
-
-        physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        physicsWorld.setGravity(new Ammo.btVector3(0, -5, 0));
-
-    }
-
-    function createBall(x, y, z, scale) {
-
-        let pos = {x: x, y: y, z: z};
-        let radius = scale;
-        let quat = {x: 0, y: 0, z: 0, w: 1};
-        let mass = scale;
-
-        //threeJS Section
-        let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(1, radius * 128, radius * 128), new THREE.MeshPhongMaterial({color: 0xaa0000}));
-
-        ball.position.set(pos.x, pos.y, pos.z);
-        ball.scale.set(scale, scale, scale);
-
-        scene.add(ball);
-
-        //Ammojs Section
-        let transform = new Ammo.btTransform();
-        transform.setIdentity();
-        transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
-        transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
-        let motionState = new Ammo.btDefaultMotionState(transform);
-
-        let colShape = new Ammo.btSphereShape(radius);
-        colShape.setMargin(0.05);
-
-        let localInertia = new Ammo.btVector3(0, 0, 0);
-        colShape.calculateLocalInertia(mass, localInertia);
-
-        let rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
-        let body = new Ammo.btRigidBody(rbInfo);
-
-        physicsWorld.addRigidBody(body);
-
-        ball.userData.physicsBody = body;
-
-        rigidBodies.push(ball);
-
-    }
-
-    function removeBall(objAmmo,objThree,index) {
-        physicsWorld.removeCollisionObject(objAmmo);
-        scene.remove(objThree);
-        rigidBodies.splice(index, 1);
-    }*/
 
     function animationSetup() {
         let start;
@@ -193,6 +128,7 @@ function createScene() {
         renderer = new THREE.WebGLRenderer({
             canvas: container,
             antialias: true,
+            alpha: true
         });
 
         renderer.setPixelRatio = devicePixelRatio;
@@ -246,7 +182,6 @@ function createScene() {
     }
 
     function sceneElements() {
-
         // Main terrain mesh
         var geometry = new THREE.PlaneGeometry(500, 300, 20, 20);
         geometry.translate(0, 0, -50);
@@ -295,7 +230,6 @@ function createScene() {
             }
         }
 
-
     }
 
     function onInputMove(e) {
@@ -311,30 +245,6 @@ function createScene() {
     }
 
     function updatePhysics() {
-
-        /* Step world
-        physicsWorld.stepSimulation(deltaTime, 10);
-
-        // Update rigid bodies
-        for (let i = 0; i < rigidBodies.length; i++) {
-            let objThree = rigidBodies[i];
-            let objAmmo = objThree.userData.physicsBody;
-            let ms = objAmmo.getMotionState();
-            if (ms) {
-
-                ms.getWorldTransform(tmpTrans);
-                let p = tmpTrans.getOrigin();
-                let q = tmpTrans.getRotation();
-
-                objThree.position.set(p.x(), p.y(), p.z());
-                objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-
-                if (objThree.position.y < removalYCoord) {
-                    removeBall(objAmmo,objThree,i);
-                }
-
-            }
-        }*/
 
         // Step the physics world
         world.step(timeStep);
