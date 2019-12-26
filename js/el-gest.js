@@ -32,7 +32,7 @@ function videoSetup() {
         mp4.src = "media/video/el-gest.mp4";
         video.appendChild(mp4);
         video.setAttribute("playsinline", "");
-        video.setAttribute("preload", "");
+        video.preload = "auto";
         video.style.maxHeight = window.innerHeight + "px";
 
         document.querySelector('.video-container').appendChild(video);
@@ -63,29 +63,10 @@ function createScene() {
     var draw_ctx = draw_canvas.getContext('2d');
     var tmp_canvas = document.querySelector("#current_draw");
     var tmp_ctx = tmp_canvas.getContext('2d');
+    var video;
 
     draw_ctx.imageSmoothingEnabled = true;
     tmp_ctx.imageSmoothingEnabled = true;
-
-
-    /*var fader = anime({
-        targets: '#draw',
-        autoplay: false,
-        loop: false,
-        opacity: 0,
-        delay: 1000,
-        easing: 'easeInSine',
-        duration: 2000,
-        complete: function(anim) {
-            if (anim.direction === "normal") {
-                console.log("clear");
-                draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
-            }
-        },
-        update: function (anim) {
-            console.log(anim.progress);
-        }
-    });*/
 
     var width = document.querySelector('body').getBoundingClientRect().width;
     var height = document.querySelector('body').getBoundingClientRect().height;
@@ -175,10 +156,20 @@ function createScene() {
             tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
         }
 
-        document.querySelector('video').play();
+        video = document.querySelector('video');
+
+        video.addEventListener("timeupdate", function () {
+            if (this.currentTime > 0.001) {
+                tl.seek(video.currentTime * 1000);
+                tl.play();
+            }
+        });
+
+        video.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelector('#start-button').remove();
+
     }
 
     function loadImages() {
@@ -261,12 +252,16 @@ function createScene() {
         var start;
 
         tl = anime.timeline({
+            autoplay: false,
             begin: function (anim) {
                 start = new Date().getTime();
+                anim.seek(document.querySelector('video').currentTime * 1000);
+                video.play();
             },
-            update: function (anim) {
+            update: function () {
                 let time = new Date().getTime() - start;
-                output.innerHTML = time;
+                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML += "video time: " + document.querySelector('video').currentTime * 1000;
             }
         });
 
@@ -532,7 +527,7 @@ function createScene() {
             elementCanvas[id].classList.add("element-canvas");
             elementCanvas[id].width = width;
             elementCanvas[id].height = height;
-            draw_canvas.insertAdjacentElement('afterend',elementCanvas[id]);
+            draw_canvas.insertAdjacentElement('afterend', elementCanvas[id]);
 
             let scale = height / graphics[id].img.height;
             addingElement = true;
@@ -571,15 +566,6 @@ function createScene() {
 
         points.push({x: input.x, y: input.y});
 
-        /*if (fader.progress > 0) {
-            fader.reverse();
-        } else {
-            fader.direction = "normal";
-            fader.seek(0);
-            fader.pause();
-            fader.began = false;
-        }*/
-
     }
 
     function handleEnd(e) {
@@ -597,17 +583,6 @@ function createScene() {
 
         // Emptying up Pencil Points
         points = [];
-
-        /*if ((fader.direction === "reverse" && fader.completed) || (fader.direction === "normal" && fader.progress === 0)) {
-            fader.direction = "normal";
-            fader.play();
-        } else if (fader.direction === "reverse") {
-            fader.reverse();
-        } else {
-            fader.seek(0);
-            fader.pause();
-            fader.began = false;
-        }*/
 
     }
 
