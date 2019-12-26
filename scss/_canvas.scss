@@ -48,6 +48,30 @@ body {
     }
   }
 
+  &.mala-sang {
+    .content {
+      background-color: white;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url("../media/img/textile-tex.jpg");
+        background-position: center;
+        background-size: cover;
+        background-color: white;
+        background-blend-mode: luminosity;
+        opacity: 0.2;
+      }
+    }
+
+    canvas {
+      mix-blend-mode: multiply;
+    }
+  }
 }
 
 

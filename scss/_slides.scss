@@ -419,7 +419,7 @@
           .center-image {
             z-index: 2;
             background-size: cover;
-            background-image: url('../media/img/matthias-oberholzer-Q6qDYph152g-unsplash.jpg');
+            //background-image: url('../media/img/sunflower-img.jpg');
             height: 100%;
             transform: translate(0px, 100%);
 
@@ -444,7 +444,7 @@
 
     }
 
-    @media screen and (orientation: landscape) and (max-height: $small_screen_width) {
+    @media screen and (orientation: landscape) and (max-height: $tiny_screen_width) {
       .slide-container {
         height: 60vh;
 
