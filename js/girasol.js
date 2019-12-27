@@ -12,19 +12,23 @@ import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
-var mode = "day";
-window.THREE = THREE; // for debugger
+var mode;
 
+// Request user location, if available set background
+// according to time of day at said position,
+// if not default to morning scene
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(setBackground);
+} else {
+    $('body').addClass('morning');
+    createScene();
 }
 
+// Obtain sun position at location, set body class and mode
 function setBackground(position) {
     var now = new Date();
 
-    console.log(now);
     var times = SunCalc.getTimes(new Date(), position.coords.latitude, position.coords.longitude);
-    console.log(times);
 
     if (now < times.dawn || now > times.dusk) {
         $('body').addClass('night');
