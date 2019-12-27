@@ -15,15 +15,13 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var onDeviceMove;
-window.THREE = THREE; // for debugger
-
-// Interaction triggers
-// Either boolean or influence percentage
-var triggers;
 
 document.getElementById('start-button').onclick = requestPermissions;
 
-// For devices that need permission requesting
+/**
+ * Request access to motion sensors on mobile devices that
+ * require it. Create scene whether it's accessible or not.
+ */
 function requestPermissions() {
     if (isMobile && typeof (DeviceMotionEvent) !== 'undefined' && typeof (DeviceMotionEvent.requestPermission) === 'function') {
         DeviceMotionEvent.requestPermission()
@@ -41,8 +39,9 @@ function requestPermissions() {
 }
 
 
-// SCENE CREATION
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -57,8 +56,12 @@ function createScene() {
     var tunnels = [];
     var then = 0;
 
+    // Initialise Ammo physics then initialise scene
     Ammo().then(init);
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
         tmpTrans = new Ammo.btTransform();
 
@@ -66,7 +69,6 @@ function createScene() {
 
         sceneSetup();
         sceneElements();
-        sceneTextures();
         render();
 
         if (!isMobile()) {
@@ -81,12 +83,15 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelectorAll('.experience-info').forEach(function (el) {el.remove()});
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
 
     }
 
-    // PHYSICS SETUP
-
+    /**
+     * Set up Ammo physics world
+     */
     function setupPhysicsWorld() {
 
         let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
@@ -99,6 +104,15 @@ function createScene() {
 
     }
 
+    /**
+     * Create a sphere mesh in Three.js scene
+     * and it's corresponding rigid body in Ammo.js
+     * @param x The initial position on the x axis
+     * @param y The initial position on the y axis
+     * @param z The initial position on the z axis
+     * @param scale The sphere's scale
+     * @param color The sphere's color
+     */
     function createBall(x, y, z, scale, color) {
 
         let pos = {x: x, y: y, z: z};
@@ -140,7 +154,10 @@ function createScene() {
         rigidBodies.push(ball);
     }
 
-
+    /**
+     * Update Ammo.js world physics
+     * @param deltaTime The time step to update physics
+     */
     function updatePhysics(deltaTime) {
 
         // Step world
@@ -158,12 +175,15 @@ function createScene() {
                 let p = tmpTrans.getOrigin();
                 let q = tmpTrans.getRotation();
 
+                // Simple turbulence simulation
                 let turbulenceX = Math.sin(performance.now() * 0.005 * objThree.userData.turbulence);
                 let turbulenceY = Math.cos(performance.now() * 0.005 * objThree.userData.turbulence);
 
                 objThree.position.set(p.x() + turbulenceX, p.y() + turbulenceY, p.z());
                 objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
 
+                // Delete objects further away than removalZCoord value
+                // from Three.js scene and Ammo.js world
                 if (objThree.position.z < removalZCoord) {
                     physicsWorld.removeCollisionObject(objAmmo);
                     scene.remove(objThree);
@@ -175,6 +195,10 @@ function createScene() {
 
     }
 
+    /**
+     * Set up keyframes for element addition,
+     * transformation and removal
+     */
     function animationSetup() {
         let start;
 
@@ -283,6 +307,10 @@ function createScene() {
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
         scene = new THREE.Scene();
         window.scene = scene; // for debugger
@@ -323,6 +351,9 @@ function createScene() {
 
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
         var geometry = new THREE.PlaneBufferGeometry(100, 100, 100, 100);
         var material = new THREE.MeshBasicMaterial({visible: false});
@@ -341,21 +372,6 @@ function createScene() {
         scene.add(glowingOrb);
         glowingOrb.position.z = -1400;
         glowingOrb.scale.set(0,0,0);
-
-        /*material = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            side: THREE.BackSide
-        });
-
-        var sphere = new THREE.SphereBufferGeometry(1, 8, 8);
-
-        for (let i = 0; i < geometry.vertices.length; i++) {
-            let dot = new THREE.Mesh(sphere, material);
-            dot.position.copy(geometry.vertices[i]);
-            scene.add(dot);
-        }*/
-
-        //geometry = new THREE.PlaneBufferGeometry(width*2.5, height*2.5);
 
         var uniforms = {
             u_time: {type: 'f', value: 0.0},
@@ -387,19 +403,11 @@ function createScene() {
             scene.add(tunnels[i]);
         }
 
-        /*background = new THREE.Mesh(geometry, material);
-        background.position.z = -1500;
-        scene.add(background);*/
     }
 
-    function sceneTextures() {
-        // pallete
-        /*new THREE.TextureLoader().load('img/waves.png', function (texture) {
-            //terrain.material.uniforms.palette.value = texture;
-            //terrain.material.needsUpdate = true;
-        });*/
-    }
-
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -409,6 +417,13 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
+    /**
+     * Obtain coordinates from mouse click or tap,
+     * transform into screen coordinates and find
+     * intersection with the generation plane.
+     * Then create ball at said intersection.
+     * @param e The event that triggers it
+     */
     function handleClick(e) {
         e.preventDefault();
 
@@ -428,6 +443,10 @@ function createScene() {
 
     }
 
+    /**
+     * Obtain coordinates from mouse movement
+     * @param e The event that triggers it
+     */
     function onInputMove(e) {
         e.preventDefault();
 
@@ -440,11 +459,16 @@ function createScene() {
 
     }
 
+    /**
+     * Obtain mobile device orientation sensor
+     * alpha and beta angles and normalise them
+     * to avoid sudden jumps
+     * @param e The event that triggers it
+     */
     onDeviceMove = function (e) {
         e.preventDefault();
 
         let alpha = e.alpha;
-        //let gamma = e.gamma;
         let beta = e.beta;
 
         // Normalizing the alpha range from -180 to 180.
@@ -457,16 +481,14 @@ function createScene() {
         // Avoiding jumps with axis changes
         if (beta > 90) alpha *= -1;
 
-        // Limiting beta range
-        //if (beta > 135) beta = 135;
-        //if (beta < 0) beta = 0;
-
         input.a = alpha;
-        //input.g = gamma;
         input.b = beta;
     };
 
-
+    /**
+     * Update time, scene transformations, update physics,
+     * interpret input and render
+     */
     function render() {
 
         var time = performance.now() / 1000;
@@ -502,13 +524,5 @@ function createScene() {
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }

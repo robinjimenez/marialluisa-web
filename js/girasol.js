@@ -49,7 +49,9 @@ function setBackground(position) {
 
 }
 
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -64,17 +66,19 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
 
         sceneSetup();
         sceneElements();
-        //sceneTextures();
         render();
 
         if (isMobile()) {
-            window.addEventListener("touchmove", onTouchMove);
+            window.addEventListener("touchmove", handleMove);
         } else {
-            window.addEventListener("mousemove", onInputMove);
+            window.addEventListener("mousemove", handleMove);
         }
 
         resize();
@@ -82,24 +86,19 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
         document.querySelector('#start-button').remove();
     }
 
+    /**
+     * Set up subtle organic sphere movement, play sound and
+     * display end overlay
+     */
     function animationSetup() {
-        let start;
 
-        tl = anime.timeline({
-            easing: 'easeInOutSine',
-            begin: function (anim) {
-                start = new Date().getTime();
-                sound.play();
-            },
-            update: function (anim) {
-                //output.innerHTML = new Date().getTime() - start;
-            }
-        });
+        sound.play();
 
         spheres.forEach(function (el, i) {
             anime({
@@ -117,10 +116,11 @@ function createScene() {
 
         // End overlay animation
 
-        tl.add({
+        anime({
             target: document,
             easing: 'easeInOutSine',
             duration: 1000,
+            delay: sound.duration() * 1000,
             begin: function () {
                 document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay').cloneNode('template');
@@ -129,13 +129,16 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        }, sound.duration() * 1000);
+        });
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
         scene = new THREE.Scene();
-        window.scene = scene; // for debugger
 
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 10000);
         camera.position.y = 50;
@@ -170,6 +173,11 @@ function createScene() {
 
     }
 
+
+    /**
+     * Create scene meshes, add textures and add to scene
+     * according to daytime mode
+     */
     function sceneElements() {
         let sunGeometry = new THREE.SphereGeometry(30, 32, 32);
         let sunMaterial;
@@ -178,7 +186,7 @@ function createScene() {
 
         switch (mode) {
             case "night":
-                ambientLight  = new THREE.AmbientLight(0x555555, 1);
+                ambientLight = new THREE.AmbientLight(0x555555, 1);
                 sunGeometry = new THREE.SphereGeometry(20, 32, 32);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
@@ -188,7 +196,7 @@ function createScene() {
                 pointLight = new THREE.PointLight(0xE6D36E, 1, 300);
                 break;
             case "sunset":
-                ambientLight  = new THREE.AmbientLight(0xed6b00, 1);
+                ambientLight = new THREE.AmbientLight(0xed6b00, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xed6b00});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
                 sunMoon.position.y = -50;
@@ -198,7 +206,7 @@ function createScene() {
                 pointLight = new THREE.PointLight(0xFFC412, 2, 300);
                 break;
             case "sunrise":
-                ambientLight  = new THREE.AmbientLight(0xffe500, 1);
+                ambientLight = new THREE.AmbientLight(0xffe500, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
                 sunMoon.position.y = -50;
@@ -208,7 +216,7 @@ function createScene() {
                 pointLight = new THREE.PointLight(0xFF9D35, 2, 300);
                 break;
             default:
-                ambientLight  = new THREE.AmbientLight(0xffe500, 1);
+                ambientLight = new THREE.AmbientLight(0xffe500, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
                 sunMoon.position.y = 100;
@@ -223,7 +231,6 @@ function createScene() {
         pointLight.position.copy(sunMoon.position);
         scene.add(pointLight);
 
-
         // Main terrain mesh
         var geometry = new THREE.PlaneGeometry(500, 300, 20, 20);
         geometry.rotateX(-Math.PI / 2);
@@ -234,7 +241,6 @@ function createScene() {
         terrain = new THREE.Mesh(geometry, material);
         terrain.position.y = -10;
         terrain.scale.x = 2;
-
 
         scene.add(terrain);
 
@@ -255,14 +261,9 @@ function createScene() {
 
     }
 
-    function sceneTextures() {
-        let texLoader = new THREE.TextureLoader();
-        texLoader.load('media/img/waves.png', function (texture) {
-            terrain.material.map = texture;
-            terrain.material.needsUpdate = true;
-        });
-    }
-
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -272,26 +273,26 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
-    function onInputMove(e) {
+    /**
+     * Obtain coordinates from mouse or touch movement
+     * @param e The event that triggers it
+     */
+    function handleMove(e) {
         e.preventDefault();
 
-        var x, y;
-        x = e.clientX;
-        y = e.clientY;
-
-        input.x = x;
-        input.y = y;
-
+        if (e.type === "touchmove") {
+            input.x = e.changedTouches[0].pageX;
+            input.y = e.changedTouches[0].pageY;
+        } else if (e.type === "mousemove") {
+            input.x = e.clientX;
+            input.y = e.clientY;
+        }
     }
 
-    function onTouchMove(e) {
-        e.preventDefault();
-
-        input.x = e.changedTouches[0].pageX;
-        input.y = e.changedTouches[0].pageY;
-
-    }
-
+    /**
+     * Update time, scene transformations,
+     * interpret input and render
+     */
     function render() {
 
         var time = performance.now() * 0.001;
@@ -303,7 +304,7 @@ function createScene() {
             input.yDamped = lerp(input.yDamped, input.y, 0.1);
 
             if (isMobile()) {
-                sunMoon.position.x = map(input.xDamped, 0, width, -width/2, width/2);
+                sunMoon.position.x = map(input.xDamped, 0, width, -width / 2, width / 2);
             } else {
                 sunMoon.position.x = map(input.xDamped, 0, width, -250, 250);
             }
@@ -313,14 +314,6 @@ function createScene() {
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }
 

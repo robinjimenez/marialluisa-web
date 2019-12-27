@@ -14,11 +14,6 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var onDeviceMove;
-window.THREE = THREE; // for debugger
-
-// Interaction triggers
-// Either boolean or influence percentage
-var triggers;
 
 document.getElementById('start-button').onclick = requestPermissions;
 
@@ -40,8 +35,9 @@ function requestPermissions() {
 }
 
 
-// SCENE CREATION
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -55,15 +51,16 @@ function createScene() {
     var sky, sun;
     var then = 0;
 
-    //Ammo().then(init);
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
 
         sceneSetup();
         sceneElements();
         createSky();
-        sceneTextures();
         render();
 
         if (!isMobile()) {
@@ -84,27 +81,16 @@ function createScene() {
 
     }
 
+    /**
+     * Set up animation for end overlay and play music
+     */
     function animationSetup() {
-        let start;
+        sound.play();
 
-        tl = anime.timeline({
-            easing: 'easeInOutSine',
-            autoplay: true,
-            begin: function (anim) {
-                start = new Date().getTime();
-                sound.play();
-            },
-            update: function (anim) {
-                let time = new Date().getTime() - start;
-                output.innerHTML = time + "<br>";
-                output.innerHTML += performance.now() + "<br>";
-                output.innerHTML += performance.now() - time;
-            }
-        });
-
-        tl.add({
+        anime({
             easing: 'easeInOutSine',
             duration: 1000,
+            delay: sound.duration() * 1000,
             begin: function () {
                 document.querySelector('.overlay').cloneNode('template');
                 document.querySelector('.overlay').classList.add("end");
@@ -112,13 +98,16 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        }, sound.duration() * 1000);
+        });
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
         scene = new THREE.Scene();
-        window.scene = scene; // for debugger
 
         camera = new THREE.OrthographicCamera(-width / 4, width / 4, height / 4, -height / 4, 0.1, 1000);
         camera.position.set(0, 0, 0);
@@ -154,6 +143,9 @@ function createScene() {
 
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
         var geometry = new THREE.CubeGeometry(width, 400, 2, width / 4, 50, 2);
         var uniforms = {
@@ -197,21 +189,20 @@ function createScene() {
 
     }
 
+    /**
+     * Create spheres for sky background and sun
+     */
     function createSky() {
-        var skyGeo = new THREE.SphereGeometry(1000, 25, 25);
+        let skyGeo = new THREE.SphereGeometry(1000, 25, 25);
 
-        var loader = new THREE.TextureLoader();
-        //var texture = loader.load("media/img/sky.png");
-
-        var material = new THREE.MeshBasicMaterial({
+        let material = new THREE.MeshBasicMaterial({
             color: 0xfca103,
-            //map: texture
         });
 
         sky = new THREE.Mesh(skyGeo, material);
         sky.material.side = THREE.BackSide;
 
-        var sunGeo = new THREE.SphereGeometry(100, 25, 25);
+        let sunGeo = new THREE.SphereGeometry(100, 25, 25);
         if (isMobile()) sunGeo.scale(0.7, 0.7, 0.7);
         material = new THREE.MeshBasicMaterial({
             color: 0xdb6612,
@@ -225,14 +216,9 @@ function createScene() {
 
     }
 
-    function sceneTextures() {
-        // pallete
-        /*new THREE.TextureLoader().load('img/waves.png', function (texture) {
-            //terrain.material.uniforms.palette.value = texture;
-            //terrain.material.needsUpdate = true;
-        });*/
-    }
-
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -242,6 +228,13 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
+    /**
+     * Obtain coordinates from mouse click or tap,
+     * transform into screen coordinates and find
+     * intersection with scene objects. Change random
+     * seed of intersected mesh.
+     * @param e The event that triggers it
+     */
     function handleClick(e) {
         e.preventDefault();
 
@@ -269,12 +262,14 @@ function createScene() {
 
             target.material.needsUpdate = true;
 
-            console.log(target);
-
         }
 
     }
 
+    /**
+     * Obtain coordinates from mouse movement
+     * @param e The event that triggers it
+     */
     function onInputMove(e) {
         e.preventDefault();
 
@@ -287,11 +282,16 @@ function createScene() {
 
     }
 
+    /**
+     * Obtain mobile device orientation sensor
+     * alpha and beta angles and normalise them
+     * to avoid sudden jumps
+     * @param e The event that triggers it
+     */
     onDeviceMove = function (e) {
         e.preventDefault();
 
         let alpha = e.alpha;
-        //let gamma = e.gamma;
         let beta = e.beta;
 
         // Normalizing the alpha range from -180 to 180.
@@ -309,12 +309,14 @@ function createScene() {
         //if (beta < 0) beta = 0;
 
         input.a = alpha;
-        //input.g = gamma;
         input.b = beta;
 
     };
 
-
+    /**
+     * Update time, scene transformations,
+     * interpret input and render
+     */
     function render() {
 
         var time = performance.now() / 1000;
@@ -349,13 +351,5 @@ function createScene() {
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }

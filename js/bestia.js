@@ -18,7 +18,7 @@ var target = {
     y: 0
 };
 
-var colors = [
+const colors = [
     "#63A7C4",
     "#9C88B6",
     "#D09BB6",
@@ -27,17 +27,17 @@ var colors = [
     "#9BD7C0"
 ];
 
-var video = document.getElementById('video');
+const video = document.getElementById('video');
 var videoHeight, videoWidth;
-var triggers = {
-    lerpValue: 0.005,
-};
-
-window.THREE = THREE; // for debugger
 
 document.getElementById('start-button').onclick = requestPermissions;
 
 // For devices that need permission requesting
+/**
+ * Request access to frontal camera video stream.
+ * If allowed, add to video DOM element.
+ * Then create scene whether permission is granted or not.
+ */
 function requestPermissions() {
     var constraints;
 
@@ -67,6 +67,9 @@ function requestPermissions() {
     }
 }
 
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -78,7 +81,6 @@ function createScene() {
 
     var scene, renderer, camera, spotlight, composer, filmPass;
     var then = 0;
-    var updateTarget = false;
 
     var raycaster = new THREE.Raycaster();
 
@@ -87,6 +89,9 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, physics, add event listeners and load assets
+     */
     function init() {
 
         setupCannon();
@@ -96,12 +101,9 @@ function createScene() {
         render();
 
         if (!isMobile()) {
-            updateTarget = true;
             window.addEventListener("mousemove", handleMove);
         } else {
-            window.addEventListener("touchstart", handleStart);
             window.addEventListener("touchmove", handleMove);
-            window.addEventListener("touchend", handleEnd);
         }
 
         resize();
@@ -109,11 +111,15 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
         document.querySelector('#start-button').remove();
     }
 
+    /**
+     * Set up Cannon physics engine
+     */
     function setupCannon() {
         world = new CANNON.World();
         world.quatNormalizeSkip = 0;
@@ -122,18 +128,21 @@ function createScene() {
         world.broadphase = new CANNON.NaiveBroadphase();
     }
 
+    /**
+     * Set up keyframes for element addition,
+     * transformation and removal
+     */
     function animationSetup() {
         tl = anime.timeline({
             easing: 'easeInOutSine',
             autoplay: true,
             begin: function () {
                 sound.play();
-            },
-            update: function () {
-                //output.innerHTML = triggers.lerpValue;
             }
         });
 
+        // Recursive animation for bar spawning
+        // If toggle is false, stop recursive loop
         function barSpawning(toggle) {
             anime({
                 targets: '.strip',
@@ -155,12 +164,14 @@ function createScene() {
             });
         }
 
+        // Start spawning bars @ 1:55 min
         tl.add({
             begin: function () {
                 barSpawning(true);
             },
         }, 115000); //100000
 
+        // End overlay animation and spawning stop
         tl.add({
             easing: 'easeInOutSine',
             duration: 1000,
@@ -177,10 +188,13 @@ function createScene() {
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
 
         scene = new THREE.Scene();
-        window.scene = scene; // for debugger
 
         var ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
         scene.add(ambientLight);
@@ -247,6 +261,9 @@ function createScene() {
 
     }
 
+    /**
+     * Create background geometry, add colour and friction to physics model
+     */
     function createBackground() {
         var planeGeom = new THREE.PlaneGeometry(Math.max(1500, width), Math.max(1500, height), 100, 100);
 
@@ -258,7 +275,6 @@ function createScene() {
 
         groundMaterial = new CANNON.Material("groundMaterial");
 
-        // Adjust constraint equation parameters for ground/ground contact
         var groundContact = new CANNON.ContactMaterial(groundMaterial, groundMaterial, {
             friction: 0.3,
             restitution: 0.3,
@@ -267,6 +283,7 @@ function createScene() {
             frictionEquationStiffness: 1e8,
             frictionEquationRegularizationTime: 1
         });
+
         // Add contact material to the world
         world.addContactMaterial(groundContact);
 
@@ -278,6 +295,9 @@ function createScene() {
 
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
 
         createBackground();
@@ -341,6 +361,10 @@ function createScene() {
 
     }
 
+    /**
+     * Create DOM elements for strips from screen
+     * width and height, place and rotate at an angle
+     */
     function createStrips() {
         let distance = Math.sqrt(width * width + height * height);
         numStrips = 20 + Math.floor(width / height) * 2;
@@ -357,6 +381,9 @@ function createScene() {
         document.querySelector('.strips-container').style.transform = rotation + "scale(1.5,2) translate(-25%)";
     }
 
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -366,18 +393,14 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
-    function handleStart(e) {
-        updateTarget = true;
-
-        if (e.type === "touchstart") {
-            input.x = e.changedTouches[0].pageX;
-            input.y = e.changedTouches[0].pageY;
-        }
-    }
-
+    /**
+     * Obtain coordinates from mouse or touch movement,
+     * transform into screen coordinates and find
+     * intersection with plane object
+     * @param e The event that triggers it
+     */
     function handleMove(e) {
 
-        if (updateTarget) {
             if (e.type === "touchmove") {
                 input.x = e.changedTouches[0].pageX;
                 input.y = e.changedTouches[0].pageY;
@@ -397,13 +420,12 @@ function createScene() {
                 target.x = intersected[0].point.x;
                 target.y = intersected[0].point.z;
             }
-        }
     }
 
-    function handleEnd() {
-        updateTarget = false;
-    }
-
+    /**
+     * Update Cannon.js world physics and pass
+     * onto Three.js objects
+     */
     function updatePhysics() {
         // Step the physics world
         world.step(timeStep);
@@ -420,6 +442,10 @@ function createScene() {
         background.quaternion.copy(backgroundBody.quaternion);
     }
 
+    /**
+     *  Update time, scene transformations, update physics,
+     *  interpret input and render
+     */
     function render() {
 
         input.xDamped = lerp(input.xDamped, target.x, 0.08);
@@ -430,13 +456,6 @@ function createScene() {
 
         mainSphereBody.position.copy(mainSphere.position);
 
-        /*childSphere.position.x = lerp(childSphere.position.x, mainSphere.position.x - 20, 0.05);
-        childSphere.position.z = lerp(childSphere.position.z, mainSphere.position.z + 20, 0.05);
-        childSphereBody.position.x = lerp(childSphereBody.position.x, mainSphereBody.position.x - 20, 0.05);
-        childSphereBody.position.z = lerp(childSphereBody.position.z, mainSphereBody.position.z + 20, 0.05);*/
-
-        //output.innerHTML = target.x + "<br>" + target.y + "<br>" + input.xDamped + "<br>" + input.yDamped;
-
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
@@ -446,11 +465,4 @@ function createScene() {
         requestAnimationFrame(render);
     }
 
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
-    }
 }

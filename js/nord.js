@@ -16,8 +16,7 @@ import anime from '../lib/animejs/lib/anime.es.js';
 var target = {lat: 0, long: 0, prevLat: 0, prevLong: 0};
 var colorCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
 
-var i = 0;
-var colors = [
+const colors = [
     new THREE.Color("rgb(242, 168, 247)"),
     new THREE.Color("rgb(196,205,255)"),
     new THREE.Color("rgb(247,158,184)"),
@@ -31,10 +30,12 @@ var triggers = {
 
 document.getElementById('start-button').onclick = requestPermissions;
 
-// For devices that need permission requesting
+/**
+ * Request access to motion sensors on mobile devices that
+ * require it. Create scene whether it's accessible or not.
+ */
 function requestPermissions() {
     if (isMobile()) {
-
         if (typeof (DeviceMotionEvent) !== 'undefined' && typeof (DeviceMotionEvent.requestPermission) === 'function') {
             DeviceMotionEvent.requestPermission()
                 .then(response => {
@@ -52,14 +53,13 @@ function requestPermissions() {
 
 }
 
+/**
+ * Obtain mobile device orientation sensor
+ * alpha, beta and gamma angles
+ * @param e The event that triggers it
+ */
 function onDeviceMove(e) {
     e.preventDefault();
-
-    // Input for camera movement
-    /*target.lat = (input.b - e.beta) * 0.1 + target.prevLat;
-    target.long = (e.gamma - input.g) * 0.1 + target.prevLong;
-    target.lat = target.prevLat - (input.b - e.beta);
-    target.long = target.prevLong - (e.gamma - input.g);*/
 
     // Input for color changes
     input.a = e.alpha;
@@ -71,6 +71,9 @@ function onDeviceMove(e) {
 
 }
 
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -90,6 +93,9 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
 
         setupCannon();
@@ -116,12 +122,15 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
         document.querySelector('#start-button').remove();
     }
 
-
+    /**
+     * Set up Cannon physics engine
+     */
     function setupCannon() {
         world = new CANNON.World();
         world.quatNormalizeSkip = 0;
@@ -130,16 +139,18 @@ function createScene() {
         world.broadphase = new CANNON.NaiveBroadphase();
     }
 
-
+    /**
+     * Set up keyframes for element addition,
+     * transformation and removal
+     */
     function animationSetup() {
+        let colorIndex = 0;
+
         tl = anime.timeline({
             easing: 'easeInOutSine',
             autoplay: true,
             begin: function() {
                 sound.play();
-            },
-            update: function () {
-                //output.innerHTML = triggers.lerpValue;
             }
         });
 
@@ -161,12 +172,12 @@ function createScene() {
                 {value: '*=1', easing: 'easeOutSine', duration: 100, endDelay: 880},
                 {value: '*=2', easing: 'easeInOutQuad', duration: 100, endDelay: 880}
             ],
-            loopComplete: function (anim) {
-                mainSphere.material.color.copy(colors[i]);
-                innerSphere.material.color.copy(colors[i]);
-                outerSphere.material.color.copy(colors[i]);
-                i++;
-                if (i >= colors.length) i = 0;
+            loopComplete: function () {
+                mainSphere.material.color.copy(colors[colorIndex]);
+                innerSphere.material.color.copy(colors[colorIndex]);
+                outerSphere.material.color.copy(colors[colorIndex]);
+                colorIndex++;
+                if (colorIndex >= colors.length) colorIndex = 0;
             }
         });
 
@@ -210,6 +221,10 @@ function createScene() {
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
 
         scene = new THREE.Scene();
@@ -253,11 +268,14 @@ function createScene() {
 
     }
 
+    /**
+     * Create background geometry and add texture
+     */
     function createBackground() {
         var sphere = new THREE.SphereGeometry(500, 50, 50);
 
         var loader = new THREE.TextureLoader();
-        var texture = loader.load("media/img/nord-gradient.png");
+        var texture = loader.load("media/img/nord/nord-gradient.png");
 
         var material = new THREE.MeshBasicMaterial({
             map: texture,
@@ -272,6 +290,9 @@ function createScene() {
         scene.add(backgroundSphere);
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
 
         let geometry = new THREE.SphereGeometry(10, 32, 32);
@@ -295,7 +316,10 @@ function createScene() {
         innerSphere.position.set(100, 0, 0);
         innerSphere.scale.set(1.6, 1.6, 1.6);
 
-        material = new THREE.MeshBasicMaterial({needsUpdate: true, depthFunc: THREE.AlwaysDepth});
+        material = new THREE.MeshBasicMaterial({
+            needsUpdate: true,
+            depthFunc: THREE.AlwaysDepth
+        });
         mainSphere = new THREE.Mesh(geometry, material);
         mainSphere.position.set(100, 0, 0);
 
@@ -319,6 +343,9 @@ function createScene() {
 
     }
 
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -328,6 +355,12 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
+
+    /**
+     * Obtain input when touch or mouse click starts
+     * and update target accordingly
+     * @param e The event that triggers it
+     */
     function handleStart(e) {
         updateTarget = true;
 
@@ -344,6 +377,12 @@ function createScene() {
 
     }
 
+
+    /**
+     * Obtain input when touch or clicked mouse changes
+     * and update target and colour accordingly
+     * @param e
+     */
     function handleMove(e) {
         if (updateTarget) {
             if (e.type === "touchmove") {
@@ -360,10 +399,18 @@ function createScene() {
 
     }
 
-    function handleEnd(e) {
+    /**
+     * End target update when touch finishes
+     * or mouse press is released
+     */
+    function handleEnd() {
         updateTarget = false;
     }
 
+    /**
+     * Update Cannon.js world physics and pass
+     * onto Three.js objects
+     */
     function updatePhysics() {
         // Step the physics world
         world.step(timeStep);
@@ -373,6 +420,10 @@ function createScene() {
         targetBody.position.set(camera.target.x/2,camera.target.y/2,camera.target.z/2);
     }
 
+    /**
+     * Update time, scene transformations, update physics,
+     * interpret input and render
+     */
     function render() {
 
         target.lat = Math.max(-85, Math.min(85, target.lat));
@@ -390,10 +441,7 @@ function createScene() {
             camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
             camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
             camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
-            /*camera.rotation.x += target.lat * 0.05;
-            camera.rotation.y += target.long * 0.05;
-            target.prevLat = target.lat;
-            target.prevLong = target.long;*/
+
             camera.lookAt(camera.target);
 
             if (input.bPrev + 0.25 >= input.b && scene.background.r <= 0.95) {
@@ -445,20 +493,8 @@ function createScene() {
         const deltaTime = time - then;
         then = time;
 
-        //backgroundSphere.rotation.x += Math.sin(time) * 0.5 * (1.5 - triggers.bgRotation);
-        //backgroundSphere.rotation.y += Math.cos(time) * 0.5 * (1.5 - triggers.bgRotation);
-        //backgroundSphere.rotation.z += Math.sin(time) * 0.5 * (1.5 - triggers.bgRotation);
-
         updatePhysics();
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }

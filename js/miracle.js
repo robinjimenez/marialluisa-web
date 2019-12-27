@@ -2,7 +2,7 @@
     ---------------------
     MIRACLE - Main Module
     ---------------------
- */
+*/
 
 // Import dependencies
 import * as THREE from '../lib/three/build/three.module.js';
@@ -11,9 +11,6 @@ import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js
 import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
-
-// Variables
-window.THREE = THREE; // for debugger
 
 // Interaction triggers
 // Either boolean or influence percentage
@@ -24,7 +21,10 @@ var triggers = {
 
 document.getElementById('start-button').onclick = requestPermissions;
 
-// For devices that need permission requesting
+/**
+ * Request access to motion sensors on mobile devices that
+ * require it. Create scene whether it's accessible or not.
+ */
 function requestPermissions() {
     if (isMobile && typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
         DeviceMotionEvent.requestPermission()
@@ -41,11 +41,17 @@ function requestPermissions() {
     createScene();
 }
 
+
+/**
+ * Obtain mobile device orientation sensor
+ * alpha and beta angles and normalise them
+ * to avoid sudden jumps
+ * @param e The event that triggers it
+ */
 function onDeviceMove(e) {
     e.preventDefault();
 
     let alpha = e.alpha;
-    //let gamma = e.gamma;
     let beta = e.beta;
 
     // Normalizing the alpha range from -90 to 90.
@@ -67,13 +73,13 @@ function onDeviceMove(e) {
     if (beta < 0) beta = 0;
 
     input.a = alpha;
-    //input.g = gamma;
     input.b = beta;
 
 }
 
-// SCENE CREATION
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -89,6 +95,9 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
 
         sceneSetup();
@@ -105,11 +114,16 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
         document.querySelector('#start-button').remove();
     }
 
+    /**
+     * Set up keyframes for element addition,
+     * transformation and removal
+     */
     function animationSetup() {
         let start;
 
@@ -127,12 +141,6 @@ function createScene() {
                 output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
-
-        /*tl.add({
-            targets: terrain.material.uniforms.speed,
-            duration: sound.duration() * 1000,
-            value: 2
-        });*/
 
         // Gray transition @ 13s
 
@@ -349,7 +357,6 @@ function createScene() {
         }
 
         // End overlay animation
-
         tl.add({
             target: document,
             easing: 'easeInOutSine',
@@ -366,9 +373,12 @@ function createScene() {
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
         scene = new THREE.Scene();
-        window.scene = scene; // for debugger
 
         createSky();
 
@@ -408,6 +418,9 @@ function createScene() {
 
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
 
         // Main sea mesh
@@ -428,10 +441,7 @@ function createScene() {
         var material = new THREE.ShaderMaterial({
             uniforms: THREE.UniformsUtils.merge([THREE.ShaderLib.basic.uniforms, uniforms]),
             vertexShader: document.getElementById('custom-vertex').textContent,
-            fragmentShader: document.getElementById('custom-fragment').textContent,
-            //wireframe: false,
-            //transparent: true,
-            //opacity: 0.8
+            fragmentShader: document.getElementById('custom-fragment').textContent
         });
 
         terrain = new THREE.Mesh(geometry, material);
@@ -489,20 +499,26 @@ function createScene() {
 
     }
 
+    /**
+     * Load textures for use on meshes
+     */
     function sceneTextures() {
         let texLoader = new THREE.TextureLoader();
-        texLoader.load('media/img/waves.png', function (texture) {
+        texLoader.load('media/img/miracle/waves.png', function (texture) {
             terrain.material.uniforms.palette.value = texture;
             terrain.material.needsUpdate = true;
         });
-        wavesTextureEnd = texLoader.load('media/img/waves-end.png');
+        wavesTextureEnd = texLoader.load('media/img/miracle/waves-end.png');
     }
 
+    /**
+     * Create sphere for sky, add texture and add to screen
+     */
     function createSky() {
         var skyGeo = new THREE.SphereGeometry(500, 25, 25);
 
         var loader = new THREE.TextureLoader();
-        var texture = loader.load("media/img/sky.png");
+        var texture = loader.load("media/img/miracle/sky.png");
 
         var material = new THREE.MeshBasicMaterial({
             map: texture,
@@ -513,10 +529,13 @@ function createScene() {
         sky = new THREE.Mesh(skyGeo, material);
         sky.material.side = THREE.BackSide;
 
-        skyTextureEnd = loader.load("media/img/end-sky.png");
+        skyTextureEnd = loader.load("media/img/miracle/end-sky.png");
         scene.add(sky);
     }
 
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -526,6 +545,10 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
+    /**
+     * Obtain coordinates from mouse movement
+     * @param e The event that triggers it
+     */
     function onInputMove(e) {
         e.preventDefault();
 
@@ -538,7 +561,10 @@ function createScene() {
 
     }
 
-
+    /**
+     * Update time, scene transformations,
+     * interpret input and render
+     */
     function render() {
 
         let time = performance.now() * 0.001;
@@ -560,7 +586,6 @@ function createScene() {
             mediumSphere.position.y += Math.cos(time * 1.35 + 50) * 0.05;
             smallSphere.position.y += Math.cos(time * 1.35) * 0.03;
 
-            //camera.position.y = Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 50, 100);
             camera.position.y = triggers.cameraLift + Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 0, 50);
 
             output.innerHTML = input.a;
@@ -587,13 +612,5 @@ function createScene() {
 
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }

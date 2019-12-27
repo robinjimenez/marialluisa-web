@@ -12,18 +12,11 @@ import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
-// Variables
-var onDeviceMove;
-window.THREE = THREE; // for debugger
-
-// Interaction triggers
-// Either boolean or influence percentage
-var triggers;
-
 document.getElementById('start-button').onclick = createScene;
 
-// SCENE CREATION
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var container = document.querySelector("#display");
@@ -41,6 +34,9 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
         setupCannon();
 
@@ -49,7 +45,6 @@ function createScene() {
         render();
 
         if (!isMobile()) {
-            window.addEventListener("mousemove", onInputMove);
             window.addEventListener("click", handleClick);
         } else {
             window.addEventListener("touchstart", handleClick);
@@ -60,12 +55,16 @@ function createScene() {
         animationSetup();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('.experience-info').remove();
-        document.querySelector('.experience-info').remove();
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
         document.querySelector('#start-button').remove();
 
     }
 
+    /**
+     * Set up CANNON physics engine
+     */
     function setupCannon() {
         world = new CANNON.World();
         world.quatNormalizeSkip = 0;
@@ -74,18 +73,16 @@ function createScene() {
         world.broadphase = new CANNON.NaiveBroadphase();
     }
 
+    /**
+     * Set up sphere spawning and end overlay animation
+     */
     function animationSetup() {
-        let start;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            begin: function(anim) {
-                start = new Date().getTime();
+            begin: function() {
                 sound.play();
             },
-            update: function (anim) {
-                output.innerHTML = new Date().getTime() - start;
-            }
         });
 
         anime({
@@ -114,6 +111,10 @@ function createScene() {
 
     }
 
+    /**
+     * Create and set up scene, camera, lighting,
+     * renderer and postprocessing effects
+     */
     function sceneSetup() {
         scene = new THREE.Scene();
         window.scene = scene; // for debugger
@@ -153,6 +154,14 @@ function createScene() {
 
     }
 
+    /**
+     * Create a sphere and add mesh to Three.js and its
+     * corresponding rigid body in Cannon.js physics world
+     * @param x The initial position in the x axis
+     * @param y The initial position in the y axis
+     * @param scale The sphere's scale
+     * @param linearVel The initial linear velocity of the sphere
+     */
     function createBall(x,y,scale,linearVel) {
         var geometry = new THREE.SphereGeometry(10, 32, 32);
         var material = new THREE.MeshPhongMaterial({color: 0xaa00000, shininess: 0.0});
@@ -173,6 +182,10 @@ function createScene() {
         drops.push(drop);
     }
 
+    /**
+     * Remove sphere from Three.js scene and Cannon.js physics world
+     * @param mesh The mesh object to remove
+     */
     function removeBall(mesh) {
         scene.remove(mesh);
         let index = drops.findIndex(el => el.mesh === mesh);
@@ -180,6 +193,9 @@ function createScene() {
         drops.splice(index,1);
     }
 
+    /**
+     * Create scene meshes, add textures and add to scene
+     */
     function sceneElements() {
         // Main terrain mesh
         var geometry = new THREE.PlaneGeometry(500, 300, 20, 20);
@@ -192,6 +208,9 @@ function createScene() {
 
     }
 
+    /**
+     * Adapt scene to window size and resolution
+     */
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -201,6 +220,14 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
+    /**
+     * Obtain coordinates from mouse click or tap,
+     * transform into screen coordinates and find
+     * intersection with scene objects.
+     * If it intersects with a sphere, create two smaller new ones
+     * and inherit its linear velocity
+     * @param e The event that triggers it
+     */
     function handleClick(e) {
         e.preventDefault();
 
@@ -231,18 +258,10 @@ function createScene() {
 
     }
 
-    function onInputMove(e) {
-        e.preventDefault();
-
-        var x, y;
-        x = e.clientX;
-        y = e.clientY;
-
-        input.x = x;
-        input.y = y;
-
-    }
-
+    /**
+     * Update Cannon.js world physics and pass
+     * onto Three.js objects
+     */
     function updatePhysics() {
 
         // Step the physics world
@@ -258,31 +277,17 @@ function createScene() {
         });
     }
 
-
+    /**
+     * Update time, update physics and render
+     */
     function render() {
 
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
 
-        if (isMobile()) {
-            input.xDamped = lerp(input.xDamped, input.x, 0.1);
-            input.yDamped = lerp(input.yDamped, input.y, 0.01);
-        } else {
-            input.xDamped = lerp(input.xDamped, input.x, 0.1);
-            input.yDamped = lerp(input.yDamped, input.y, 0.01);
-        }
-
         updatePhysics();
         composer.render(deltaTime);
         requestAnimationFrame(render);
-    }
-
-    function map(value, start1, stop1, start2, stop2) {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-
-    function lerp(start, end, amt) {
-        return (1 - amt) * start + amt * end
     }
 }

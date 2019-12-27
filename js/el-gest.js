@@ -13,13 +13,26 @@ var mode = "draw";
 
 var addingElement = false;
 
+// Toggle tool when button is pressed
 $("#tool-change").click(function () {
     mode = (mode === "draw") ? "erase" : "draw";
     $(this).find("svg").toggleClass("draw");
 });
 
+// Custom graphic element object to store images and positions
+function graphEl(img, offsetX, offsetY) {
+    this.img = img;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+}
+
 videoSetup();
 
+/**
+ * Attempt to create video element and add sources,
+ * WebM format with mp4 fallback, set attributes and
+ * add to DOM. If unable to play, show message.
+ */
 function videoSetup() {
     if (!!document.createElement('video').canPlayType) {
         let video = document.createElement('video');
@@ -48,12 +61,9 @@ function videoSetup() {
 
 }
 
-function graphEl(img, offsetX, offsetY) {
-    this.img = img;
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-}
-
+/**
+ * Creates, sets up and renders scene
+ */
 function createScene() {
 
     var graphics = {};
@@ -77,6 +87,11 @@ function createScene() {
     tmp_canvas.width = width;
     tmp_canvas.height = height;
 
+    /**
+     * Paint (or erase) stroke onto canvas, according to mode,
+     * reading input, saving points to array and softening by
+     * using quadratic curves between points
+     */
     var onPaint = function (e) {
 
         let context;
@@ -93,6 +108,7 @@ function createScene() {
         context.lineJoin = 'round';
         context.lineCap = 'round';
 
+        // Read input accordingly
         if (e.type === "touchmove") {
             input.x = e.changedTouches[0].pageX;
             input.y = e.changedTouches[0].pageY;
@@ -101,9 +117,10 @@ function createScene() {
             input.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
         }
 
-        // Saving all the points in an array
+        // Save all the points in array
         points.push({x: input.x, y: input.y});
 
+        // If stroke not long enough draw circle and end
         if (points.length < 3) {
             var b = points[0];
             context.beginPath();
@@ -114,13 +131,14 @@ function createScene() {
             return;
         }
 
-        // Tmp canvas is always cleared up before drawing.
+        // Clear temp canvas before drawing
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
         context.beginPath();
         draw_ctx.globalCompositeOperation = (mode === "draw") ? 'source-over' : 'destination-out';
         context.moveTo(points[0].x, points[0].y);
 
+        // Draw all points in array and join them with quadratic curves
         for (var i = 1; i < points.length - 2; i++) {
             var c = (points[i].x + points[i + 1].x) / 2;
             var d = (points[i].y + points[i + 1].y) / 2;
@@ -142,6 +160,9 @@ function createScene() {
 
     init();
 
+    /**
+     * Set up scene, add event listeners and load assets.
+     */
     function init() {
 
         loadImages();
@@ -172,97 +193,97 @@ function createScene() {
 
     }
 
+    /**
+     * Load images from assets folder, create DOM elements
+     * and add to array
+     */
     function loadImages() {
 
         var img = new Image();
-        img.src = 'media/img/graphics/andreu-glasses.png';
+        img.src = 'media/img/el-gest/andreu-glasses.png';
         var el = new graphEl(img, 0, 0);
         graphics["andreu-glasses"] = el;
         elementCanvas["andreu-glasses"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/andreu-pop.png';
+        img.src = 'media/img/el-gest/andreu-pop.png';
         el = new graphEl(img, 0, 0);
         graphics["andreu-pop"] = el;
         elementCanvas["andreu-pop"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/andreu-tear-1.png';
+        img.src = 'media/img/el-gest/andreu-tear-1.png';
         el = new graphEl(img, 0, 0);
         graphics["andreu-tear-1"] = el;
         elementCanvas["andreu-tear-1"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/andreu-tear-2.png';
+        img.src = 'media/img/el-gest/andreu-tear-2.png';
         el = new graphEl(img, 0, 0);
         graphics["andreu-tear-2"] = el;
         elementCanvas["andreu-tear-2"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/andreu-tear-3.png';
+        img.src = 'media/img/el-gest/andreu-tear-3.png';
         el = new graphEl(img, 0, -20);
         graphics["andreu-tear-3"] = el;
         elementCanvas["andreu-tear-3"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/litus-halo.png';
+        img.src = 'media/img/el-gest/litus-halo.png';
         el = new graphEl(img, 0, 0);
         graphics["litus-halo"] = el;
         elementCanvas["litus-halo"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/litus-pop.png';
+        img.src = 'media/img/el-gest/litus-pop.png';
         el = new graphEl(img, 0, 0);
         graphics["litus-pop"] = el;
         elementCanvas["litus-pop"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/pau-mouth.png';
+        img.src = 'media/img/el-gest/pau-mouth.png';
         el = new graphEl(img, 0, 0);
         graphics["pau-mouth"] = el;
         elementCanvas["pau-mouth"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/pau-pop.png';
+        img.src = 'media/img/el-gest/pau-pop.png';
         el = new graphEl(img, 0, 0);
         graphics["pau-pop"] = el;
         elementCanvas["pau-pop"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/pau-symbols.png';
+        img.src = 'media/img/el-gest/pau-symbols.png';
         el = new graphEl(img, 0, 0);
         graphics["pau-symbols"] = el;
         elementCanvas["pau-symbols"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/pol-patch.png';
+        img.src = 'media/img/el-gest/pol-patch.png';
         el = new graphEl(img, 0, 0);
         graphics["pol-patch"] = el;
         elementCanvas["pol-patch"] = document.createElement("canvas");
 
         img = new Image();
-        img.src = 'media/img/graphics/spheres.png';
+        img.src = 'media/img/el-gest/spheres.png';
         el = new graphEl(img, 0, 0);
         graphics["spheres"] = el;
         elementCanvas["spheres"] = document.createElement("canvas");
 
     }
 
+    /**
+     * Set up keyframes for element addition
+     * and canvas fading/cleanup
+     */
     function animationSetup() {
-        var start;
 
         tl = anime.timeline({
             autoplay: false,
             begin: function (anim) {
-                start = new Date().getTime();
                 anim.seek(document.querySelector('video').currentTime * 1000);
-                video.play();
             },
-            update: function () {
-                let time = new Date().getTime() - start;
-                output.innerHTML = "animation time: " + time + "<br>";
-                output.innerHTML += "video time: " + document.querySelector('video').currentTime * 1000;
-            }
         });
 
         // PAU - Mouth cover
@@ -279,6 +300,7 @@ function createScene() {
             }
         }, 10000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -330,6 +352,7 @@ function createScene() {
             }
         }, 20000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -355,6 +378,7 @@ function createScene() {
             }
         }, 30000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -412,6 +436,7 @@ function createScene() {
             }
         }, 69000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -437,6 +462,7 @@ function createScene() {
             }
         }, 83000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -462,6 +488,7 @@ function createScene() {
             }
         }, 93000);
 
+        // Fade out and clear canvas
         tl.add({
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
@@ -505,6 +532,7 @@ function createScene() {
             }
         }, 123000);
 
+        // End overlay animation
         tl.add({
             target: document,
             easing: 'easeInOutSine',
@@ -522,6 +550,11 @@ function createScene() {
         }, sound.duration() * 1000);
     }
 
+    /**
+     *  Add new element and corresponding
+     *  temporary canvas
+     * @param {number} id The element identifier
+     */
     function addElement(id) {
         if (graphics[id].img.complete) {
             elementCanvas[id].classList.add("element-canvas");
@@ -538,6 +571,11 @@ function createScene() {
         }
     }
 
+    /**
+     * Pass graphic element from temp canvas
+     * onto fixed canvas
+     * @param {number} id The element identifier
+     */
     function fixElement(id) {
         let scale = height / graphics[id].img.height;
         let posX = width / 2 - graphics[id].img.width * scale / 2 + graphics[id].offsetX * scale;
@@ -551,6 +589,11 @@ function createScene() {
         addingElement = false;
     }
 
+    /**
+     * Get mouse or touch coordinates on start
+     * consider offset and pass onto points array
+     * @param e The event that triggers it
+     */
     function handleStart(e) {
 
         if (e.type === "touchmove") {
@@ -568,7 +611,12 @@ function createScene() {
 
     }
 
-    function handleEnd(e) {
+    /**
+     * Remove event listener for mouse movement when
+     * user stops pressing, if on draw mode, add to fixed canvas
+     * and reset points array
+     */
+    function handleEnd() {
 
         tmp_canvas.removeEventListener("mousemove", onPaint, {passive: false});
 
@@ -585,6 +633,5 @@ function createScene() {
         points = [];
 
     }
-
 
 }

@@ -47,6 +47,7 @@ var isMobile = function () {
 const targetElement = document.querySelector("html");
 bodyScrollLock.disableBodyScroll(targetElement);
 
+// Adapt full height on mobile browsers
 const wholeHeight = document.querySelector("body").getBoundingClientRect().height;
 const barHeight = wholeHeight - window.innerHeight;
 document.querySelector("html").style.height = 'calc(100vh - ' + barHeight + 'px)';
@@ -56,4 +57,13 @@ document.querySelector(".content").style.height = 'calc(100vh - ' + barHeight + 
 // Force HTTPS to receive data
 if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+}
+
+// Commonly used functions
+function map(value, start1, stop1, start2, stop2) {
+    return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
+}
+
+function lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end
 }
