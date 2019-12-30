@@ -88,7 +88,7 @@ function createScene() {
 
     var scene, renderer, composer, filmPass;
     var camera;
-    var terrain, sky, largeSphere, mediumSphere, smallSphere;
+    var terrain, sky, blackSky, largeSphere, mediumSphere, smallSphere;
     var wavesTextureEnd, skyTextureEnd;
     var bubbles = [];
     var then = 0;
@@ -150,9 +150,12 @@ function createScene() {
         }, 13000);
 
         tl.add({
-            targets: sky.material,
-            opacity: 1.0,
-            duration: 500
+            targets: blackSky.material,
+            opacity: 0.0,
+            duration: 500,
+            complete: function () {
+                scene.remove(blackSky);
+            }
         }, 13000);
 
         // Spheres appear @ 10s - 14s
@@ -187,21 +190,21 @@ function createScene() {
 
         tl.add({
             targets: largeSphere.position,
-            easing: 'easeInQuad',
+            //easing: 'easeInQuad',
             y: "-= 200",
             duration: 5000
         }, 55000);
 
         tl.add({
             targets: mediumSphere.position,
-            easing: 'easeInQuad',
+            //easing: 'easeInQuad',
             y: "-= 200",
             duration: 5000
         }, 56000);
 
         tl.add({
             targets: smallSphere.position,
-            easing: 'easeInQuad',
+            //easing: 'easeInQuad',
             y: "-= 200",
             duration: 5000
         }, 57000);
@@ -280,7 +283,7 @@ function createScene() {
 
         tl.add({
             targets: sky.material,
-            opacity: 0.0,
+            opacity: [1.0, 0.0],
             duration: 5000,
             easing: 'easeInOutSine',
             complete: function () {
@@ -513,22 +516,33 @@ function createScene() {
      * Create sphere for sky, add texture and add to screen
      */
     function createSky() {
-        var skyGeo = new THREE.SphereGeometry(500, 25, 25);
+        let skyGeo = new THREE.SphereGeometry(500, 25, 25);
 
-        var loader = new THREE.TextureLoader();
-        var texture = loader.load("media/img/miracle/sky.png");
+        let loader = new THREE.TextureLoader();
+        let texture = loader.load("media/img/miracle/sky.png");
 
-        var material = new THREE.MeshBasicMaterial({
+        let material = new THREE.MeshBasicMaterial({
             map: texture,
             transparent: true,
-            opacity: 0
+            opacity: 1,
+            side: THREE.BackSide
         });
 
         sky = new THREE.Mesh(skyGeo, material);
-        sky.material.side = THREE.BackSide;
 
         skyTextureEnd = loader.load("media/img/miracle/end-sky.png");
         scene.add(sky);
+
+        material = new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            transparent: true,
+            opacity: 1,
+            side: THREE.BackSide
+        });
+        blackSky = new THREE.Mesh(skyGeo, material);
+        blackSky.scale.set(0.9,0.9,0.9);
+        scene.add(blackSky);
+
     }
 
     /**
