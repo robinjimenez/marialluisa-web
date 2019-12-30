@@ -13,10 +13,7 @@ import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
-var target = {
-    x: 0,
-    y: 0
-};
+var target = { x: 0, y: 0 };
 
 const colors = [
     "#63A7C4",
@@ -32,7 +29,6 @@ var videoHeight, videoWidth;
 
 document.getElementById('start-button').onclick = requestPermissions;
 
-// For devices that need permission requesting
 /**
  * Request access to frontal camera video stream.
  * If allowed, add to video DOM element.
@@ -114,7 +110,6 @@ function createScene() {
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
-        document.querySelector('#start-button').remove();
     }
 
     /**
@@ -348,7 +343,7 @@ function createScene() {
             material = new THREE.MeshBasicMaterial({
                 map: texture,
                 transparent: true,
-                opacity: 0.07
+                opacity: 0.9
             });
             var videoMesh = new THREE.Mesh(geometry, material);
             videoMesh.position.set(0, 1, 0);
