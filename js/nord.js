@@ -17,16 +17,11 @@ var target = {lat: 0, long: 0, prevLat: 0, prevLong: 0};
 var colorCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
 
 const colors = [
-    new THREE.Color("rgb(242, 168, 247)"),
-    new THREE.Color("rgb(196,205,255)"),
-    new THREE.Color("rgb(247,158,184)"),
-    new THREE.Color("rgb(162,225,250)"),
-    new THREE.Color("rgb(224, 228, 255)")
+    new THREE.Color("rgb(255,255,255)"),
+    new THREE.Color("rgb(244,184,250)"),
+    new THREE.Color("rgb(164,150,220)"),
+    new THREE.Color("rgb(220,133,166)")
 ];
-
-var triggers = {
-    bgRotation: 0
-};
 
 document.getElementById('start-button').onclick = requestPermissions;
 
@@ -76,20 +71,22 @@ function onDeviceMove(e) {
  */
 function createScene() {
 
-    var container = document.querySelector("#display");
+    const container = document.querySelector("#display");
 
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var world, timeStep=1/60, spring;
+    var world, spring;
+    const timeStep = 1/60;
 
     var scene, bgColor, renderer, camera, composer, filmPass;
     var then = 0;
+    var triggers = {
+        bgRotation: 0,
+    };
     var updateTarget = false;
 
     var mainSphere, mainSphereBody, innerSphere, outerSphere, backgroundSphere, targetBody;
-
-    var pulseLoop;
 
     init();
 
@@ -145,19 +142,27 @@ function createScene() {
      */
     function animationSetup() {
         let colorIndex = 0;
+        let start;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            autoplay: true,
-            begin: function() {
+            begin: function(anim) {
+                start = new Date().getTime();
+                anim.seek(sound.seek() * 1000);
                 sound.play();
+            },
+            update: function (anim) {
+                let time = new Date().getTime() - start;
+                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML += "sound time: " + sound.seek() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
 
-        anime({
+        const pulseLoop = anime({
             targets: [outerSphere.scale, innerSphere.scale, mainSphere.scale],
             delay: anime.stagger(980),
-            autoplay: true,
+            autoplay: false,
             loop: true,
             direction: 'alternate',
             x: [
@@ -182,28 +187,48 @@ function createScene() {
         });
 
         tl.add({
+            begin: function () {
+                pulseLoop.play();
+            }
+        }, 3000);
+
+        tl.add({
+            targets: camera,
+            fov: [
+                {value: '170', easing: 'easeOutSine', duration: 1000},
+                {value: '90', easing: 'easeInOutQuad', duration: 50}
+            ],
+            update: function () {
+                camera.updateProjectionMatrix();
+            }
+        }, 75000);
+
+        tl.add({
             targets: triggers,
+            bgRotation: 0.8,
+            duration: 100000,
+            begin: function () {
+                pulseLoop.pause();
+            }
+        }, 90000); //90000
+
+        tl.add({
             begin: function() {
+                pulseLoop.play();
+
                 spring = new CANNON.Spring(mainSphereBody,targetBody,{
                     localAnchorA: new CANNON.Vec3(5,5,5),
                     localAnchorB: new CANNON.Vec3(10,10,10),
                     restLength : 0,
-                    stiffness : 10,
+                    stiffness : 50,
                     damping : 4,
                 });
 
                 world.addEventListener("postStep",function(){
                     spring.applyForce();
                 });
-            },
-            duration: 5000,
-        }, 5000);
-
-        tl.add({
-            targets: camera.pov,
-            value: 90,
-            duration: 5000
-        }, 5000);
+            }
+        }, 140000);
 
         tl.add({
             target: document,
@@ -329,14 +354,14 @@ function createScene() {
 
         mainSphereBody = new CANNON.Body({ mass: 1 });
         mainSphereBody.addShape( new CANNON.Sphere(10));
-        mainSphereBody.position.set(100,0,0);
+        mainSphereBody.position.set(0,0,100);
         mainSphereBody.velocity.set(0,0,0);
         mainSphereBody.angularVelocity.set(0,0,0);
         world.addBody(mainSphereBody);
 
         targetBody = new CANNON.Body({ mass: 1 });
         targetBody.addShape( new CANNON.Sphere(10));
-        targetBody.position.set(100,0,0);
+        targetBody.position.set(0,0,100);
         targetBody.velocity.set(0,0,0);
         targetBody.angularVelocity.set(0,0,0);
         world.addBody(targetBody);
@@ -492,6 +517,9 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
+
+        backgroundSphere.rotation.x += deltaTime * triggers.bgRotation * Math.PI;
+        backgroundSphere.rotation.z -= deltaTime * triggers.bgRotation * Math.PI;
 
         updatePhysics();
         composer.render(deltaTime);
