@@ -94,7 +94,6 @@ function createScene() {
 
         sceneSetup();
         sceneElements();
-        render();
 
         if (!isMobile()) {
             window.addEventListener("mousemove", handleMove);
@@ -105,6 +104,7 @@ function createScene() {
         resize();
 
         animationSetup();
+        render();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
@@ -128,11 +128,17 @@ function createScene() {
      * transformation and removal
      */
     function animationSetup() {
+
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            autoplay: true,
-            begin: function () {
+            begin: function (anim) {
                 sound.play();
+                anim.seek(sound.seek() * 1000);
+            },
+            update: function (anim) {
+                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
+                output.innerHTML += "sound time: " + sound.seek() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
 
@@ -443,6 +449,12 @@ function createScene() {
      */
     function render() {
 
+        var time = performance.now() * 0.001;
+        const deltaTime = time - then;
+        then = time;
+
+        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
+
         input.xDamped = lerp(input.xDamped, target.x, 0.08);
         input.yDamped = lerp(input.yDamped, target.y, 0.08);
 
@@ -450,10 +462,6 @@ function createScene() {
         mainSphere.position.z = input.yDamped;
 
         mainSphereBody.position.copy(mainSphere.position);
-
-        var time = performance.now() * 0.001;
-        const deltaTime = time - then;
-        then = time;
 
         updatePhysics(deltaTime);
         composer.render(deltaTime);

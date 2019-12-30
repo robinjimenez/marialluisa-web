@@ -103,7 +103,6 @@ function createScene() {
         sceneSetup();
         sceneElements();
         sceneTextures();
-        render();
 
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
@@ -112,6 +111,7 @@ function createScene() {
         resize();
 
         animationSetup();
+        render();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
@@ -124,18 +124,15 @@ function createScene() {
      * transformation and removal
      */
     function animationSetup() {
-        let start;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            begin: function(anim) {
-                start = new Date().getTime();
-                anim.seek(sound.seek() * 1000);
+            begin: function (anim) {
                 sound.play();
+                anim.seek(sound.seek() * 1000);
             },
             update: function (anim) {
-                let time = new Date().getTime() - start;
-                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
                 output.innerHTML += "sound time: " + sound.seek() * 1000;
                 output.innerHTML += "<br>" + sound.duration() * 1000;
             }
@@ -582,6 +579,8 @@ function createScene() {
         let time = performance.now() * 0.001;
         let deltaTime = time - then;
         then = time;
+
+        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
 
         if (isMobile()) {
 

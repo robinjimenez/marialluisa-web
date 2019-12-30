@@ -99,7 +99,6 @@ function createScene() {
 
         sceneSetup();
         sceneElements();
-        render();
 
         if (!isMobile()) {
             window.addEventListener("mousedown", handleStart);
@@ -117,6 +116,7 @@ function createScene() {
         resize();
 
         animationSetup();
+        render();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
@@ -141,18 +141,15 @@ function createScene() {
      */
     function animationSetup() {
         let colorIndex = 0;
-        let start;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            begin: function(anim) {
-                start = new Date().getTime();
-                anim.seek(sound.seek() * 1000);
+            begin: function (anim) {
                 sound.play();
+                anim.seek(sound.seek() * 1000);
             },
             update: function (anim) {
-                let time = new Date().getTime() - start;
-                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
                 output.innerHTML += "sound time: " + sound.seek() * 1000;
                 output.innerHTML += "<br>" + sound.duration() * 1000;
             }
@@ -194,13 +191,13 @@ function createScene() {
         tl.add({
             targets: camera,
             fov: [
-                {value: '170', easing: 'easeOutSine', duration: 1000},
+                {value: '170', easing: 'easeOutSine', duration: 950},
                 {value: '90', easing: 'easeInOutQuad', duration: 50}
             ],
             update: function () {
                 camera.updateProjectionMatrix();
             }
-        }, 75000);
+        }, 73500);
 
         tl.add({
             targets: triggers,
@@ -209,7 +206,7 @@ function createScene() {
             begin: function () {
                 pulseLoop.pause();
             }
-        }, 90000); //90000
+        }, 90000);
 
         tl.add({
             begin: function() {
@@ -450,6 +447,12 @@ function createScene() {
      */
     function render() {
 
+        var time = performance.now() * 0.001;
+        const deltaTime = time - then;
+        then = time;
+
+        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
+
         target.lat = Math.max(-85, Math.min(85, target.lat));
 
         mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, 0.01);
@@ -513,9 +516,6 @@ function createScene() {
 
         }
 
-        var time = performance.now() * 0.001;
-        const deltaTime = time - then;
-        then = time;
 
         backgroundSphere.rotation.x += deltaTime * triggers.bgRotation * Math.PI;
         backgroundSphere.rotation.z -= deltaTime * triggers.bgRotation * Math.PI;

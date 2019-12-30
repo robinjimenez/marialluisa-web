@@ -61,7 +61,6 @@ function createScene() {
         sceneSetup();
         sceneElements();
         createSky();
-        render();
 
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
@@ -73,6 +72,7 @@ function createScene() {
         resize();
 
         animationSetup();
+        render();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
@@ -85,12 +85,23 @@ function createScene() {
      * Set up animation for end overlay and play music
      */
     function animationSetup() {
-        sound.play();
 
-        anime({
+        tl = anime.timeline({
+            easing: 'easeInOutSine',
+            begin: function (anim) {
+                sound.play();
+                anim.seek(sound.seek() * 1000);
+            },
+            update: function (anim) {
+                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
+                output.innerHTML += "sound time: " + sound.seek() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;
+            }
+        });
+
+        tl.add({
             easing: 'easeInOutSine',
             duration: 1000,
-            delay: sound.duration() * 1000,
             begin: function () {
                 document.querySelector('.overlay').cloneNode('template');
                 document.querySelector('.overlay').classList.add("end");
@@ -98,7 +109,7 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        });
+        }, sound.duration() * 1000);
 
     }
 
@@ -322,6 +333,8 @@ function createScene() {
         var time = performance.now() / 1000;
         const deltaTime = time - then;
         then = time;
+
+        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
 
         if (isMobile()) {
 

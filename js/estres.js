@@ -69,7 +69,6 @@ function createScene() {
 
         sceneSetup();
         sceneElements();
-        render();
 
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
@@ -81,6 +80,7 @@ function createScene() {
         resize();
 
         animationSetup();
+        render();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
@@ -170,7 +170,6 @@ function createScene() {
             let ms = objAmmo.getMotionState();
             if (ms) {
 
-
                 ms.getWorldTransform(tmpTrans);
                 let p = tmpTrans.getOrigin();
                 let q = tmpTrans.getRotation();
@@ -200,18 +199,15 @@ function createScene() {
      * transformation and removal
      */
     function animationSetup() {
-        let start;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
             begin: function (anim) {
-                start = new Date().getTime();
-                anim.seek(sound.seek() * 1000);
                 sound.play();
+                anim.seek(sound.seek() * 1000);
             },
             update: function (anim) {
-                let time = new Date().getTime() - start;
-                output.innerHTML = "animation time: " + time + "<br>";
+                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
                 output.innerHTML += "sound time: " + sound.seek() * 1000;
                 output.innerHTML += "<br>" + sound.duration() * 1000;
             }
@@ -242,7 +238,7 @@ function createScene() {
                 {value: "*=1.5", duration: 250, endDelay: 250},
                 {value: "*=1.5", duration: 250}
             ]
-        }, 58500); //58500
+        }, 58000); //58500
 
         tl.add({
             targets: glowingOrb.scale,
@@ -259,7 +255,7 @@ function createScene() {
                 {value: "*=0.8", duration: 250}
             ],
             easing: "easeInOutQuart"
-        }, 58500); //58500
+        }, 58000); //58500
 
         tl.add({
             targets: tunnels[0].material.uniforms.u_zTrans,
@@ -494,6 +490,8 @@ function createScene() {
         var time = performance.now() / 1000;
         const deltaTime = time - then;
         then = time;
+
+        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
 
         if (isMobile()) {
 
