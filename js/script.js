@@ -191,7 +191,7 @@ $(document).ready(function () {
     function animateStart(url) {
         let overlay = document.createElement("div");
         overlay.classList.add("trans-overlay");
-        document.body.insertAdjacentElement('afterbegin',overlay);
+        document.body.insertAdjacentElement('afterbegin', overlay);
 
         anime({
             targets: overlay,
@@ -203,5 +203,16 @@ $(document).ready(function () {
             }
         });
     }
+
+    anime({
+        targets: '#reveal',
+        opacity: 0,
+        easing: 'easeInOutSine',
+        duration: 500,
+        autoplay: true,
+        complete: function () {
+            $("#reveal").remove();
+        }
+    });
 
 });
