@@ -58,7 +58,6 @@ function createScene() {
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
-        document.querySelector('#start-button').remove();
 
     }
 

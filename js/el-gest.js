@@ -189,8 +189,9 @@ function createScene() {
         video.play();
 
         document.querySelector('.overlay').setAttribute("class", "overlay hidden");
-        document.querySelector('#start-button').remove();
-
+        document.querySelectorAll('.experience-info').forEach(function (el) {
+            el.remove()
+        });
     }
 
     /**
@@ -622,9 +623,7 @@ function createScene() {
 
         if (mode === "draw") {
 
-            // Writing down to real canvas now
             draw_ctx.drawImage(tmp_canvas, 0, 0);
-            // Clearing tmp canvas
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
         }

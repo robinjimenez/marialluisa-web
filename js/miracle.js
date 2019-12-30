@@ -117,7 +117,6 @@ function createScene() {
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
-        document.querySelector('#start-button').remove();
     }
 
     /**
@@ -486,7 +485,6 @@ function createScene() {
                 color: 0x69B3CB,
                 transparent: true,
                 opacity: Math.random() + 0.5,
-                //blendingMode: THREE.AdditiveBlending,
                 depthFunc: THREE.AlwaysDepth
             });
 
