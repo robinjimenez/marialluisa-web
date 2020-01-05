@@ -73,6 +73,8 @@
       opacity: 0.4;
       overflow: hidden;
 
+      // COLOUR BASED STYLES
+
       &.slide-blue {
         .images .centered-container .center-image:before {
           background: $theme_blue;
@@ -114,6 +116,8 @@
           background: linear-gradient(90deg, $theme_pink 0%, $theme_pink_darkest 100%);
         }
       }
+
+      // INDEX BASED STYLES
 
       &[data-index="-4"], &[data-index="-3"], &[data-index="-2"], &[data-index="2"], &[data-index="3"], &[data-index="4"] {
         opacity: 0;
@@ -311,6 +315,8 @@
         transform: translateX(100vw) scale(0.8);
       }
 
+      // GENERAL SLIDE STYLES
+
       .slide {
         height: 100%;
         width: 100%;
@@ -350,7 +356,6 @@
             margin-left: 0.6em;
             font-family: $header_font_stack;
             font-weight: 400;
-            letter-spacing: 8px;
             line-height: 1em;
             opacity: 0;
 
@@ -416,10 +421,10 @@
             transform: translate(0px, 100%);
             z-index: 3;
           }
+
           .center-image {
             z-index: 2;
             background-size: cover;
-            //background-image: url('../media/img/sunflower-img.jpg');
             height: 100%;
             transform: translate(0px, 100%);
 
@@ -434,6 +439,7 @@
               mix-blend-mode: darken;
             }
           }
+
           .back-image {
             background-color: black;
             transform: translate(0px, 100%);
@@ -509,5 +515,60 @@
         }
       }
     }
+
+    #miracle {
+      .center-image {
+        background-image: url('../media/img/home/miracle_thumb.png');
+      }
+    }
+
+    #mala-sang {
+      .center-image {
+        background-image: url('../media/img/home/mala-sang_thumb.png');
+      }
+    }
+
+    #estres {
+      .center-image {
+        background-image: url('../media/img/home/estres_thumb.png');
+      }
+    }
+
+    #bestia {
+      .center-image {
+        background-image: url('../media/img/home/bestia_thumb.png');
+      }
+    }
+
+    #nord {
+      .center-image {
+        background-image: url('../media/img/home/nord_thumb.png');
+      }
+    }
+
+    #nica {
+      .center-image {
+        background-image: url('../media/img/home/nica_thumb.png');
+      }
+    }
+
+    #el-gest {
+      .center-image {
+        background-image: url('../media/img/home/el-gest_thumb.png');
+      }
+    }
+
+    #girasol {
+      .center-image {
+        background-image: url('../media/img/home/girasol_thumb.png');
+      }
+    }
+
+    #la-posta {
+      .center-image {
+        background-image: url('../media/img/home/la-posta_thumb.png');
+      }
+    }
+
   }
 }

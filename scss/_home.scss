@@ -5,7 +5,7 @@
 body {
   transition: background-color 0.5s ease-in-out;
 
-  background-image: url("../media/img/marble-tex.jpg");
+  background-image: url("../media/img/home/marble-tex.jpg");
   background-blend-mode: color-burn;
   background-position: center;
   background-size: cover;
@@ -285,11 +285,13 @@ header {
     position: absolute;
     top: 0;
     bottom: 0;
-    opacity: 0.15;
+    opacity: 0.05;
     background-color: white;
-    background-image: url("../media/img/marble-tex.jpg");
+    //background-image: url("../media/img/home/marble-tex.jpg");
     background-size: cover;
     background-blend-mode: luminosity;
+    background-image: url("../media/img/home/menu_background.jpeg");
+    background-position: 50% 38%;
   }
 
   &[data-expanded=true] {
@@ -329,7 +331,6 @@ header {
 
         a {
           font-family: $header_font_stack;
-          letter-spacing: 3px;
           font-size: 300%;
           text-transform: uppercase;
           color: $theme_grey;
@@ -395,7 +396,6 @@ section {
 
   h1 {
     font-family: $header_font_stack;
-    letter-spacing: 3px;
     font-weight: 400;
     font-size: 200%;
     text-transform: uppercase;
