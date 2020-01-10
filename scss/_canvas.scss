@@ -87,7 +87,7 @@ body {
   margin: 50px;
 }
 
-.overlay {
+#overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -100,7 +100,6 @@ body {
   flex-direction: column;
   justify-content: center;
   opacity: 1;
-  transition: opacity 0.5s ease-in-out;
   padding: 10%;
 
   &.end {
@@ -116,12 +115,14 @@ body {
   &.hidden {
     opacity: 0;
     pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
 
     @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
       opacity: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      transition: opacity 0s linear;
 
       button, button.show {
         display: none;
@@ -146,20 +147,50 @@ body {
     font-size: 160%;
   }
 
+  .loading-message, .orientation-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+
+    p {
+      transform: translateY(-10px);
+      transition: all 1s ease-in-out;
+    }
+
+    &.show {
+      opacity: 1;
+      p {
+        transform: translateY(0);
+      }
+    }
+  }
+
   #orientation-info {
     opacity: 0;
     transform: translateY(5px);
-    transition: all 1s ease-in-out;
+    transition: transform 1s ease-in-out;
+    margin: 0;
   }
 
-  .experience-info, button, #back-button, .loading-info {
+  .experience-info, button, #back-button {
     opacity: 0;
     transform: translateY(5px);
-    transition: all 1s ease-in-out;
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 
     &.show {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    &.main {
+      font-weight: 600;
     }
   }
 
@@ -168,14 +199,13 @@ body {
 
     &:before {
       content: '<';
-      margin-right: 20px;
+      margin-right: 5px;
     }
   }
 
   button.show {
     display: block;
     margin: auto;
-    transition-delay: 0.5s;
   }
 
   @media screen and (orientation: landscape) and (max-width: $big_screen_width) {
@@ -188,12 +218,29 @@ body {
       display: none;
     }
 
+    .overlay-message {
+      opacity: 0;
+    }
+
+    .orientation-message {
+      z-index: 20;
+
+      p {
+        transform: translateY(-10px);
+        transition: all 1s ease-in-out;
+      }
+
+      &.show {
+        opacity: 1;
+      }
+    }
+
     #orientation-info {
       &.show {
         display: block;
         opacity: 1;
         transform: translateY(0);
-
+        transition: opacity 1s ease-in-out;
       }
     }
   }

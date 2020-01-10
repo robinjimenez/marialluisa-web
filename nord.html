@@ -19,21 +19,30 @@
   <main>
     <div class="content">
       <div id="output" class="output"></div>
-      <div id="overlay" class="overlay">
+      
+      <div id="overlay">
+        <div class="loading-message show">
+          <p class="loading-info">Carregant</p>
+        </div>
+        <div class="orientation-message show">
+          <p id="orientation-info">Posa el dispositiu en vertical i bloqueja l'orientació.</p>
+        </div>
         <div class="overlay-message">
-          <p class="experience-info">
-            per gaudir de l'experiència només ens has de permetre
+          <p class="main experience-info">
+            Activa el so. Puja el volum. Fes coses.
+          </p>
+          <p class="experience-info mobile">
+            Per gaudir de l'experiència només ens has de permetre
             <wbr>
             conèixer l'orientació del teu dispositiu.
           </p>
-          <p class="experience-info">
-            no rebrem ni s'emmagatzemarà cap dada.
+          <p class="experience-info mobile">
+            No rebrem ni s'emmagatzemarà cap dada.
           </p>
-          <p class="loading-info show">carregant</p>
-          <p id="orientation-info">posa el dispositiu en vertical i bloqueja l'orientació</p>
-          <button class="text-button" id="start-button" title="Acceptar" type="button">d'acord</button>
+          <button class="text-button" id="start-button" title="D'acord" type="button">D'acord</button>
         </div>
       </div>
+
       <canvas id="display"></canvas>
     </div>
   </main>
