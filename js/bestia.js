@@ -13,7 +13,7 @@ import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
-var target = { x: 0, y: 0 };
+var target = {x: 0, y: 0};
 
 const colors = [
     "#63A7C4",
@@ -76,6 +76,7 @@ function createScene() {
     var world, timeStep = 1 / 60, groundMaterial;
 
     var scene, renderer, camera, spotlight, composer, filmPass;
+    var updateTarget = false;
     var then = 0;
 
     var raycaster = new THREE.Raycaster();
@@ -96,9 +97,12 @@ function createScene() {
         sceneElements();
 
         if (!isMobile()) {
-            window.addEventListener("mousemove", handleMove);
+            updateTarget = true;
+            window.addEventListener("mousemove", handleMouseMove);
         } else {
+            window.addEventListener("touchstart", handleStart);
             window.addEventListener("touchmove", handleMove);
+            window.addEventListener("touchend", handleEnd);
         }
 
         resize();
@@ -138,9 +142,9 @@ function createScene() {
                 anim.seek(sound.seek() * 1000);
             },
             update: function (anim) {
-                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
+                /*output.innerHTML = "animation time: " + anim.currentTime + "<br>";
                 output.innerHTML += "sound time: " + sound.seek() * 1000;
-                output.innerHTML += "<br>" + sound.duration() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;*/
             }
         });
 
@@ -152,7 +156,7 @@ function createScene() {
                 easing: 'easeInOutSine',
                 duration: 100,
                 opacity: function () {
-                    if (anime.random(0,1) === 1) {
+                    if (anime.random(0, 1) === 1) {
                         return anime.random(0, 1);
                     }
                     return 0;
@@ -160,8 +164,8 @@ function createScene() {
                 backgroundColor: function () {
                     return colors[anime.random(0, colors.length - 1)]
                 },
-                delay: anime.stagger((1000 - then/100) / numStrips, {from: 'center'}),
-                complete: function() {
+                delay: anime.stagger((1000 - then / 100) / numStrips, {from: 'center'}),
+                complete: function () {
                     if (toggle) barSpawning();
                 }
             });
@@ -296,6 +300,8 @@ function createScene() {
         backgroundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
         world.addBody(backgroundBody);
 
+        background.position.copy(backgroundBody.position);
+        background.quaternion.copy(backgroundBody.quaternion);
     }
 
     /**
@@ -351,7 +357,7 @@ function createScene() {
             material = new THREE.MeshBasicMaterial({
                 map: texture,
                 transparent: true,
-                opacity: 0.9
+                opacity: 0.15
             });
             var videoMesh = new THREE.Mesh(geometry, material);
             videoMesh.position.set(0, 1, 0);
@@ -397,6 +403,19 @@ function createScene() {
     }
 
     /**
+     * Trigger target update and get initial coordinates
+     * @param e The event that triggers it
+     */
+    function handleStart(e) {
+        updateTarget = true;
+
+        if (e.type === "touchstart") {
+            input.x = e.changedTouches[0].pageX;
+            input.y = e.changedTouches[0].pageY;
+        }
+    }
+
+    /**
      * Obtain coordinates from mouse or touch movement,
      * transform into screen coordinates and find
      * intersection with plane object
@@ -404,12 +423,10 @@ function createScene() {
      */
     function handleMove(e) {
 
+        if (updateTarget) {
             if (e.type === "touchmove") {
                 input.x = e.changedTouches[0].pageX;
                 input.y = e.changedTouches[0].pageY;
-            } else if (e.type === "mousemove") {
-                input.x = e.clientX;
-                input.y = e.clientY;
             }
 
             let screenCoord = {
@@ -423,6 +440,32 @@ function createScene() {
                 target.x = intersected[0].point.x;
                 target.y = intersected[0].point.z;
             }
+        }
+    }
+
+    function handleMouseMove(e) {
+
+        input.x = e.clientX;
+        input.y = e.clientY;
+
+        let screenCoord = {
+            x: (input.x / width) * 2 - 1,
+            y: -(input.y / height) * 2 + 1
+        };
+
+        raycaster.setFromCamera(screenCoord, camera);
+        let intersected = raycaster.intersectObject(background);
+        if (intersected.length) {
+            target.x = intersected[0].point.x;
+            target.y = intersected[0].point.z;
+        }
+    }
+
+    /**
+     * End target updating
+     */
+    function handleEnd() {
+        updateTarget = false;
     }
 
     /**
@@ -440,9 +483,6 @@ function createScene() {
         childSphere.position.copy(childSphereBody.position);
         childSphere.quaternion.copy(childSphereBody.quaternion);
         childSphereBody.angularVelocity.set(0, 0, 0);
-
-        background.position.copy(backgroundBody.position);
-        background.quaternion.copy(backgroundBody.quaternion);
     }
 
     /**
@@ -454,8 +494,6 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
-
-        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
 
         input.xDamped = lerp(input.xDamped, target.x, 0.08);
         input.yDamped = lerp(input.yDamped, target.y, 0.08);
