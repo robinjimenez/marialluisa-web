@@ -74,7 +74,7 @@ function createScene() {
         animationSetup();
         render();
 
-        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#overlay').classList.toggle("hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
@@ -103,8 +103,9 @@ function createScene() {
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
-                document.querySelector('.overlay').cloneNode('template');
-                document.querySelector('.overlay').classList.add("end");
+                document.querySelector('#overlay').cloneNode('template');
+                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
                 container.remove();
@@ -333,8 +334,6 @@ function createScene() {
         var time = performance.now() / 1000;
         const deltaTime = time - then;
         then = time;
-
-        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
 
         if (isMobile()) {
 

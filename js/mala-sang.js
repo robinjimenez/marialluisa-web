@@ -54,7 +54,7 @@ function createScene() {
         animationSetup();
         render();
 
-        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#overlay').classList.toggle("hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
@@ -106,8 +106,8 @@ function createScene() {
             duration: 1000,
             begin: function () {
                 document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay').cloneNode('template');
-                document.querySelector('.overlay').setAttribute("class", "overlay end");
+                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
                 container.remove();
@@ -291,7 +291,7 @@ function createScene() {
         const deltaTime = time - then;
         then = time;
 
-        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
+        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
 
         updatePhysics();
         composer.render(deltaTime);

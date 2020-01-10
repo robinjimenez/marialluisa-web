@@ -113,10 +113,13 @@ function createScene() {
         animationSetup();
         render();
 
-        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#overlay').classList.toggle("hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
+        document.querySelector("#start-button").remove();
+        document.querySelector('.loading-message').remove();
+
     }
 
     /**
@@ -362,8 +365,8 @@ function createScene() {
             duration: 1000,
             begin: function () {
                 document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay').cloneNode('template');
-                document.querySelector('.overlay').setAttribute("class", "overlay end");
+                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
                 container.remove();
@@ -580,7 +583,9 @@ function createScene() {
         let deltaTime = time - then;
         then = time;
 
-        if (tl.currentTime !== sound.seek()) tl.seek(sound.seek()*1000);
+        if (tl.currentTime != sound.seek() * 1000) {
+            tl.seek(sound.seek()*1000);
+        }
 
         if (isMobile()) {
 
@@ -599,10 +604,8 @@ function createScene() {
 
             camera.position.y = triggers.cameraLift + Math.sin(time * 1.05) * 10 + map(input.bPrev, 35, 135, 0, 50);
 
-            output.innerHTML = input.a;
-            output.innerHTML += "<br>" + input.b;
-
         } else {
+
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
             input.yDamped = lerp(input.yDamped, input.y, 0.01);
             terrain.material.uniforms.distortCenter.value = map(input.xDamped, 0, width, -0.02, 0.02);

@@ -106,10 +106,12 @@ function createScene() {
         animationSetup();
         render();
 
-        document.querySelector('.overlay').setAttribute("class", "overlay hidden");
+        document.querySelector('#overlay').classList.toggle("hidden");
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
+        document.querySelector('.loading-message').remove();
+        document.querySelector('#start-button').remove();
     }
 
     /**
@@ -179,8 +181,8 @@ function createScene() {
             begin: function () {
                 barSpawning(false);
                 document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay').cloneNode('template');
-                document.querySelector('.overlay').setAttribute("class", "overlay end");
+                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
                 container.remove();
