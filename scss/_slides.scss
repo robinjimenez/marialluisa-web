@@ -51,6 +51,10 @@
   .last-slide {
     left: 0;
     top: 40%;
+
+    .last-icon {
+      transform: rotate(180deg);
+    }
   }
 
   .next-slide {
@@ -358,6 +362,7 @@
             font-weight: 400;
             line-height: 1em;
             opacity: 0;
+            z-index: 12;
 
             @media screen and (max-width: $small_screen_width) {
               font-size: 300%;
