@@ -165,6 +165,8 @@ function createScene() {
      */
     function init() {
 
+        video = document.querySelector('video');
+
         loadImages();
         animationSetup();
 
@@ -176,8 +178,6 @@ function createScene() {
             tmp_canvas.addEventListener('mousedown', handleStart, {passive: false});
             tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
         }
-
-        video = document.querySelector('video');
 
         video.addEventListener("timeupdate", function () {
             if (this.currentTime > 0.001) {
@@ -192,6 +192,8 @@ function createScene() {
         document.querySelectorAll('.experience-info').forEach(function (el) {
             el.remove()
         });
+        document.querySelector('.loading-message').remove();
+        document.querySelector('#start-button').remove();
     }
 
     /**
@@ -318,7 +320,7 @@ function createScene() {
             targets: elementCanvas["andreu-tear-1"],
             opacity: [0.0, 1.0],
             easing: 'easeInOutSine',
-            duration: 5000,
+            duration: 2000,
             begin: function () {
                 addElement("andreu-tear-1");
             },
@@ -331,27 +333,27 @@ function createScene() {
             targets: elementCanvas["andreu-tear-2"],
             opacity: [0.0, 1.0],
             easing: 'easeInOutSine',
-            duration: 5000,
+            duration: 2000,
             begin: function () {
                 addElement("andreu-tear-2");
             },
             complete: function () {
                 fixElement("andreu-tear-2");
             }
-        }, 19000);
+        }, 18500);
 
         tl.add({
             targets: elementCanvas["andreu-tear-3"],
             opacity: [0.0, 1.0],
             easing: 'easeInOutSine',
-            duration: 5000,
+            duration: 2000,
             begin: function () {
                 addElement("andreu-tear-3");
             },
             complete: function () {
                 fixElement("andreu-tear-3");
             }
-        }, 20000);
+        }, 19000);
 
         // Fade out and clear canvas
         tl.add({
@@ -384,7 +386,7 @@ function createScene() {
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
-            duration: 200,
+            duration: 500,
             complete: function () {
                 draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
                 draw_canvas.setAttribute("style", "opacity: 1");
@@ -405,7 +407,7 @@ function createScene() {
                 elementCanvas["litus-pop"].remove();
                 addingElement = false;
             }
-        }, 39500);
+        }, 39800);
 
         // ANDREU - Pop
         tl.add({
@@ -442,7 +444,7 @@ function createScene() {
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
-            duration: 200,
+            duration: 1000,
             complete: function () {
                 draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
                 draw_canvas.setAttribute("style", "opacity: 1");
@@ -468,12 +470,12 @@ function createScene() {
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
-            duration: 200,
+            duration: 1000,
             complete: function () {
                 draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
                 draw_canvas.setAttribute("style", "opacity: 1");
             }
-        }, 85000);
+        }, 88000);
 
         // ANDREU - Glasses
         tl.add({
@@ -494,7 +496,7 @@ function createScene() {
             targets: draw_canvas, tmp_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
-            duration: 200,
+            duration: 1000,
             complete: function () {
                 draw_ctx.clearRect(0, 0, draw_canvas.width, draw_canvas.height);
                 draw_canvas.setAttribute("style", "opacity: 1");
@@ -548,7 +550,7 @@ function createScene() {
                 tmp_canvas.remove();
                 document.querySelector('video').remove();
             }
-        }, sound.duration() * 1000);
+        }, video.duration * 1000 - 1000);
     }
 
     /**
