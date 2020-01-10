@@ -403,21 +403,28 @@ section {
     margin: auto;
 
     @media screen and (min-width: $nano_screen_width) {
-      font-size: 300%;
+      font-size: 275%;
     }
 
     @media screen and (min-width: $micro_screen_width) {
       max-width: $tablet_slider_width;
-      font-size: 350%;
+      font-size: 310%;
     }
 
     @media screen and (min-width: $tiny_screen_width) {
-      max-width: $tablet_slider_width;
+      font-size: 340%;
+    }
+
+    @media screen and (min-width: $small_screen_width) {
+      max-width: $desktop_slider_width;
+    }
+
+    @media screen and (min-width: $bigish_screen_width) {
       font-size: 400%;
     }
 
-    @media screen and (min-width: $big_screen_width) {
-      max-width: $desktop_slider_width;
+    @media screen and (min-width: $huge_screen_width) {
+      font-size: 550%;
     }
 
   }
