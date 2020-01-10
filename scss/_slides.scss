@@ -16,31 +16,29 @@
     text-align: center;
     z-index: 20;
     cursor: pointer;
+    padding: 5px;
 
-    p {
-      font-family: $header_font_stack;
-      font-size: 300%;
-      font-weight: bold;
-      height: 100%;
-      line-height: 1.1;
-      transform: translateX(0);
-      opacity: 1;
+    img {
       transition: all 0.5s ease-in-out;
-      margin: 0;
+      transform: translateX(0);
+
+      &.last-icon {
+        transform: translateX(0) rotate(180deg);
+      }
     }
 
     @media screen and (min-width: $medium_screen_width) {
 
       &:hover {
-        &.next-slide p {
+        &.next-slide img {
           transform: translateX(5px);
         }
 
-        &.last-slide p {
-          transform: translateX(-5px);
+        &.last-slide img {
+          transform: translateX(-5px) rotate(180deg);
         }
 
-        p {
+        img {
           opacity: 0.5;
           transition: all 0.5s ease-in-out;
         }
@@ -51,10 +49,6 @@
   .last-slide {
     left: 0;
     top: 40%;
-
-    .last-icon {
-      transform: rotate(180deg);
-    }
   }
 
   .next-slide {
