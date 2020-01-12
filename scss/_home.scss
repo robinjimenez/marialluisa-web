@@ -2,13 +2,24 @@
    Home
    =========================== */
 
-body.home {
+body {
   transition: background-color 0.5s ease-in-out;
 
-  background-image: url("../media/img/home/marble-tex.jpg");
-  background-blend-mode: color-burn;
-  background-position: center;
-  background-size: cover;
+  &:after {
+    content: "";
+    background-image: url("../media/img/home/marble-tex.jpg");
+    background-blend-mode: luminosity;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
 
   &.pink-page {
     header {
@@ -29,12 +40,16 @@ body.home {
 
     background-color: $theme_pink_faded;
 
-    a:link:hover,
+    &:after {
+      background-color: $theme_pink_faded;
+    }
+
+    a:hover,
     a:focus {
       color: $theme_pink;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_pink;
     }
   }
@@ -58,12 +73,16 @@ body.home {
 
     background-color: $theme_yellow_faded;
 
-    a:link:hover,
-    a:link:focus {
+    &:after {
+      background-color: $theme_yellow_faded;
+    }
+
+    a:hover,
+    a:focus {
       color: $theme_yellow;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_yellow;
     }
   }
@@ -87,12 +106,16 @@ body.home {
 
     background-color: $theme_turquoise_faded;
 
-    a:link:hover,
-    a:link:focus {
+    &:after {
+      background-color: $theme_turquoise_faded;
+    }
+
+    a:hover,
+    a:focus {
       color: $theme_turquoise;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_turquoise;
     }
   }
@@ -116,13 +139,16 @@ body.home {
 
     background-color: $theme_blue_faded;
 
+    &:after {
+      background-color: $theme_blue_faded;
+    }
 
-    a:link:hover,
-    a:link:focus {
+    a:hover,
+    a:focus {
       color: $theme_blue;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_blue;
     }
   }
@@ -146,13 +172,16 @@ body.home {
 
     background-color: $theme_purple_faded;
 
+    &:after {
+      background-color: $theme_purple_faded;
+    }
 
-    a:link:hover,
-    a:link:focus {
+    a:hover,
+    a:focus {
       color: $theme_purple;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_purple;
     }
   }
@@ -176,12 +205,16 @@ body.home {
 
     background-color: $theme_orange_faded;
 
-    a:link:hover,
-    a:link:focus {
+    &:after {
+      background-color: $theme_orange_faded;
+    }
+
+    a:hover,
+    a:focus {
       color: $theme_orange;
     }
 
-    a:link:active {
+    a:active {
       color: $theme_orange;
     }
   }
@@ -321,6 +354,7 @@ header {
       flex-direction: column;
       text-align: center;
       justify-content: center;
+      align-items: center;
 
       li {
         display: block;
@@ -381,6 +415,42 @@ header {
           a {
             font-size: 250%;
           }
+        }
+      }
+
+      #social-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        height: auto;
+
+        img {
+          width: 30px;
+        }
+
+        .social-link {
+          position: relative;
+          margin: 15px;
+          font-size: unset;
+          opacity: 0.3;
+          transition: opacity 0.5s ease-in-out;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          /*&:after {
+            content: '';
+            background-color: $theme_grey;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+          }
+           */
+
         }
       }
     }

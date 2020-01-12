@@ -4,7 +4,7 @@
 
 .slider-container {
   width: 100%;
-  height: 85%;
+  height: 80%; // 85%
   margin-top: 1.5em;
   position: relative;
 
@@ -66,7 +66,7 @@
       display: inline-block;
       width: $mobile_slider_width;
       position: absolute;
-      height: 60vh;
+      height: 90%; // 60vh
       transition: all 0.4s ease-out, opacity 0.2s ease-in-out;
       opacity: 0.4;
       overflow: hidden;
@@ -154,13 +154,13 @@
               }
             }
 
-            .front-image {
+            .front-border {
               transform: translate(10px, 10px);
             }
             .center-image {
               transform: translate(0px, 0px);
             }
-            .back-image {
+            .back-box {
               transform: translate(-10px, -10px);
             }
           }
@@ -419,7 +419,7 @@
 
           }
 
-          .front-image {
+          .front-border {
             border: white 5px solid;
             transform: translate(0px, 100%);
             z-index: 3;
@@ -443,7 +443,7 @@
             }
           }
 
-          .back-image {
+          .back-box {
             background-color: black;
             transform: translate(0px, 100%);
             z-index: 1;
@@ -506,13 +506,13 @@
         width: $desktop_slider_width;
 
         &[data-index="0"] .images .centered-container {
-          .front-image {
+          .front-border {
             transform: translate(20px, 20px);
           }
           .center-image {
             transform: translate(0px, 0px);
           }
-          .back-image {
+          .back-box {
             transform: translate(-20px, -20px);
           }
         }
@@ -571,21 +571,6 @@
       .center-image {
         background-image: url('../media/img/home/la-posta_thumb.png');
       }
-
-      br {
-        display: none;
-      }
-
-      @media screen and (max-width: $tiny_screen_width) {
-        br {
-          display: inline;
-        }
-
-        h2 {
-          font-size: 220%;
-        }
-      }
-
     }
 
   }
