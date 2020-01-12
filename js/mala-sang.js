@@ -95,7 +95,7 @@ function createScene() {
             duration: 2000,
             loopBegin: function () {
                 for (let i = 0; i <= Math.floor(Math.random() * 5); i++) {
-                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , 1, new CANNON.Vec3(0,0,0));
+                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
                 }
             }
         });
@@ -177,7 +177,11 @@ function createScene() {
 
         scene.add(sphere);
 
+        // Create a body with mass
+        // Smaller balls are randomly assigned mass 0 to simulate stickyness
         let body = new CANNON.Body({mass: scale});
+        if (scale < 0.1 || (Math.random() < 0.1 && scale < 0.3)) body = new CANNON.Body({mass: 0});
+
         body.addShape(new CANNON.Sphere(scale));
         body.position.set(x, y, -20);
         body.velocity.set(linearVel.x,linearVel.y,linearVel.z);
@@ -252,12 +256,20 @@ function createScene() {
             let hitObject = intersectedObjects[0].object;
 
             if (hitObject.geometry.type === 'SphereGeometry') {
-                let linearVel = drops.find(el => el.mesh === hitObject).body.velocity;
-                let scale = hitObject.scale.x * Math.random() * 0.5 + 0.2;
-                createBall(intersectedObjects[0].point.x - hitObject.scale.x, intersectedObjects[0].point.y, scale, new CANNON.Vec3(linearVel.x-5,linearVel.y + Math.random()*4 - 2,0));
-                createBall(intersectedObjects[0].point.x + hitObject.scale.x, intersectedObjects[0].point.y, hitObject.scale.x - scale, new CANNON.Vec3(linearVel.x+5,linearVel.y + Math.random()*4 - 2,0));
+                let drop = drops.find(el => el.mesh === hitObject);
+                let linearVel = drop.body.velocity;
+                if (drop.body.mass > 0) {
+                    let scale = hitObject.scale.x * (Math.random() * 0.5 + 0.2);
 
-                removeBall(hitObject);
+                    // create two child spheres, inheriting positions and velocity
+                    // and splitting into random scales maintaining total size
+                    let offset = Math.random()*4 - 2;
+                    createBall(intersectedObjects[0].point.x - hitObject.scale.x, intersectedObjects[0].point.y, scale, new CANNON.Vec3(linearVel.x-5,linearVel.y + offset, 0));
+                    createBall(intersectedObjects[0].point.x + hitObject.scale.x, intersectedObjects[0].point.y, hitObject.scale.x - scale, new CANNON.Vec3(linearVel.x+5,linearVel.y + offset, 0));
+
+                    removeBall(hitObject);
+
+                }
             }
         }
 
@@ -290,8 +302,6 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
-
-        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
 
         updatePhysics();
         composer.render(deltaTime);
