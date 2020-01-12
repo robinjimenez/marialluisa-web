@@ -12,7 +12,7 @@ import {FilmPass} from '../lib/three/examples/jsm/postprocessing/FilmPass.js';
 import {SMAAPass} from '../lib/three/examples/jsm/postprocessing/SMAAPass.js';
 import anime from '../lib/animejs/lib/anime.es.js';
 
-var mode;
+var mode = "day";
 
 // Request user location, if available set background
 // according to time of day at said position,
@@ -101,12 +101,6 @@ function createScene() {
             easing: 'easeInOutSine',
             begin: function (anim) {
                 sound.play();
-                anim.seek(sound.seek() * 1000);
-            },
-            update: function (anim) {
-                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
-                output.innerHTML += "sound time: " + sound.seek() * 1000;
-                output.innerHTML += "<br>" + sound.duration() * 1000;
             }
         });
 
@@ -138,7 +132,7 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        },sound.duration() * 1000);
+        }, sound.duration() * 1000);
 
     }
 
@@ -307,8 +301,6 @@ function createScene() {
         var time = performance.now() * 0.001;
         const deltaTime = time - then;
         then = time;
-
-        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
 
         if (mode === "day") {
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
