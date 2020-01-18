@@ -128,6 +128,7 @@ function createScene() {
      */
     function animationSetup() {
 
+
         tl = anime.timeline({
             easing: 'easeInOutSine',
             begin: function (anim) {
@@ -135,9 +136,9 @@ function createScene() {
                 anim.seek(sound.seek() * 1000);
             },
             update: function (anim) {
-                output.innerHTML = "animation time: " + anim.currentTime + "<br>";
+                /*output.innerHTML = "animation time: " + tl.currentTime + "<br>";
                 output.innerHTML += "sound time: " + sound.seek() * 1000;
-                output.innerHTML += "<br>" + sound.duration() * 1000;
+                output.innerHTML += "<br>" + sound.duration() * 1000;*/
             }
         });
 
