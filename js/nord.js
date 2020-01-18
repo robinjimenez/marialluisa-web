@@ -85,6 +85,7 @@ function createScene() {
         bgRotation: 0,
     };
     var updateTarget = false;
+    let activeSpring = false;
 
     var mainSphere, mainSphereBody, innerSphere, outerSphere, backgroundSphere, targetBody;
 
@@ -210,6 +211,7 @@ function createScene() {
 
         tl.add({
             begin: function() {
+                activeSpring = true;
                 pulseLoop.play();
 
                 spring = new CANNON.Spring(mainSphereBody,targetBody,{
@@ -451,7 +453,7 @@ function createScene() {
         const deltaTime = time - then;
         then = time;
 
-        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
+        //if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
 
         target.lat = Math.max(-85, Math.min(85, target.lat));
 
@@ -520,7 +522,7 @@ function createScene() {
         backgroundSphere.rotation.x += deltaTime * triggers.bgRotation * Math.PI;
         backgroundSphere.rotation.z -= deltaTime * triggers.bgRotation * Math.PI;
 
-        updatePhysics();
+        if (activeSpring) updatePhysics();
         composer.render(deltaTime);
         requestAnimationFrame(render);
     }
