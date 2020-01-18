@@ -366,7 +366,7 @@ function createScene() {
             duration: 1000,
             begin: function () {
                 document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                document.querySelector('.overlay-message').appendChild(document.querySelector("template").content);
                 document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
@@ -584,9 +584,6 @@ function createScene() {
         let deltaTime = time - then;
         then = time;
 
-        if (tl.currentTime != sound.seek() * 1000) {
-            tl.seek(sound.seek()*1000);
-        }
 
         if (isMobile()) {
 
