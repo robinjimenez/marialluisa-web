@@ -134,6 +134,7 @@ function createScene() {
      * transformation and removal
      */
     function animationSetup() {
+        let keepSpawning = true;
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
@@ -150,7 +151,7 @@ function createScene() {
 
         // Recursive animation for bar spawning
         // If toggle is false, stop recursive loop
-        function barSpawning(toggle) {
+        function barSpawning() {
             anime({
                 targets: '.strip',
                 easing: 'easeInOutSine',
@@ -166,7 +167,7 @@ function createScene() {
                 },
                 delay: anime.stagger((1000 - then / 100) / numStrips, {from: 'center'}),
                 complete: function () {
-                    if (toggle) barSpawning();
+                    if (keepSpawning) barSpawning();
                 }
             });
         }
@@ -174,16 +175,16 @@ function createScene() {
         // Start spawning bars @ 1:55 min
         tl.add({
             begin: function () {
-                barSpawning(true);
+                barSpawning();
             },
-        }, 115000); //100000
+        }, 100000); //100000 or 115000
 
         // End overlay animation and spawning stop
         tl.add({
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
-                barSpawning(false);
+                keepSpawning = false;
                 document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
                 document.querySelector('#overlay').classList.toggle("end");
@@ -361,7 +362,11 @@ function createScene() {
             });
             var videoMesh = new THREE.Mesh(geometry, material);
             videoMesh.position.set(0, 1, 0);
-            videoMesh.scale.set(-0.5, 0.5, 0.5);
+            /*if (videoWidth / videoHeight < width / height) {
+                videoMesh.scale.set(-0.5, 0.5, 0.5);
+            }*/
+            let scaleFactor = Math.max(videoWidth/videoHeight, width/height);
+            videoMesh.scale.set(-scaleFactor/2, scaleFactor/2, scaleFactor/2);
             videoMesh.lookAt(camera.position);
             scene.add(videoMesh);
         }
