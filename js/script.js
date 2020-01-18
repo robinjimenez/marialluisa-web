@@ -70,25 +70,24 @@ $(document).ready(function () {
     function updatePageStatus() {
         var $active_slide = $(".slide-container[data-index='0']");
         var $body = $('body');
-        $body.removeClass();
         switch (true) {
             case ($active_slide.hasClass('slide-yellow')):
-                $body.addClass('yellow-page');
+                $body.attr("data-colour", "yellow");
                 break;
             case ($active_slide.hasClass('slide-blue')):
-                $body.addClass('blue-page');
+                $body.attr("data-colour", "blue");
                 break;
             case ($active_slide.hasClass('slide-pink')):
-                $body.addClass('pink-page');
+                $body.attr("data-colour", "pink");
                 break;
             case ($active_slide.hasClass('slide-orange')):
-                $body.addClass('orange-page');
+                $body.attr("data-colour", "orange");
                 break;
             case ($active_slide.hasClass('slide-turquoise')):
-                $body.addClass('turquoise-page');
+                $body.attr("data-colour", "turquoise");
                 break;
             case ($active_slide.hasClass('slide-purple')):
-                $body.addClass('purple-page');
+                $body.attr("data-colour", "purple");
                 break;
         }
     }
