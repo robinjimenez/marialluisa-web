@@ -190,6 +190,7 @@ function createScene() {
                 terrain[i].material.uniforms.u_height.value = 0.0001 + 0.005 * i;
                 terrain[i].material.uniforms.u_amp.value = 50.0 + 10.0 * i;
 
+                //terrain[i].position.set(0, -220 - 30 * i, -5.0 + i);
                 terrain[i].position.set(0, -220 - 30 * i, -5.0 + i);
             }
             console.log(terrain[i].material.uniforms.u_seed.value);
@@ -263,14 +264,14 @@ function createScene() {
             y: -(input.y / height) * 2 + 1
         };
 
+
         raycaster.setFromCamera(screenCoord, camera);
         let intersected = raycaster.intersectObjects(scene.children);
         if (intersected.length) {
             let target = intersected[0].object;
 
             target.material.uniforms.u_seed.value = Math.random();
-            //target.material.uniforms.u_disp.value = 50.0;
-            //target.material.uniforms.u_color = new THREE.Uniform(new THREE.Vector3(0.9, 0.9, 0.9));
+            target.material.uniforms.u_disp.value = Math.random() * 10.0 + 10.0;
 
             target.material.needsUpdate = true;
 
