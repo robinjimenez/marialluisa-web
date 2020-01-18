@@ -5,7 +5,7 @@
 body {
   transition: background-color 0.5s ease-in-out;
 
-  &:after {
+  &.home:after {
     content: "";
     background-image: url("../media/img/home/marble-tex.jpg");
     background-blend-mode: luminosity;
@@ -21,7 +21,7 @@ body {
     z-index: -1;
   }
 
-  &.pink-page {
+  &[data-colour="pink"] {
     header {
       a.logo-container {
         svg {
@@ -54,7 +54,7 @@ body {
     }
   }
 
-  &.yellow-page {
+  &[data-colour="yellow"] {
     header {
       a.logo-container {
         svg {
@@ -87,7 +87,7 @@ body {
     }
   }
 
-  &.turquoise-page {
+  &[data-colour="turquoise"] {
     header {
       a.logo-container {
         svg {
@@ -120,7 +120,7 @@ body {
     }
   }
 
-  &.blue-page {
+  &[data-colour="blue"] {
     header {
       a.logo-container {
         svg {
@@ -153,7 +153,7 @@ body {
     }
   }
 
-  &.purple-page {
+  &[data-colour="purple"] {
     header {
       a.logo-container {
         svg {
@@ -186,7 +186,7 @@ body {
     }
   }
 
-  &.orange-page {
+  &[data-colour="orange"] {
     header {
       a.logo-container {
         svg {
@@ -439,17 +439,6 @@ header {
           &:hover {
             opacity: 1;
           }
-
-          /*&:after {
-            content: '';
-            background-color: $theme_grey;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-          }
-           */
 
         }
       }

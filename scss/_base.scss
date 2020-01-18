@@ -60,6 +60,10 @@ a:visited {
     color: black;
 }
 
+a:focus {
+    outline: none;
+}
+
 p,a,h1,h2,h3 {
     color: $theme_almost_black;
     font-family: $base_font_stack;
@@ -131,4 +135,7 @@ button {
     &:hover{
         color: $theme_grey;
     }
-}
+
+    &:focus {
+        outline: none;
+    }}
