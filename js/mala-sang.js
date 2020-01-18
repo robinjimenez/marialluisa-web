@@ -100,6 +100,17 @@ function createScene() {
             }
         });
 
+        anime({
+            loop: true,
+            delay: 170000,
+            duration: 500,
+            loopBegin: function () {
+                for (let i = 0; i <= Math.floor(Math.random() * 10); i++) {
+                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
+                }
+            }
+        });
+
         tl.add({
             target: document,
             easing: 'easeInOutSine',
@@ -180,7 +191,7 @@ function createScene() {
         // Create a body with mass
         // Smaller balls are randomly assigned mass 0 to simulate stickyness
         let body = new CANNON.Body({mass: scale});
-        if (scale < 0.1 || (Math.random() < 0.1 && scale < 0.3)) body = new CANNON.Body({mass: 0});
+        if (scale < 0.1 || (Math.random() < 0.05 && scale < 0.2)) body = new CANNON.Body({mass: 0});
 
         body.addShape(new CANNON.Sphere(scale));
         body.position.set(x, y, -20);
