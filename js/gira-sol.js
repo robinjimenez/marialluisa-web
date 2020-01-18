@@ -219,7 +219,7 @@ function createScene() {
                 pointLight = new THREE.PointLight(0xFF9D35, 2, 300);
                 break;
             default:
-                ambientLight = new THREE.AmbientLight(0xffe500, 1);
+                ambientLight = new THREE.AmbientLight(0xffe500, 0.5);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
                 sunMoon.position.y = 100;
@@ -235,15 +235,14 @@ function createScene() {
         scene.add(pointLight);
 
         // Main terrain mesh
-        var geometry = new THREE.PlaneGeometry(500, 300, 20, 20);
+        var geometry = new THREE.PlaneGeometry(width, 300, width/20, 20);
         geometry.rotateX(-Math.PI / 2);
         geometry.translate(0, -50, -200);
 
-        var material = new THREE.MeshBasicMaterial({color: 0x3B2913});
+        var material = new THREE.MeshPhongMaterial({color: 0x0d3d1a, shininess: 0});
 
         terrain = new THREE.Mesh(geometry, material);
         terrain.position.y = -10;
-        terrain.scale.x = 2;
 
         scene.add(terrain);
 
@@ -309,9 +308,11 @@ function createScene() {
             if (isMobile()) {
                 sunMoon.position.x = map(input.xDamped, 0, width, -width / 2, width / 2);
             } else {
-                sunMoon.position.x = map(input.xDamped, 0, width, -250, 250);
+                sunMoon.position.x = map(input.xDamped, 0, width, -500, 500);
             }
             sunMoon.position.z = map(input.yDamped, 0, height, -300, -50);
+            sunMoon.position.y = map(input.yDamped, 0, height, 100, 80);
+
             pointLight.position.copy(sunMoon.position);
         }
 
