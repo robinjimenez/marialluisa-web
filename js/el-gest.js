@@ -54,7 +54,7 @@ function videoSetup() {
 
         let info = document.createElement('p');
         info.setAttribute("class", "experience-info");
-        info.innerText = "el teu navegador no pot reproduïr l'experiència. intenta-ho amb un més modern."
+        info.innerText = "El teu navegador no pot reproduïr l'experiència. Intenta-ho amb un més modern."
     }
 
     document.getElementById('start-button').onclick = createScene;
@@ -122,9 +122,8 @@ function createScene() {
 
         // If stroke not long enough draw circle and end
         if (points.length < 3) {
-            var b = points[0];
             context.beginPath();
-            context.arc(b.x, b.y, context.lineWidth / 2, 0, Math.PI * 2, !0);
+            context.arc(points[0].x, points[0].y, context.lineWidth / 2, 0, Math.PI * 2, !0);
             context.fill();
             context.closePath();
 
@@ -140,10 +139,10 @@ function createScene() {
 
         // Draw all points in array and join them with quadratic curves
         for (var i = 1; i < points.length - 2; i++) {
-            var c = (points[i].x + points[i + 1].x) / 2;
-            var d = (points[i].y + points[i + 1].y) / 2;
+            let xCenter = (points[i].x + points[i + 1].x) / 2;
+            let yCenter = (points[i].y + points[i + 1].y) / 2;
 
-            context.quadraticCurveTo(points[i].x, points[i].y, c, d);
+            context.quadraticCurveTo(points[i].x, points[i].y, xCenter, yCenter);
 
         }
 
@@ -305,7 +304,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 1000,
@@ -357,7 +356,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 1000,
@@ -383,7 +382,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 500,
@@ -441,7 +440,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 1000,
@@ -467,7 +466,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 1000,
@@ -493,7 +492,7 @@ function createScene() {
 
         // Fade out and clear canvas
         tl.add({
-            targets: draw_canvas, tmp_canvas,
+            targets: draw_canvas,
             opacity: [1.0, 0.0],
             easing: 'easeInOutSine',
             duration: 1000,
