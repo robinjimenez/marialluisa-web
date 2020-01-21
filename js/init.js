@@ -8,9 +8,9 @@
 const output = document.querySelector('.output');
 
 var input = {
-    x: 0, y: 0, z: 0,                       // x, y, z coordinates for mouse and touch
-    xPrev: 0, yPrev: 0, zPrev: 0,
-    xDamped: 0, yDamped: 0, zDamped: 0,
+    x: 0, y: 0,                       // x, y coordinates for mouse and touch
+    xPrev: 0, yPrev: 0,
+    xDamped: 0, yDamped: 0,
     a: 0, b: 0, g: 0,                       // alpha, beta, gamma for device rotation
     aPrev: 0, bPrev: 0, gPrev: 0
 };
@@ -43,7 +43,10 @@ var sound = new Howl({
         });
 
         var startButton = document.querySelector("#start-button");
-        if (startButton !== null) startButton.classList.toggle("show");
+        if (startButton !== null) {
+            startButton.removeAttribute("disabled");
+            startButton.classList.toggle("show");
+        }
     }
 });
 
