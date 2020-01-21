@@ -14,7 +14,7 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 // Variables
 var target = {lat: 0, long: 0, prevLat: 0, prevLong: 0};
-var colorCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
+var colourCoord = {x: 0, y: 0, prevX: 0, prevY: 0};
 
 const colors = [
     new THREE.Color("rgb(255,255,255)"),
@@ -130,8 +130,6 @@ function createScene() {
      */
     function setupCannon() {
         world = new CANNON.World();
-        world.quatNormalizeSkip = 0;
-        world.quatNormalizeFast = false;
         world.gravity.set(0,0,0);
         world.broadphase = new CANNON.NaiveBroadphase();
     }
@@ -259,7 +257,7 @@ function createScene() {
         camera = new THREE.PerspectiveCamera(70, width / height, .1, 1000);
         camera.position.set(0, 0, 0);
         camera.rotation.set(0, 0, 0);
-        camera.target = new THREE.Vector3(0, 0, 200);
+        camera.target = new THREE.Vector3(0, 0, 500);
 
         renderer = new THREE.WebGLRenderer({
             canvas: container,
@@ -409,16 +407,16 @@ function createScene() {
     function handleMove(e) {
         if (updateTarget) {
             if (e.type === "touchmove") {
-                target.lat = -(input.y - e.changedTouches[0].pageY) * 0.1 + target.prevLat;
-                target.long = -(e.changedTouches[0].pageX - input.x) * 0.1 + target.prevLong;
+                target.lat = target.prevLat - (input.y - e.changedTouches[0].pageY) * 0.1;
+                target.long = target.prevLong - (e.changedTouches[0].pageX - input.x) * 0.1;
             } else {
-                target.lat = -(input.y - e.clientY) * 0.1 + target.prevLat;
-                target.long = -(e.clientX - input.x) * 0.1 + target.prevLong;
+                target.lat = target.prevLat - (input.y - e.clientY) * 0.1;
+                target.long = target.prevLong - (e.clientX - input.x) * 0.1;
             }
         }
 
-        colorCoord.x = e.clientX;
-        colorCoord.y = e.clientY;
+        colourCoord.x = e.clientX;
+        colourCoord.y = e.clientY;
 
     }
 
@@ -440,7 +438,7 @@ function createScene() {
         // Copy coordinates from Cannon.js to Three.js
         mainSphere.position.copy(mainSphereBody.position);
         mainSphere.quaternion.copy(mainSphereBody.quaternion);
-        targetBody.position.set(camera.target.x/2,camera.target.y/2,camera.target.z/2);
+        targetBody.position.set(camera.target.x,camera.target.y,camera.target.z);
     }
 
     /**
@@ -453,13 +451,12 @@ function createScene() {
         const deltaTime = time - then;
         then = time;
 
-        //if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
-
+        // Limiting lattitude values to avoid turning "upside down"
         target.lat = Math.max(-85, Math.min(85, target.lat));
 
-        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x / 2, 0.01);
-        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y / 2, 0.01);
-        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z / 2, 0.01);
+        mainSphere.position.x = lerp(mainSphere.position.x, camera.target.x, 0.01);
+        mainSphere.position.y = lerp(mainSphere.position.y, camera.target.y, 0.01);
+        mainSphere.position.z = lerp(mainSphere.position.z, camera.target.z, 0.01);
 
         mainSphereBody.position.copy(mainSphere.position);
         innerSphere.position.copy(mainSphere.position);
@@ -467,9 +464,9 @@ function createScene() {
 
         if (isMobile()) {
             
-            camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
-            camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
-            camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
+            camera.target.x = 250 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
+            camera.target.y = 250 * Math.cos(THREE.Math.degToRad(90 - target.lat));
+            camera.target.z = 250 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
 
             camera.lookAt(camera.target);
 
@@ -499,22 +496,22 @@ function createScene() {
 
         } else {
 
-            camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
-            camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - target.lat));
-            camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
+            camera.target.x = 250 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.cos(THREE.Math.degToRad(target.long));
+            camera.target.y = 250 * Math.cos(THREE.Math.degToRad(90 - target.lat));
+            camera.target.z = 250 * Math.sin(THREE.Math.degToRad(90 - target.lat)) * Math.sin(THREE.Math.degToRad(target.long));
             camera.lookAt(camera.target);
 
-            colorCoord.prevX = lerp(colorCoord.prevX, colorCoord.x, 0.1);
-            colorCoord.prevY = lerp(colorCoord.prevY, colorCoord.y, 0.1);
+            colourCoord.prevX = lerp(colourCoord.prevX, colourCoord.x, 0.1);
+            colourCoord.prevY = lerp(colourCoord.prevY, colourCoord.y, 0.1);
 
-            scene.background.r = map(colorCoord.prevX, 0, width, 0.4, 0.2);
-            scene.background.r += map(colorCoord.prevY, 0, height, 0.2, 0.4);
+            scene.background.r = map(colourCoord.prevX, 0, width, 0.4, 0.2);
+            scene.background.r += map(colourCoord.prevY, 0, height, 0.2, 0.4);
 
-            scene.background.b = map(colorCoord.prevY, 0, height, 0.4, 0.2);
-            scene.background.b += map(colorCoord.prevX, 0, width, 0.3, 0.2);
+            scene.background.b = map(colourCoord.prevY, 0, height, 0.4, 0.2);
+            scene.background.b += map(colourCoord.prevX, 0, width, 0.3, 0.2);
 
-            scene.background.g = map(colorCoord.prevX, 0, width, 0.1, 0.06);
-            scene.background.g += map(colorCoord.prevY, 0, height, 0.15, -0.3);
+            scene.background.g = map(colourCoord.prevX, 0, width, 0.1, 0.06);
+            scene.background.g += map(colourCoord.prevY, 0, height, 0.15, -0.3);
 
         }
 
