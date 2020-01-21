@@ -66,8 +66,8 @@ function createScene() {
      */
     function setupCannon() {
         world = new CANNON.World();
-        world.quatNormalizeSkip = 0;
-        world.quatNormalizeFast = false;
+        //world.quatNormalizeSkip = 0;
+        //world.quatNormalizeFast = false;
         world.gravity.set(0, -10, 0);
         world.broadphase = new CANNON.NaiveBroadphase();
     }
@@ -100,16 +100,19 @@ function createScene() {
             }
         });
 
-        anime({
-            loop: true,
-            delay: 170000,
-            duration: 500,
-            loopBegin: function () {
-                for (let i = 0; i <= Math.floor(Math.random() * 10); i++) {
-                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
-                }
+        tl.add({
+            begin: function () {
+                anime({
+                    loop: true,
+                    duration: 500,
+                    loopBegin: function () {
+                        for (let i = 0; i <= Math.floor(Math.random() * 10); i++) {
+                            createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
+                        }
+                    }
+                });
             }
-        });
+        }, 165000); //165000
 
         tl.add({
             target: document,
