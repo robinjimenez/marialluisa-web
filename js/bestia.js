@@ -53,12 +53,10 @@ function requestPermissions() {
             video.muted = true;
             video.play();
             createScene();
-        }).catch(function (error) {
-            output.innerHTML = 'Unable to access the camera/webcam.';
+        }).catch(function (){
             createScene();
         });
     } else {
-        console.error('MediaDevices interface not available.');
         createScene();
     }
 }
@@ -177,7 +175,7 @@ function createScene() {
             begin: function () {
                 barSpawning();
             },
-        }, 100000); //100000 or 115000
+        }, 120000); //115000
 
         // End overlay animation and spawning stop
         tl.add({
@@ -362,9 +360,6 @@ function createScene() {
             });
             var videoMesh = new THREE.Mesh(geometry, material);
             videoMesh.position.set(0, 1, 0);
-            /*if (videoWidth / videoHeight < width / height) {
-                videoMesh.scale.set(-0.5, 0.5, 0.5);
-            }*/
             let scaleFactor = Math.max(videoWidth/videoHeight, width/height);
             videoMesh.scale.set(-scaleFactor/2, scaleFactor/2, scaleFactor/2);
             videoMesh.lookAt(camera.position);
