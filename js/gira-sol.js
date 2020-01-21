@@ -14,14 +14,18 @@ import anime from '../lib/animejs/lib/anime.es.js';
 
 var mode = "day";
 
-// Request user location, if available set background
-// according to time of day at said position,
-// if not default to morning scene
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(setBackground);
-} else {
-    $('body').addClass('morning');
-    createScene();
+document.getElementById('start-button').onclick = function () {
+
+    // Request user location, if available set background
+    // according to time of day at said position,
+    // if not default to morning scene
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setBackground);
+    } else {
+        $('body').addClass('morning');
+        createScene();
+    }
+
 }
 
 // Obtain sun position at location, set body class and mode
@@ -45,8 +49,7 @@ function setBackground(position) {
         mode = "sunset";
     }
 
-    document.getElementById('start-button').onclick = createScene;
-
+    createScene();
 }
 
 /**
@@ -101,6 +104,10 @@ function createScene() {
             easing: 'easeInOutSine',
             begin: function (anim) {
                 sound.play();
+                input.x = width/2;
+                input.y = height/2;
+                input.xDamped = width/2;
+                input.yDamped = height/2;
             }
         });
 
@@ -193,8 +200,7 @@ function createScene() {
                 sunGeometry = new THREE.SphereGeometry(20, 32, 32);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xf4f4f4});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
-                sunMoon.position.y = 100;
-                sunMoon.position.z = -400;
+                sunMoon.position.set(0,100,-400);
 
                 pointLight = new THREE.PointLight(0xE6D36E, 1, 300);
                 break;
@@ -202,8 +208,7 @@ function createScene() {
                 ambientLight = new THREE.AmbientLight(0xed6b00, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xed6b00});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
-                sunMoon.position.y = -50;
-                sunMoon.position.z = -500;
+                sunMoon.position.set(0,-50,-500);
                 sunMoon.scale.set(4, 4, 4);
 
                 pointLight = new THREE.PointLight(0xFFC412, 2, 300);
@@ -212,8 +217,7 @@ function createScene() {
                 ambientLight = new THREE.AmbientLight(0xffe500, 1);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
-                sunMoon.position.y = -50;
-                sunMoon.position.z = -500;
+                sunMoon.position.set(0,-50,-500);
                 sunMoon.scale.set(4, 4, 4);
 
                 pointLight = new THREE.PointLight(0xFF9D35, 2, 300);
@@ -222,6 +226,7 @@ function createScene() {
                 ambientLight = new THREE.AmbientLight(0xffe500, 0.5);
                 sunMaterial = new THREE.MeshBasicMaterial({color: 0xffe500});
                 sunMoon = new THREE.Mesh(sunGeometry, sunMaterial);
+                sunMoon.position.set(0,100,-300);
                 sunMoon.position.y = 100;
                 sunMoon.position.z = -300;
 
