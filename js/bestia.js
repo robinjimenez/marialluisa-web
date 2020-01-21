@@ -74,7 +74,6 @@ function createScene() {
     var world, timeStep = 1 / 60, groundMaterial;
 
     var scene, renderer, camera, spotlight, composer, filmPass;
-    var updateTarget = false;
     var then = 0;
 
     var raycaster = new THREE.Raycaster();
@@ -95,12 +94,9 @@ function createScene() {
         sceneElements();
 
         if (!isMobile()) {
-            updateTarget = true;
-            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mousemove", handleMove);
         } else {
-            window.addEventListener("touchstart", handleStart);
             window.addEventListener("touchmove", handleMove);
-            window.addEventListener("touchend", handleEnd);
         }
 
         resize();
@@ -139,11 +135,6 @@ function createScene() {
             begin: function (anim) {
                 sound.play();
                 anim.seek(sound.seek() * 1000);
-            },
-            update: function (anim) {
-                /*output.innerHTML = "animation time: " + anim.currentTime + "<br>";
-                output.innerHTML += "sound time: " + sound.seek() * 1000;
-                output.innerHTML += "<br>" + sound.duration() * 1000;*/
             }
         });
 
@@ -402,18 +393,6 @@ function createScene() {
         renderer.setSize(width, height);
     }
 
-    /**
-     * Trigger target update and get initial coordinates
-     * @param e The event that triggers it
-     */
-    function handleStart(e) {
-        updateTarget = true;
-
-        if (e.type === "touchstart") {
-            input.x = e.changedTouches[0].pageX;
-            input.y = e.changedTouches[0].pageY;
-        }
-    }
 
     /**
      * Obtain coordinates from mouse or touch movement,
@@ -423,10 +402,13 @@ function createScene() {
      */
     function handleMove(e) {
 
-        if (updateTarget) {
+        //if (updateTarget) {
             if (e.type === "touchmove") {
                 input.x = e.changedTouches[0].pageX;
                 input.y = e.changedTouches[0].pageY;
+            } else {
+                input.x = e.clientX;
+                input.y = e.clientY;
             }
 
             let screenCoord = {
@@ -440,33 +422,9 @@ function createScene() {
                 target.x = intersected[0].point.x;
                 target.y = intersected[0].point.z;
             }
-        }
+
     }
 
-    function handleMouseMove(e) {
-
-        input.x = e.clientX;
-        input.y = e.clientY;
-
-        let screenCoord = {
-            x: (input.x / width) * 2 - 1,
-            y: -(input.y / height) * 2 + 1
-        };
-
-        raycaster.setFromCamera(screenCoord, camera);
-        let intersected = raycaster.intersectObject(background);
-        if (intersected.length) {
-            target.x = intersected[0].point.x;
-            target.y = intersected[0].point.z;
-        }
-    }
-
-    /**
-     * End target updating
-     */
-    function handleEnd() {
-        updateTarget = false;
-    }
 
     /**
      * Update Cannon.js world physics and pass

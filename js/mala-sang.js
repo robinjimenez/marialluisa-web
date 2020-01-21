@@ -82,11 +82,6 @@ function createScene() {
             begin: function (anim) {
                 sound.play();
                 anim.seek(sound.seek() * 1000);
-            },
-            update: function (anim) {
-                /*output.innerHTML = "animation time: " + anim.currentTime + "<br>";
-                output.innerHTML += "sound time: " + sound.seek() * 1000;
-                output.innerHTML += "<br>" + sound.duration() * 1000;*/
             }
         });
 

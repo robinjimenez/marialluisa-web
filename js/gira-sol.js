@@ -102,7 +102,7 @@ function createScene() {
 
         tl = anime.timeline({
             easing: 'easeInOutSine',
-            begin: function (anim) {
+            begin: function () {
                 sound.play();
                 input.x = width/2;
                 input.y = height/2;
