@@ -49,11 +49,10 @@
       uniform float u_amp;
       uniform float u_seed;
       uniform float u_disp;
-      uniform float u_squareness;
+      uniform float u_irregular;
       uniform float u_height;
       uniform float u_time;
       uniform vec3 u_color;
-
       uniform vec2 u_resolution;
 
       varying vec3 v_uv;
@@ -64,15 +63,15 @@
 
         float h = 1.0 / (u_height * sqrt(2.0 * PI)) * exp(-0.5*pow((position.x - u_disp * (tan(u_time * 0.3 * u_seed) * -50.0))/u_amp,2.0));
 
-        h += 7.4565 * sin(position.x * 0.0343 * u_seed + u_time) * (1.0 - u_squareness)
-             + 5.5413 * cos((position.x * 0.00834 * u_seed ) * 1.34 * u_seed + u_time) * (1.0 - u_squareness)
-             + 8.4553 * sin((position.x * 0.00145 * u_seed ) * 1.23 * u_seed) * (1.0 - u_squareness);
+        h += 7.4565 * sin(position.x * 0.0343 * u_seed + u_time) * (1.0 - u_irregular)
+             + 5.5413 * cos((position.x * 0.00834 * u_seed ) * 1.34 * u_seed + u_time) * (1.0 - u_irregular)
+             + 8.4553 * sin((position.x * 0.00145 * u_seed ) * 1.23 * u_seed) * (1.0 - u_irregular);
 
-        h += (7.4565 + u_squareness * 5.0) * sin(u_squareness * PI / 2.0 * cos(position.x * 0.00343 * u_seed + u_time))
-             + (11.5413  + u_squareness * 8.0) * sin(position.x * 0.02 * u_squareness * PI / 2.0  * cos((position.x * 0.00834 * u_seed * u_resolution.x * 0.01) * 1.34 * u_seed))
-             + (18.4553  + u_squareness * 5.0) * sin(u_squareness * PI / 2.0  * cos((position.x * 0.000145 * u_seed ) * 1.23 * u_seed));
+        h += (7.4565 + u_irregular * 5.0) * sin(u_irregular * PI / 2.0 * cos(position.x * 0.00343 * u_seed + u_time))
+             + (11.5413  + u_irregular * 8.0) * sin(position.x * 0.02 * u_irregular * PI / 2.0  * cos((position.x * 0.00834 * u_seed * u_resolution.x * 0.01 + 10.0) * 1.34 * u_seed))
+             + (18.4553  + u_irregular * 5.0) * sin(u_irregular * PI / 2.0  * cos((position.x * 0.000145 * u_seed ) * 1.23 * u_seed));
 
-        vec3 transformed = vec3( position.x, position.y + h * (u_squareness) - h * (1.0 - u_squareness), position.z);
+        vec3 transformed = vec3( position.x, position.y + h * (u_irregular) - h * (1.0 - u_irregular), position.z);
 
         v_uv = transformed;
 
@@ -83,18 +82,7 @@
     </script>
     <script id="custom-fragment" type="x-shader/x-fragment">
 
-      // Custom code
-
-      uniform vec2 u_resolution;
-      uniform float u_time;
-      uniform float u_seed;
-
       uniform vec3 u_color;
-
-      uniform float u_opacity;
-      uniform float u_depthDarkness;
-
-      varying vec3 v_uv;
 
       void main() {
         gl_FragColor = vec4(u_color, 1.0);

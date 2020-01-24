@@ -159,11 +159,10 @@ function createScene() {
             u_time: {type: 'f', value: 0.0},
             u_resolution: new THREE.Uniform(new THREE.Vector2(width / 100, height / 100)),
             u_color: new THREE.Uniform(new THREE.Vector3(0.9, 0.9, 0.9)),
-            u_opacity: {type: 'f', value: 1.0},
             u_amp: {type: 'f', value: 50.0},
             u_disp: {type: 'f', value: 10.0},
             u_height: {type: 'f', value: 0.005},
-            u_squareness: {type: 'f', value: 0.0},
+            u_irregular: {type: 'f', value: 0.0},
             u_seed: {type: 'f', value: 0.0}
         };
 
@@ -178,17 +177,15 @@ function createScene() {
             terrain.push(new THREE.Mesh(geometry, material));
             if (i === 0) {
                 terrain[i].material.uniforms.u_seed.value = 0.98;
-                terrain[i].material.uniforms.u_squareness.value = 1.0;
+                terrain[i].material.uniforms.u_irregular.value = 1.0;
                 terrain[i].position.set(0, -200, -5.0);
             } else {
                 terrain[i].material.uniforms.u_seed.value = Math.random() * 0.2 + i * 0.3;
                 terrain[i].material.uniforms.u_height.value = 0.0001 + 0.005 * i;
                 terrain[i].material.uniforms.u_amp.value = 50.0 + 10.0 * i;
 
-                //terrain[i].position.set(0, -220 - 30 * i, -5.0 + i);
                 terrain[i].position.set(0, -220 - 30 * i, -5.0 + i);
             }
-            console.log(terrain[i].material.uniforms.u_seed.value);
             terrain[i].material.uniforms.u_color = new THREE.Uniform(new THREE.Vector3(i * 0.2, (i * 0.6) * 0.2, (i * 0.01) * 0.2));
             terrain[i].material.needsUpdate = true;
             scene.add(terrain[i]);
