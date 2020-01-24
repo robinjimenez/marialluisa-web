@@ -426,14 +426,12 @@ function createScene() {
 
         var uniforms = {
             time: {type: "f", value: 0.0},
-            distortCenter: {type: "f", value: 0.1},
             palette: {type: "t", value: null},
             speed: {type: "f", value: 1},
             maxHeight: {type: "f", value: 50},
             waveHeight: {type: "f", value: 0.5},
             waveSize: {type: "f", value: 20.0},
-            greyness: {type: "f", value: 1.0},
-            color: new THREE.Color(1, 1, 1)
+            greyness: {type: "f", value: 1.0}
         };
 
         var material = new THREE.ShaderMaterial({
@@ -478,7 +476,7 @@ function createScene() {
         smallSphere.position.z = -100;
 
         // Sky particles
-        for (let i = 0; i < 29; i++) {
+        for (let i = 0; i <= 30; i++) {
             geometry = new THREE.SphereGeometry(Math.random() * 5, 32, 32);
             material = new THREE.MeshBasicMaterial({
                 color: 0x69B3CB,
@@ -585,7 +583,6 @@ function createScene() {
             let softener = Math.max(map(input.b, 0, 90, 0.1, 0.01),0.01);
             input.aPrev = lerp(input.aPrev, input.a, softener);
             input.bPrev = lerp(input.bPrev, input.b, 0.1);
-            terrain.material.uniforms.distortCenter.value = map(input.aPrev, -90, 90, -0.02, 0.02);
             terrain.material.uniforms.waveHeight.value = map(input.bPrev, 0, 135, 0.01, 0.5);
             terrain.material.uniforms.waveSize.value = map(input.bPrev, 0, 135, 15.0, 20.0);
 
@@ -601,7 +598,6 @@ function createScene() {
 
             input.xDamped = lerp(input.xDamped, input.x, 0.1);
             input.yDamped = lerp(input.yDamped, input.y, 0.01);
-            terrain.material.uniforms.distortCenter.value = map(input.xDamped, 0, width, -0.02, 0.02);
             terrain.material.uniforms.waveHeight.value = map(input.yDamped, 0, height, 0.01, 0.5);
             terrain.material.uniforms.waveSize.value = map(input.yDamped, 0, height, 15.0, 20.0);
 
