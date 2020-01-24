@@ -47,28 +47,35 @@ $(document).ready(function () {
     }
 
     // direction 1 for right, -1 for left
-    function shiftLeft() {
+    function shiftLeft(update) {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) - 1);
             if ($(this).attr("data-index") < -4) {
                 $(this).attr("data-index", 4);
             }
         });
-        updatePageStatus();
+        if (update) updatePageStatus();
     }
 
-    function shiftRight() {
+    function shiftRight(update) {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) + 1);
             if ($(this).attr("data-index") > 4) {
                 $(this).attr("data-index", -4);
             }
         });
-        updatePageStatus();
+        if (update) updatePageStatus();
     }
 
     function updatePageStatus() {
         var $active_slide = $(".slide-container[data-index='0']");
+
+        // If History API available, change url query
+        if (history.pushState) {
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tema=' + $active_slide.attr('id');
+            window.history.pushState({path: newurl}, '', newurl);
+        }
+
         var $body = $('body');
         switch (true) {
             case ($active_slide.hasClass('slide-yellow')):
@@ -98,7 +105,7 @@ $(document).ready(function () {
     $('.slide-container').on('click', function (e) {
         e.preventDefault();
         if ($(this).attr("data-index") > 0) {
-            shiftLeft();
+            shiftLeft(true);
         } else if ($(this).attr("data-index") == 0) {
 
             let url = $(this).attr('href');
@@ -106,7 +113,7 @@ $(document).ready(function () {
             animateStart(url, $(this));
 
         } else {
-            shiftRight();
+            shiftRight(true);
         }
     });
 
@@ -166,9 +173,9 @@ $(document).ready(function () {
         var xDiff = xDown - xUp;
 
         if (xDiff > 5) {
-            shiftLeft();
+            shiftLeft(true);
         } else if (xDiff < -5) {
-            shiftRight();
+            shiftRight(true);
         }
 
         xDown = null;
@@ -177,15 +184,26 @@ $(document).ready(function () {
     $('body').on('keyup', function (e) {
         switch (e.which) {
             case 39:
-                shiftLeft();
+                shiftLeft(true);
                 break;
             case 37:
-                shiftRight();
+                shiftRight(true);
                 break;
         }
     });
 
-    updatePageStatus();
+
+    function initSlides() {
+        if (window.location.search) {
+            while ('?tema=' + $('.slide-container[data-index="0"]').attr('id') !== window.location.search) {
+                shiftLeft(false);
+            }
+        } else if (history.pushState) {
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tema=miracle';
+            window.history.pushState({path: newurl}, '', newurl);
+        }
+        updatePageStatus()
+    }
 
     function animateStart(url) {
         let overlay = document.createElement("div");
@@ -207,8 +225,11 @@ $(document).ready(function () {
         targets: '#reveal',
         opacity: 0,
         easing: 'easeInOutSine',
-        duration: 500,
         autoplay: true,
+        duration: 2000,
+        begin: function () {
+            initSlides();
+        },
         complete: function () {
             $("#reveal").remove();
         }

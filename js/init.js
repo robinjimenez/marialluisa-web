@@ -50,8 +50,6 @@ var sound = new Howl({
     }
 });
 
-
-
 // Disable scroll
 const targetElement = document.querySelector("html");
 bodyScrollLock.disableBodyScroll(targetElement);
