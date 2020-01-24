@@ -75,10 +75,6 @@ pre {
     line-height: 1.5;
     font-weight: 300;
     margin: 0 0 1.5em;
-
-    a.btn {
-        font-size: 100%;
-    }
 }
 
 h1, h2, h3, h4 {
@@ -138,4 +134,5 @@ button {
 
     &:focus {
         outline: none;
-    }}
+    }
+}
