@@ -89,9 +89,7 @@ function createScene() {
         render();
 
         document.querySelector('#overlay').classList.toggle("hidden");
-        document.querySelectorAll('.experience-info').forEach(function (el) {
-            el.remove()
-        });
+
     }
 
     /**
@@ -108,6 +106,11 @@ function createScene() {
                 input.y = height/2;
                 input.xDamped = width/2;
                 input.yDamped = height/2;
+                document.querySelectorAll('.experience-info').forEach(function (el) {
+                    el.remove()
+                });
+                document.querySelector('.loading-message').remove();
+                document.querySelector('#start-button').remove();
             }
         });
 
@@ -132,8 +135,12 @@ function createScene() {
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
-                document.querySelector('#orientation-info').remove();
-                document.querySelector('.overlay-message').appendChild(document.querySelector("#back-button").content);
+                if(isMobile()) document.querySelector('#orientation-info').remove();
+                document.querySelector('.overlay-message').appendChild(document.querySelector("template").content);
+                document.querySelector("#back-button").addEventListener('click', function () {
+                    location.href = './?tema=nord';
+                });
+                document.querySelector('#overlay').classList.remove("hidden");
                 document.querySelector('#overlay').classList.toggle("end");
             },
             complete: function () {
