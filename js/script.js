@@ -174,7 +174,7 @@ $(document).ready(function () {
         xDown = null;
     });
 
-    $('body').on('keydown', function (e) {
+    $('body').on('keyup', function (e) {
         switch (e.which) {
             case 39:
                 shiftLeft();
