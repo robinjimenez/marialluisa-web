@@ -53,7 +53,7 @@ function createScene() {
     var physicsWorld;
     var rigidBodies = [], tmpTrans, removalZCoord = -1000;
     var scene, renderer, camera, composer, filmPass, generatorPlane, glowingOrb;
-    var tunnels = [];
+    var tunnel;
     var then = 0;
 
     // Initialise Ammo physics then initialise scene
@@ -124,9 +124,6 @@ function createScene() {
         let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, radius * 8, radius * 8), new THREE.MeshPhongMaterial({color: color}));
 
         ball.position.set(pos.x, pos.y, pos.z);
-
-        ball.castShadow = true;
-        ball.receiveShadow = true;
 
         scene.add(ball);
 
@@ -213,7 +210,7 @@ function createScene() {
             x: 1.0,
             y: 1.0,
             z: 1.0,
-            update: function(){
+            update: function () {
                 removalZCoord = -500 - 500 * (1.0 - glowingOrb.scale.x);
             },
             easing: "easeInQuint",
@@ -221,14 +218,14 @@ function createScene() {
         });
 
         tl.add({
-            targets: tunnels[0].material.uniforms.u_opacity,
+            targets: tunnel.material.uniforms.u_opacity,
             value: 1.0,
             easing: 'easeInOutSine',
             duration: 2000
         }, 29000); //29000
 
         tl.add({
-            targets: tunnels[0].rotation,
+            targets: tunnel.rotation,
             z: [
                 {value: "*=1.5", duration: 250, endDelay: 250},
                 {value: "*=1.5", duration: 250}
@@ -253,23 +250,23 @@ function createScene() {
         }, 58000); //58500
 
         tl.add({
-            targets: tunnels[0].material.uniforms.u_zTrans,
+            targets: tunnel.material.uniforms.u_zTrans,
             value: 5.0,
             duration: 206000 - 130000,
             easing: 'linear'
         }, 130000); //130000
 
         tl.add({
-            targets: tunnels[0].material.uniforms.u_zTrans,
+            targets: tunnel.material.uniforms.u_zTrans,
             value: 6.0,
-            duration: sound.duration()*1000 - 206000,
+            duration: sound.duration() * 1000 - 206000,
             easing: 'easeOutSine'
         }, 206000); //206000
 
         tl.add({
-            targets: tunnels[0].material.uniforms.u_opacity,
+            targets: tunnel.material.uniforms.u_opacity,
             value: 0.0,
-            duration: sound.duration()*1000 - 206000,
+            duration: sound.duration() * 1000 - 206000,
             easing: 'easeOutSine'
         }, 206000); //206000
 
@@ -362,7 +359,7 @@ function createScene() {
         glowingOrb = new THREE.Mesh(sphereGeom, material);
         scene.add(glowingOrb);
         glowingOrb.position.z = -1400;
-        glowingOrb.scale.set(0,0,0);
+        glowingOrb.scale.set(0, 0, 0);
 
         var uniforms = {
             u_time: {type: 'f', value: 0.0},
@@ -372,9 +369,7 @@ function createScene() {
             u_colorC: new THREE.Uniform(new THREE.Vector3(0.711, 0.226, 0.635)),
             u_colorD: new THREE.Uniform(new THREE.Vector3(0.715, 0.375, 0.700)),
             u_opacity: {type: 'f', value: 0.0},
-            u_depthDarkness: {type: 'f', value: 0.0},
             u_zTrans: {type: 'f', value: 0.5},
-
         };
 
         material = new THREE.ShaderMaterial({
@@ -385,14 +380,11 @@ function createScene() {
             transparent: true
         });
 
-        for (let i = 0; i < 1; i++) {
-
-            tunnels.push(new THREE.Mesh(geometry, material));
-            tunnels[i].position.z = -600;
-            tunnels[i].rotation.z = Math.PI / 4;
-            tunnels[i].scale.copy(new THREE.Vector3(1.5, 1.5, 1));
-            scene.add(tunnels[i]);
-        }
+        tunnel = new THREE.Mesh(geometry, material);
+        tunnel.position.z = -600;
+        tunnel.rotation.z = Math.PI / 4;
+        tunnel.scale.copy(new THREE.Vector3(1.5, 1.5, 1));
+        scene.add(tunnel);
 
     }
 
@@ -486,7 +478,7 @@ function createScene() {
         const deltaTime = time - then;
         then = time;
 
-        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek()*1000);
+        if (tl.currentTime !== sound.seek() * 1000) tl.seek(sound.seek() * 1000);
 
         if (isMobile()) {
 
@@ -512,8 +504,8 @@ function createScene() {
 
         updatePhysics(deltaTime);
 
-        tunnels[0].material.uniforms.u_time.value = time * 0.04;
-        tunnels[0].material.needsUpdate = true;
+        tunnel.material.uniforms.u_time.value = time * 0.04;
+        tunnel.material.needsUpdate = true;
 
         composer.render(deltaTime);
         requestAnimationFrame(render);

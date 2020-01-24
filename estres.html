@@ -50,7 +50,6 @@
 
       varying vec3 v_uv;
 
-
       void main() {
         v_uv = position;
 
@@ -155,7 +154,6 @@
       uniform vec3 u_colorD;
 
       uniform float u_opacity;
-      uniform float u_depthDarkness;
 
       varying vec3 v_uv;
 
@@ -177,14 +175,13 @@
 
         color = mix(color,u_colorD,clamp(f3,0.0,1.0));
 
-        //gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1)*color, u_opacity * (v_uv.z * 0.005 + 3.0));
         gl_FragColor = vec4((f1*f1*f1+0.6*f1*f1+0.5*f1) * color, u_opacity * (v_uv.z * 0.005 + 3.0));
       }
     </script>
 </main>
 <script src="lib/howler/dist/howler.js"></script>
 <script src="lib/body-scroll-lock/lib/bodyScrollLock.js"></script>
-<script src="lib/ammo.js"></script>
+<script src="lib/ammo/ammo.js"></script>
 <script src="js/init.js"></script>
 <script type="module" src="js/estres.js"></script>
 </body>
