@@ -239,7 +239,7 @@ function createScene() {
             complete: function () {
                 container.remove();
             }
-        }, 5000);//sound.duration() * 1000);
+        }, sound.duration() * 1000);
 
     }
 
