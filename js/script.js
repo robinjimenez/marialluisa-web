@@ -47,34 +47,34 @@ $(document).ready(function () {
     }
 
     // direction 1 for right, -1 for left
-    function shiftLeft(update) {
+    function shiftLeft() {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) - 1);
             if ($(this).attr("data-index") < -4) {
                 $(this).attr("data-index", 4);
             }
         });
-        if (update) updatePageStatus();
+        updatePageStatus();
     }
 
-    function shiftRight(update) {
+    function shiftRight() {
         $('.slide-container').each(function () {
             $(this).attr("data-index", parseInt($(this).attr("data-index")) + 1);
             if ($(this).attr("data-index") > 4) {
                 $(this).attr("data-index", -4);
             }
         });
-        if (update) updatePageStatus();
+        updatePageStatus();
     }
 
     function updatePageStatus() {
         var $active_slide = $(".slide-container[data-index='0']");
 
         // If History API available, change url query
-        if (history.pushState) {
+        /*if (history.pushState) {
             var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tema=' + $active_slide.attr('id');
             window.history.pushState({path: newurl}, '', newurl);
-        }
+        }*/
 
         var $body = $('body');
         switch (true) {
@@ -105,15 +105,15 @@ $(document).ready(function () {
     $('.slide-container').on('click', function (e) {
         e.preventDefault();
         if ($(this).attr("data-index") > 0) {
-            shiftLeft(true);
+            shiftLeft();
         } else if ($(this).attr("data-index") == 0) {
 
             let url = $(this).attr('href');
 
-            animateStart(url, $(this));
+            window.location.href = url;
 
         } else {
-            shiftRight(true);
+            shiftRight();
         }
     });
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
         if ($(this).attr("data-index") == 0) {
             e.preventDefault();
             let container = $('.slide-container[data-index="0"]');
-            let tl = anime.timeline();
+            /*let tl = anime.timeline();
 
             tl.add({
                 targets: container.find('.play-container')[0],
@@ -135,7 +135,7 @@ $(document).ready(function () {
                 opacity: 0.5,
                 duration: 100,
                 easing: 'easeInOutSine'
-            }, 0);
+            }, 0);*/
         }
     });
 
@@ -152,7 +152,7 @@ $(document).ready(function () {
 
             let url = $(this).attr('href');
 
-            animateStart(url);
+            window.location.href = url;
 
         }
     });
@@ -173,9 +173,9 @@ $(document).ready(function () {
         var xDiff = xDown - xUp;
 
         if (xDiff > 5) {
-            shiftLeft(true);
+            shiftLeft();
         } else if (xDiff < -5) {
-            shiftRight(true);
+            shiftRight();
         }
 
         xDown = null;
@@ -184,42 +184,14 @@ $(document).ready(function () {
     $('body').on('keyup', function (e) {
         switch (e.which) {
             case 39:
-                shiftLeft(true);
+                shiftLeft();
                 break;
             case 37:
-                shiftRight(true);
+                shiftRight();
                 break;
         }
     });
 
-
-    function initSlides() {
-        if (window.location.search) {
-            while ('?tema=' + $('.slide-container[data-index="0"]').attr('id') !== window.location.search) {
-                shiftLeft(false);
-            }
-        } else if (history.pushState) {
-            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tema=miracle';
-            window.history.pushState({path: newurl}, '', newurl);
-        }
-        updatePageStatus()
-    }
-
-    function animateStart(url) {
-        let overlay = document.createElement("div");
-        overlay.classList.add("trans-overlay");
-        document.body.insertAdjacentElement('afterbegin', overlay);
-
-        anime({
-            targets: overlay,
-            opacity: [0, 1],
-            easing: 'easeInOutSine',
-            duration: 1000,
-            complete: function () {
-                window.location.href = url;
-            }
-        });
-    }
 
     anime({
         targets: '#reveal',
@@ -228,7 +200,7 @@ $(document).ready(function () {
         autoplay: true,
         duration: 2000,
         begin: function () {
-            initSlides();
+            updatePageStatus();
         },
         complete: function () {
             $("#reveal").remove();

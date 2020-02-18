@@ -218,17 +218,6 @@ body {
       color: $theme_orange;
     }
   }
-
-  .trans-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 40;
-    opacity: 0;
-    background-color: $theme_almost_white;
-  }
 }
 
 header {
