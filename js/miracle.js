@@ -364,7 +364,7 @@ function createScene() {
                 if(isMobile()) document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay-message').appendChild(document.querySelector("template").content);
                 document.querySelector("#back-button").addEventListener('click', function () {
-                    location.href = './?tema=nord';
+                    location.href = './';
                 });
                 document.querySelector('#overlay').classList.remove("hidden");
                 document.querySelector('#overlay').classList.toggle("end");
