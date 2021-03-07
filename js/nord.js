@@ -105,10 +105,14 @@ function createScene() {
             window.addEventListener("mousedown", handleStart);
             window.addEventListener("mousemove", handleMove);
             window.addEventListener("mouseup", handleEnd);
+
+            window.addEventListener( 'resize', resize, false );
+
         } else {
             window.addEventListener("touchstart", handleStart);
             window.addEventListener("touchmove", handleMove);
             window.addEventListener("touchend", handleEnd);
+
 
             target.prevLat = target.lat;
             target.prevLong = target.long;
@@ -138,22 +142,9 @@ function createScene() {
     function animationSetup() {
         let colorIndex = 0;
 
-        tl = anime.timeline({
-            easing: 'easeInOutSine',
-            begin: function (anim) {
-                sound.play();
-                anim.seek(sound.seek() * 1000);
-                document.querySelectorAll('.experience-info').forEach(function (el) {
-                    el.remove()
-                });
-                document.querySelector('.loading-message').remove();
-                document.querySelector('#start-button').remove();
-            }
-        });
-
         const pulseLoop = anime({
             targets: [outerSphere.scale, innerSphere.scale, mainSphere.scale],
-            delay: anime.stagger(980),
+            delay: anime.stagger(980), //980
             autoplay: false,
             loop: true,
             direction: 'alternate',
@@ -178,22 +169,37 @@ function createScene() {
             }
         });
 
+        tl = anime.timeline({
+            easing: 'easeInOutSine',
+            begin: function (anim) {
+                pulseLoop.play();
+                anim.seek(sound.seek() * 1000);
+                document.querySelectorAll('.experience-info').forEach(function (el) {
+                    el.remove()
+                });
+                document.querySelector('.loading-message').remove();
+                document.querySelector('#start-button').remove();
+            }
+        });
+
+
+
         tl.add({
             begin: function () {
-                pulseLoop.play();
+                sound.play();
             }
-        }, 3000);
+        }, 700); //3000
 
         tl.add({
             targets: camera,
             fov: [
-                {value: '170', easing: 'easeOutSine', duration: 950},
+                {value: '170', easing: 'easeOutSine', duration: 650},
                 {value: '90', easing: 'easeInOutQuad', duration: 50}
             ],
             update: function () {
                 camera.updateProjectionMatrix();
             }
-        }, 73500);
+        }, 70700); //73500
 
         tl.add({
             targets: triggers,
@@ -202,7 +208,7 @@ function createScene() {
             begin: function () {
                 pulseLoop.pause();
             }
-        }, 90000);
+        }, 85000); //90000
 
         tl.add({
             begin: function() {
@@ -221,7 +227,7 @@ function createScene() {
                     spring.applyForce();
                 });
             }
-        }, 140000);
+        }, 137700); //140000
 
         tl.add({
             target: document,

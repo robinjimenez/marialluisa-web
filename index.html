@@ -9,9 +9,17 @@
     <meta name="author" content="Robin Jiménez">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="robots" content="noindex">
 
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#63a7c4">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="./css/styles.css">
+    <link href="./css/hamburgers.min.css" rel="stylesheet">
 </head>
 <body class="home">
 <template>
@@ -25,21 +33,16 @@
     </svg>
 </template>
 <header>
-    <a class="logo-container" href="/">
+    <a class="logo-container" href="./">
         <svg width="100" height="100">
             <circle cx="50" cy="50" r="40"/>
         </svg>
         <p>M</p>
     </a>
-    <button id="menu-hamburger" type="button">
-        <svg class="icon icon-menu-toggle" aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg"
-             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100">
-            <g class="svg-menu-toggle">
-                <path class="line line-1" d="M5 13h90v14H5z"/>
-                <path class="line line-2" d="M5 43h90v14H5z"/>
-                <path class="line line-3" d="M5 73h90v14H5z"/>
-            </g>
-        </svg>
+    <button class="hamburger hamburger--slider" type="button">
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
     </button>
 </header>
 <div id="reveal" style="background-color: #f4f4f4;position: absolute;width: 100vw;height: 100vh;top: 0;bottom: 0;z-index: 100;"></div>
@@ -47,34 +50,36 @@
     <nav>
         <ul>
             <li class="menu-item">
-                <a href="./">És per tu i per mi</a>
+                <a href="./bio">Marialluïsa</a>
             </li>
             <li class="menu-item">
-                <a style="text-decoration: line-through">Concerts</a>
+                <a href="./concerts">Concerts</a>
+            </li>
+            <li class="menu-item">
+                <a href="./discografia">Discografia</a>
             </li>
             <li class="menu-item">
                 <a style="text-decoration: line-through">Botiga</a>
-            </li>
-            <li class="menu-item">
-                <a style="text-decoration: line-through">Discografia</a>
-            </li>
-            <li class="menu-item">
-                <a style="text-decoration: line-through">Contacte</a>
             </li>
             <li id="social-row" class="menu-item">
                 <a class="social-link" href="https://www.youtube.com/channel/UCASAu68iyDTt5GdDaeRRPeg"><img src="./media/icons/youtube-glyph.png" alt="YouTube"/></a>
                 <a class="social-link" href="https://www.instagram.com/marialluiisam/"><img src="./media/icons/instagram-glyph.png" alt="Instagram"/></a>
                 <a class="social-link" href="https://www.facebook.com/marialluiisam/"><img src="./media/icons/facebook-glyph.png" alt="Facebook"/></a>
             </li>
+            <li class="menu-item menu-item-static">
+                <p>Contacte: <a href="mailto:marialluisacontacte@gmail.com">marialluisacontacte@gmail.com</a></p>
+                <p>Contractacions: <a href="mailto:bankrobber@bankrobber.net">bankrobber@bankrobber.net</a></p>
+            </li>
         </ul>
     </nav>
     <p>
+        <a href="./privacitat">Política de privacitat</a><br>
         Web desenvolupada per <a href="http://www.robinjnewman.com">robin jiménez</a>
     </p>
 </div>
 <main>
     <section id="per-tu-per-mi">
-        <div class="album-name">
+        <div class="page-title">
             <h1>És per tu i per mi</h1>
         </div>
         <div class="slider-container" id="slider">
@@ -105,7 +110,7 @@
                     </div>
                     <div class="slide slide-light"></div>
                     <div class="slide slide-shadow"></div>
-                    <div class="slide slide-dropdown"><h2>Bèstia</h2></div>
+                    <div class="slide slide-dropdown"><h2>La bèstia</h2></div>
                 </a>
                 <a id="el-gest" href="./el-gest" class="slide-container slide-pink" data-index="-2">
                     <div class="images">
@@ -205,5 +210,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 <script type="module" src="js/script.js"></script>
+<script type="module" src="js/menu.js"></script>
+
 </body>
 </html>

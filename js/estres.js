@@ -73,6 +73,9 @@ function createScene() {
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
             window.addEventListener("click", handleClick);
+
+            //window.addEventListener( 'resize', resize, false );
+
         } else {
             window.addEventListener("touchstart", handleClick);
         }
@@ -217,7 +220,7 @@ function createScene() {
                 removalZCoord = -500 - 500 * (1.0 - glowingOrb.scale.x);
             },
             easing: "easeInQuint",
-            duration: 29000
+            duration: 26000 //29000
         });
 
         tl.add({
@@ -225,7 +228,7 @@ function createScene() {
             value: 1.0,
             easing: 'easeInOutSine',
             duration: 2000
-        }, 29000); //29000
+        }, 26000); //29000
 
         tl.add({
             targets: tunnel.rotation,
@@ -233,7 +236,7 @@ function createScene() {
                 {value: "*=1.5", duration: 250, endDelay: 250},
                 {value: "*=1.5", duration: 250}
             ]
-        }, 58000); //58500
+        }, 55000); //58000
 
         tl.add({
             targets: glowingOrb.scale,
@@ -250,28 +253,28 @@ function createScene() {
                 {value: "*=0.8", duration: 250}
             ],
             easing: "easeInOutQuart"
-        }, 58000); //58500
+        }, 55000); //58000
 
         tl.add({
             targets: tunnel.material.uniforms.u_zTrans,
             value: 5.0,
             duration: 206000 - 130000,
             easing: 'linear'
-        }, 130000); //130000
+        }, 127000); //130000
 
         tl.add({
             targets: tunnel.material.uniforms.u_zTrans,
             value: 6.0,
             duration: sound.duration() * 1000 - 206000,
             easing: 'easeOutSine'
-        }, 206000); //206000
+        }, 203000); //206000
 
         tl.add({
             targets: tunnel.material.uniforms.u_opacity,
             value: 0.0,
             duration: sound.duration() * 1000 - 206000,
             easing: 'easeOutSine'
-        }, 206000); //206000
+        }, 203000); //206000
 
         tl.add({
             easing: 'easeInOutSine',

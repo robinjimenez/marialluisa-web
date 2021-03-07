@@ -1,0 +1,147 @@
+/* ===========================
+   Bio
+   =========================== */
+
+body.bio {
+  transition: background-color 0.5s ease-in-out;
+
+  &:after {
+    content: "";
+    background-image: url("../media/img/home/marble-tex.jpg");
+    background-blend-mode: luminosity;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  header {
+    a.logo-container {
+      svg {
+        fill: $theme_turquoise;
+      }
+
+      p {
+        color: $theme_turquoise_darkest;
+      }
+    }
+  }
+
+  .slide-light {
+    background-color: $theme_turquoise;
+  }
+
+  background-color: $theme_turquoise_faded;
+
+  &:after {
+    background-color: $theme_turquoise_faded;
+  }
+
+  a:hover,
+  a:focus {
+    color: $theme_turquoise;
+  }
+
+  a:active {
+    color: $theme_turquoise;
+  }
+
+  .menu-item-active {
+    a {
+      color: $theme_turquoise;
+    }
+  }
+
+  #bio {
+    width: 100%;
+
+    .page-title {
+      background-color: white;
+      padding: 0.5rem;
+    }
+  }
+
+  .bio-container {
+    width: 80%;
+    margin: 4em auto 5em;
+    position: relative;
+
+    @media screen and (min-width: $micro_screen_width) {
+      max-width: $tablet_slider_width;
+
+    }
+
+    @media screen and (min-width: $small_screen_width) {
+      max-width: $desktop_slider_width;
+    }
+
+    p {
+      font-size: 180%;
+    }
+
+  }
+
+  .main-image {
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+
+    .centered-container {
+      width: 90%;
+      margin: 5em auto;
+      position: relative;
+
+      @media screen and (min-width: $micro_screen_width) {
+        width: 80%;
+      }
+
+      @media screen and (min-width: $huge_screen_width) {
+        max-width: 800px;
+      }
+
+      > div {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .front-border {
+        border: white 5px solid;
+        transform: translate(20px, 20px);
+        z-index: 3;
+      }
+
+      img {
+        z-index: 2;
+        background-size: cover;
+        position: relative;
+
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0.5;
+          mix-blend-mode: darken;
+        }
+      }
+
+      .back-box {
+        background-color: black;
+        transform: translate(-20px, calc(-100% - 20px));
+        z-index: 1;
+      }
+    }
+  }
+
+
+}
+

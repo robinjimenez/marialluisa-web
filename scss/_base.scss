@@ -7,12 +7,12 @@
 }
 html {
     font-family: $base_font_stack;
-    height: 100vh;
+    min-height: 100vh;
     // font smoothing
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100vw;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 body {
@@ -21,9 +21,8 @@ body {
     color: $theme_almost_black;
     background: white;
     font-size: 62.5%;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
-    overflow: hidden;
     position: relative;
 }
 

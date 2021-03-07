@@ -14,32 +14,6 @@ $(document).ready(function () {
     var clone = playSVG.content.cloneNode(true);
     $(".play-container").append(clone);
 
-    $('#menu-hamburger').on('click', function () {
-        var menu = $('.menu-container');
-        if (menu.attr('data-expanded') === 'false') {
-            menu.attr('data-expanded', "true");
-            anime({
-                targets: 'li.menu-item',
-                delay: anime.stagger(100),
-                opacity: 1,
-                translateY: 0,
-                easing: 'easeInOutSine',
-                duration: 1000
-            });
-        } else {
-            anime({
-                targets: 'li.menu-item',
-                opacity: 0,
-                translateY: -10,
-                easing: 'easeInOutSine',
-                duration: 500,
-                complete: function () {
-                    menu.attr('data-expanded', "false");
-                }
-            });
-        }
-    });
-
     var xDown = null;
 
     function getTouches(e) {

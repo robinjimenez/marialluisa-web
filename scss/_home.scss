@@ -2,10 +2,12 @@
    Home
    =========================== */
 
-body {
+body.home {
   transition: background-color 0.5s ease-in-out;
+  overflow: hidden;
+  height: 100vh;
 
-  &.home:after {
+  &:after {
     content: "";
     background-image: url("../media/img/home/marble-tex.jpg");
     background-blend-mode: luminosity;
@@ -265,26 +267,19 @@ header {
     }
   }
 
-  #menu-hamburger {
-    margin: 10px;
-  }
+  .hamburger {
+    .hamburger-inner{
+      border-radius: 0;
 
-  .icon-menu-toggle {
-    width: 4em;
-    height: 4em;
-    top: 0;
-  }
+      &:before {
+        border-radius: 0;
+      }
 
-  .icon {
-    display: inline-block;
-    fill: currentColor;
-    height: 2em;
-    width: 2em;
-    vertical-align: middle;
-    position: relative; /* Align more nicely with capital letters */
-    top: -0.0625em;
+      &:after {
+        border-radius: 0;
+      }
+    }
   }
-
 }
 
 .menu-container {
@@ -309,7 +304,6 @@ header {
     bottom: 0;
     opacity: 0.05;
     background-color: white;
-    //background-image: url("../media/img/home/marble-tex.jpg");
     background-size: cover;
     background-blend-mode: luminosity;
     background-image: url("../media/img/home/menu_background.jpeg");
@@ -336,6 +330,7 @@ header {
 
   nav {
     height: 100%;
+    z-index: 45;
 
     ul {
       height: 100%;
@@ -352,15 +347,30 @@ header {
         transform: translateY(-10px);
         opacity: 0;
 
+          &.menu-item-static {
+          height: 2rem;
+          p {
+            position: relative;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+          }
+          a {
+            font-size: 100%;
+            font-family: $base_font_stack;
+            text-transform: lowercase;
+            color: $theme_grey;
+
+          }
+        }
+
         a {
           font-family: $header_font_stack;
           font-size: 300%;
           text-transform: uppercase;
-          color: $theme_grey;
+          color: $theme_almost_black;
           cursor: default;
 
           &:link {
-            color: $theme_almost_black;
             cursor: pointer;
           }
         }
@@ -369,7 +379,13 @@ header {
       @media screen and (min-width: $nano_screen_width) {
         li {
           height: 3.5rem;
+          &.menu-item-static {
+            height: 2rem;
 
+            a {
+              font-size: 100%;
+            }
+          }
           a {
             font-size: 300%;
           }
@@ -379,7 +395,13 @@ header {
       @media screen and (min-width: $micro_screen_width) {
         li {
           height: 5rem;
+          &.menu-item-static {
+            height: 2rem;
 
+            a {
+              font-size: 100%;
+            }
+          }
           a {
             max-width: $tablet_slider_width;
             font-size: 400%;
@@ -505,7 +527,7 @@ section {
       padding: 0 5%;
     }
 
-    .album-name {
+    .page-title {
       position: relative;
       width: 40%;
       margin-top: 5%;
@@ -521,7 +543,7 @@ section {
   height: 80vh;
   width: 100%;
 
-  .album-name {
+  .page-title {
     background-color: white;
     padding: 0.5rem;
   }

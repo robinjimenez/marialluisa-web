@@ -106,6 +106,8 @@ function createScene() {
 
         if (!isMobile()) {
             window.addEventListener("mousemove", onInputMove);
+
+            window.addEventListener( 'resize', resize, false );
         }
 
         resize();
@@ -327,9 +329,9 @@ function createScene() {
         tl.add({
             targets: camera.rotation,
             x: -Math.PI / 8,
-            duration: 3000,
+            duration: 4000,
             easing: 'cubicBezier(.43,-0.35,.68,1.41)'
-        }, 168000);
+        }, 169000);
 
         tl.add({
             targets: terrain.material.uniforms.greyness,
@@ -343,7 +345,7 @@ function createScene() {
             opacity: 1.0,
             duration: 3000,
             easing: 'easeInOutSine'
-        }, 168000);
+        }, 166000);
 
         for (let i = 0; i < bubbles.length; i++) {
             tl.add({

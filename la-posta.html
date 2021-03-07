@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
 
-    <title>marialluïsa - gira-sol</title>
-    <meta name="description" content="marialluïsa">
+    <title>marialluïsa - la posta</title>
+    <meta name="description" content="marialluïsa - la posta">
     <meta name="author" content="Robin Jiménez">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -18,16 +18,13 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
-
   </head>
-  <body class="gira-sol">
+  <body class="la-posta">
   <template>
     <button class="text-button" id="back-button" type="button">Torna enrere</button>
   </template>
   <main>
     <div class="content">
-
       <div id="overlay">
         <div class="loading-message show">
           <p class="loading-info">Carregant</p>
@@ -39,25 +36,16 @@
           <p class="main experience-info">
             Activa el so. Puja el volum. Fes coses.
           </p>
-          <p class="experience-info">
-            Per gaudir de l'experiència només ens has de permetre
-            <wbr>
-            conèixer la teva localització.
-          </p>
-          <p class="experience-info">
-            No rebrem ni s'emmagatzemarà cap dada.
-          </p>
           <button class="text-button" id="start-button" title="D'acord" type="button" disabled>D'acord</button>
         </div>
       </div>
+      <div class="flicker"></div>
 
-      <canvas id="display" width="800" height="600"></canvas>
     </div>
   </main>
   <script src="lib/howler/dist/howler.js"></script>
   <script src="lib/body-scroll-lock/lib/bodyScrollLock.js"></script>
-  <script src="lib/suncalc/suncalc.js"></script>
   <script src="js/init.js"></script>
-  <script type="module" src="js/gira-sol.js"></script>
+  <script type="module" src="js/la-posta.js"></script>
   </body>
 </html>

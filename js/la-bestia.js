@@ -95,6 +95,7 @@ function createScene() {
 
         if (!isMobile()) {
             window.addEventListener("mousemove", handleMove);
+            window.addEventListener( 'resize', resize, false );
         } else {
             window.addEventListener("touchmove", handleMove);
         }
@@ -167,7 +168,7 @@ function createScene() {
             begin: function () {
                 barSpawning();
             },
-        }, 120000); //115000
+        }, 115000); //115000
 
         // End overlay animation and spawning stop
         tl.add({

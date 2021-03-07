@@ -1,0 +1,132 @@
+/* ===========================
+   Discografia
+   =========================== */
+
+body.discografia {
+  transition: background-color 0.5s ease-in-out;
+
+  &:after {
+    content: "";
+    background-image: url("../media/img/home/marble-tex.jpg");
+    background-blend-mode: luminosity;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  header {
+    a.logo-container {
+      svg {
+        fill: $theme_blue;
+      }
+
+      p {
+        color: $theme_blue_darkest;
+      }
+    }
+  }
+
+  .slide-light {
+    background-color: $theme_blue;
+  }
+
+  background-color: $theme_blue_faded;
+
+  &:after {
+    background-color: $theme_blue_faded;
+  }
+
+  a:hover,
+  a:focus {
+    color: $theme_blue;
+  }
+
+  a:active {
+    color: $theme_blue;
+  }
+
+  .menu-item-active {
+    a {
+      color: $theme_blue;
+    }
+  }
+
+  #discography {
+    width: 100%;
+
+    .page-title {
+      background-color: white;
+      padding: 0.5rem;
+    }
+  }
+
+  .album-container {
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+    margin: 8em auto;
+
+    .centered-container {
+      width: 90%;
+      margin: 5em auto;
+      position: relative;
+
+      @media screen and (min-width: $micro_screen_width) {
+        width: 80%;
+      }
+
+      @media screen and (min-width: $huge_screen_width) {
+        max-width: 800px;
+      }
+
+      > div {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        transition: all 0.5s ease-in-out;
+      }
+
+      .front-border {
+        border: white 5px solid;
+        transform: translate(15px, 15px);
+        z-index: 2;
+      }
+
+      iframe {
+        z-index: 3;
+        position: relative;
+      }
+
+      .back-box {
+        background-color: black;
+        transform: translate(-15px, calc(-100% - 15px));
+        z-index: 1;
+      }
+    }
+  }
+
+  .discography-container {
+    width: 80%;
+    height: 80%;
+    margin: 2em auto 8em;
+    position: relative;
+
+    @media screen and (min-width: $micro_screen_width) {
+      max-width: $tablet_slider_width;
+
+    }
+
+    @media screen and (min-width: $medium_screen_width) {
+      max-width: $desktop_slider_width;
+    }
+  }
+
+
+}
+

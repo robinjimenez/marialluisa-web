@@ -1,0 +1,137 @@
+<!doctype html>
+
+<html lang="ca">
+<head>
+    <meta charset="utf-8">
+
+    <title>marialluïsa - concerts</title>
+    <meta name="description" content="Marialluïsa - concerts">
+    <meta name="author" content="Robin Jiménez">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#63a7c4">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="./css/styles.css">
+    <link href="./css/hamburgers.min.css" rel="stylesheet">
+</head>
+<body class="concerts" data-colour="yellow">
+<header>
+    <a class="logo-container" href="./">
+        <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40"/>
+        </svg>
+        <p>M</p>
+    </a>
+    <button class="hamburger hamburger--slider" type="button">
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+</button>
+</header>
+<div class="menu-container" data-expanded="false">
+    <nav>
+        <ul>
+            <li class="menu-item">
+                <a href="./bio">Marialluïsa</a>
+            </li>
+            <li class="menu-item menu-item-active">
+                <a href="./concerts">Concerts</a>
+            </li>
+
+            <li class="menu-item">
+                <a href="./discografia">Discografia</a>
+            </li>
+            <li class="menu-item">
+                <a style="text-decoration: line-through">Botiga</a>
+            </li>
+            <li id="social-row" class="menu-item">
+                <a class="social-link" href="https://www.youtube.com/channel/UCASAu68iyDTt5GdDaeRRPeg"><img
+                        src="./media/icons/youtube-glyph.png" alt="YouTube"/></a>
+                <a class="social-link" href="https://www.instagram.com/marialluiisam/"><img
+                        src="./media/icons/instagram-glyph.png" alt="Instagram"/></a>
+                <a class="social-link" href="https://www.facebook.com/marialluiisam/"><img
+                        src="./media/icons/facebook-glyph.png" alt="Facebook"/></a>
+            </li>
+            <li class="menu-item menu-item-static">
+                <p>Contacte: <a href="mailto:marialluisacontacte@gmail.com">marialluisacontacte@gmail.com</a></p>
+                <p>Contractacions: <a href="mailto:bankrobber@bankrobber.net">bankrobber@bankrobber.net</a></p>
+            </li>
+        </ul>
+    </nav>
+    <p>
+        <a href="./privacitat">Política de privacitat</a><br>
+        Web desenvolupada per <a href="http://www.robinjnewman.com">robin jiménez</a>
+    </p>
+</div>
+<main>
+    <section id="concerts">
+        <div class="page-title">
+            <h1>Concerts 2020</h1>
+        </div>
+        <div class="concerts-container">
+            <ul>
+                <li class="concert-item">
+                    <p class="concert-date">19/03</p>
+                    <div>
+                        <p class="concert-city">Barcelona</p>
+                        <p class="concert-venue">Sala Apolo [2]</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">20/03</p>
+                    <div>
+                        <p class="concert-city">Lleida</p>
+                        <p class="concert-venue">Cafè del teatre</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">28/03</p>
+                    <div>
+                        <p class="concert-city">Cardedeu</p>
+                        <p class="concert-venue">Tarambana</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">18/04</p>
+                    <div>
+                        <p class="concert-city">Manresa</p>
+                        <p class="concert-venue">Hop! Festival</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">26/04</p>
+                    <div>
+                        <p class="concert-city">Igualada</p>
+                        <p class="concert-venue">La Bastida</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">08/05</p>
+                    <div>
+                        <p class="concert-city">Barcelona</p>
+                        <p class="concert-venue">LAUT</p>
+                    </div>
+                </li>
+                <li class="concert-item">
+                    <p class="concert-date">09/05</p>
+                    <div>
+                        <p class="concert-city">L'Hospitalet de l'Infant</p>
+                        <p class="concert-venue">Twinpalm</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+<script type="module" src="js/menu.js"></script>
+</body>
+</html>

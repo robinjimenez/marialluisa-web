@@ -34,19 +34,20 @@ videoSetup();
  * add to DOM. If unable to play, show message.
  */
 function videoSetup() {
+    let video = document.createElement('video');
+
     if (!!document.createElement('video').canPlayType) {
-        let video = document.createElement('video');
         var webm = document.createElement("source");
         webm.type = "video/webm";
-        webm.src = "media/video/el-gest.webm";
-        video.appendChild(webm);
         var mp4 = document.createElement("source");
         mp4.type = "video/mp4";
         mp4.src = "media/video/el-gest.mp4";
+        webm.src = "media/video/el-gest.webm";
         video.appendChild(mp4);
+        video.appendChild(webm);
         video.setAttribute("playsinline", "");
         video.preload = "auto";
-        video.style.maxHeight = window.innerHeight + "px";
+        video.style.maxHeight = document.querySelector('body').getBoundingClientRect().height + "px";
 
         document.querySelector('.video-container').appendChild(video);
 
@@ -55,6 +56,12 @@ function videoSetup() {
         let info = document.createElement('p');
         info.setAttribute("class", "experience-info");
         info.innerText = "El teu navegador no pot reproduïr l'experiència. Intenta-ho amb un més modern."
+    }
+
+    if(isMobile()) {
+        document.querySelector("html").style.height = video.style.height;
+        document.querySelector("body").style.height = video.style.height;
+        document.querySelector(".content").style.height = video.style.height;
     }
 
     document.getElementById('start-button').onclick = createScene;
@@ -79,7 +86,7 @@ function createScene() {
     tmp_ctx.imageSmoothingEnabled = true;
 
     var width = document.querySelector('body').getBoundingClientRect().width;
-    var height = document.querySelector('body').getBoundingClientRect().height;
+    var height = document.querySelector('video').clientHeight;
 
     draw_canvas.width = width;
     draw_canvas.height = height;
@@ -173,9 +180,20 @@ function createScene() {
             tmp_canvas.addEventListener("touchstart", handleStart, {passive: false});
             tmp_canvas.addEventListener("touchend", handleEnd, {passive: false});
             tmp_canvas.addEventListener("touchmove", onPaint, {passive: false});
+            document.querySelector("#tool-container").style.bottom = (document.querySelector("body").getBoundingClientRect().height - window.innerHeight) + 'px';
         } else {
             tmp_canvas.addEventListener('mousedown', handleStart, {passive: false});
             tmp_canvas.addEventListener('mouseup', handleEnd, {passive: false});
+
+            window.addEventListener('resize', function () {
+                width = document.querySelector('body').getBoundingClientRect().width;
+                height = document.querySelector('video').getBoundingClientRect().height;
+
+                draw_canvas.width = width;
+                draw_canvas.height = height;
+                tmp_canvas.width = width;
+                tmp_canvas.height = height;
+            });
         }
 
         video.addEventListener("timeupdate", function () {
@@ -541,7 +559,7 @@ function createScene() {
             easing: 'easeInOutSine',
             duration: 1000,
             begin: function () {
-                if(isMobile()) document.querySelector('#orientation-info').remove();
+                if (isMobile()) document.querySelector('#orientation-info').remove();
                 document.querySelector('.overlay-message').appendChild(document.querySelector("template").content);
                 document.querySelector("#back-button").addEventListener('click', function () {
                     location.href = './';

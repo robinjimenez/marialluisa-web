@@ -1,0 +1,143 @@
+/* ===========================
+   Concerts
+   =========================== */
+
+body.concerts {
+  transition: background-color 0.5s ease-in-out;
+
+  &:after {
+    content: "";
+    background-image: url("../media/img/home/marble-tex.jpg");
+    background-blend-mode: luminosity;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+
+  header {
+    a.logo-container {
+      svg {
+        fill: $theme_yellow;
+      }
+
+      p {
+        color: $theme_yellow_darkest;
+      }
+    }
+  }
+
+  .slide-light {
+    background-color: $theme_yellow;
+  }
+
+  background-color: $theme_yellow_faded;
+
+  &:after {
+    background-color: $theme_yellow_faded;
+  }
+
+  a:hover,
+  a:focus {
+    color: $theme_yellow;
+  }
+
+  a:active {
+    color: $theme_yellow;
+  }
+
+  .menu-item-active {
+    a {
+      color: $theme_yellow;
+    }
+  }
+
+  #concerts {
+    width: 100%;
+
+    .page-title {
+      background-color: white;
+      padding: 0.5rem;
+    }
+  }
+
+  .concerts-container {
+    width: 80%;
+    height: 80%;
+    margin: 4em auto 10em;
+    position: relative;
+
+    @media screen and (min-width: $micro_screen_width) {
+      max-width: $tablet_slider_width;
+
+      ul {
+        width: $tablet_slider_width;
+      }
+    }
+
+    @media screen and (min-width: $medium_screen_width) {
+      max-width: $desktop_slider_width;
+
+      ul {
+        width: $desktop_slider_width;
+
+        .concert-item p {
+          font-size: 250%;
+        }
+
+        .concert-city {
+          font-weight: 700;
+
+          &:after {
+            margin: 10px;
+          }
+        }
+      }
+    }
+
+    ul {
+        width: 100%;
+        margin: auto;
+    }
+
+    .concert-item {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      border-bottom: $theme_almost_black 2px solid;
+
+      p {
+        margin: 0.5em 0 0.5em 0;
+        font-size: 180%;
+        display: inline-block;
+      }
+
+      .concert-city {
+        font-weight: 700;
+
+        &:after {
+          content: '/';
+          margin: 5px;
+        }
+      }
+
+      div {
+        float: right;
+      }
+    }
+
+    .concert-date {
+      font-family: $header_font_stack;
+      display: inline-block;
+    }
+  }
+
+
+}
+

@@ -4,8 +4,6 @@
     ---------------------
  */
 
-// TODO: Remove for release
-const output = document.querySelector('.output');
 
 var input = {
     x: 0, y: 0,                       // x, y coordinates for mouse and touch
@@ -24,46 +22,89 @@ var isMobile = function () {
 
 var tl;
 
-var sound = new Howl({
-    src: "./media/songs/" + document.querySelector('body').className + ".mp3",
-    onload: function () {
-        document.querySelector('.loading-message').classList.toggle("show");
-
-        if (isMobile()) {
-            document.querySelector('#orientation-info').classList.toggle("show");
-        } else {
-            document.querySelectorAll('.experience-info.mobile').forEach(function (el) {
-                el.remove()
-            });
-            document.querySelector('.orientation-message').remove();
-        }
-
-        document.querySelectorAll('.experience-info').forEach(function (el) {
-            el.classList.add("show");
-        });
-
-        var startButton = document.querySelector("#start-button");
-        if (startButton !== null) {
-            startButton.removeAttribute("disabled");
-            startButton.classList.toggle("show");
-        }
-    }
-});
 
 // Disable scroll
 const targetElement = document.querySelector("html");
 bodyScrollLock.disableBodyScroll(targetElement);
 
-// Adapt full height on mobile browsers
-const wholeHeight = document.querySelector("body").getBoundingClientRect().height;
-const barHeight = wholeHeight - window.innerHeight;
-document.querySelector("html").style.height = 'calc(100vh - ' + barHeight + 'px)';
-document.querySelector("body").style.height = 'calc(100vh - ' + barHeight + 'px)';
-document.querySelector(".content").style.height = 'calc(100vh - ' + barHeight + 'px)';
-
 // Force HTTPS to receive data
 if (location.protocol != 'https:') {
     location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+}
+
+if (document.querySelector('body').className != "el-gest") {
+    var sound = new Howl({
+        src: "./media/songs/" + document.querySelector('body').className + ".mp3",
+        onload: function () {
+            document.querySelector('.loading-message').classList.toggle("show");
+
+            if (isMobile()) {
+                document.querySelector('#orientation-info').classList.toggle("show");
+            } else {
+                document.querySelectorAll('.experience-info.mobile').forEach(function (el) {
+                    el.remove()
+                });
+                document.querySelector('.orientation-message').remove();
+            }
+
+            document.querySelectorAll('.experience-info').forEach(function (el) {
+                el.classList.add("show");
+            });
+
+            var startButton = document.querySelector("#start-button");
+            if (startButton !== null) {
+                startButton.removeAttribute("disabled");
+                startButton.classList.toggle("show");
+            }
+        }
+    });
+
+    if (document.querySelector('body').className != "nord") {
+        document.querySelector("html, body").style.overflow = 'hidden';
+
+        // Adapt full height on mobile browsers
+        const wholeHeight = document.querySelector("body").getBoundingClientRect().height;
+        document.querySelector("html").style.height = '100%';
+        document.querySelector("body").style.height = '100%';
+        document.querySelector(".content").style.height = '100%';
+    } else {
+        document.querySelector("html, body, .content").style.overflow = 'auto';
+
+        document.querySelector("html").style.height = '100vh';
+        document.querySelector("body").style.height = '100vh';
+        document.querySelector(".content").style.height = '100vh';
+    }
+} else {
+
+    document.querySelector('.loading-message').classList.toggle("show");
+
+    if (isMobile()) {
+        document.querySelector('#orientation-info').classList.toggle("show");
+    } else {
+        document.querySelectorAll('.experience-info.mobile').forEach(function (el) {
+            el.remove()
+        });
+        document.querySelector('.orientation-message').remove();
+    }
+
+    document.querySelectorAll('.experience-info').forEach(function (el) {
+        el.classList.add("show");
+    });
+
+    var startButton = document.querySelector("#start-button");
+    if (startButton !== null) {
+        startButton.removeAttribute("disabled");
+        startButton.classList.toggle("show");
+    }
+
+    // Adapt full height on mobile browsers
+    document.querySelector("html, body").style.overflow = 'hidden';
+
+    const wholeHeight = document.querySelector("body").getBoundingClientRect().height;
+    const barHeight = wholeHeight - window.innerHeight;
+    document.querySelector("html").style.height = 'calc(100vh - ' + barHeight + 'px)';
+    document.querySelector("body").style.height = 'calc(100vh - ' + barHeight + 'px)';
+    document.querySelector(".content").style.height = 'calc(100vh - ' + barHeight + 'px)';
 }
 
 // Other commonly used functions

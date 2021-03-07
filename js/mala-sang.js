@@ -93,7 +93,7 @@ function createScene() {
             duration: 2000,
             loopBegin: function () {
                 for (let i = 0; i <= Math.floor(Math.random() * 5); i++) {
-                    createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
+                    createBall(Math.random() * 300 - 100, 150 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
                 }
             }
         });
@@ -105,7 +105,7 @@ function createScene() {
                     duration: 500,
                     loopBegin: function () {
                         for (let i = 0; i <= Math.floor(Math.random() * 10); i++) {
-                            createBall(Math.random() * 400 - 200, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
+                            createBall(Math.random() * 300 - 150, 100 + Math.random() * 50 , Math.random() * 0.5 + 0.5, new CANNON.Vec3(0,0,0));
                         }
                     }
                 });
